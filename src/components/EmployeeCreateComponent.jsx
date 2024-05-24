@@ -1,7 +1,8 @@
 import React, { useState } from 'react'
 import { creatEmployee } from '../services/EmployeeService'
 import { useNavigate } from 'react-router-dom'
-
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 const EmployeeCreateComponent = () => {
 
     const [fullName, setFirstName] = useState('')
@@ -16,6 +17,7 @@ const EmployeeCreateComponent = () => {
     const [dob, setDob] = useState('')
     const [maritalStatus, setMaritalStatus] = useState('')
     const [refferal, setRefferal] = useState('')
+    const [year, setYear] = useState(new Date().getFullYear());
 
     const navigator = useNavigate();
     function saveEmployee(e){
@@ -29,7 +31,36 @@ const EmployeeCreateComponent = () => {
                 navigator('/')
             })
         }
+        const handleDateChange = (date) => {
+            if (date) {
+                const updatedDate = new Date(date);
+                updatedDate.setFullYear(year);
+                setDob(updatedDate);
+            }
+        };
     
+        const handleYearChange = (event) => {
+            const newYear = parseInt(event.target.value, 10);
+            setYear(newYear);
+    
+            if (dob) {
+                const updatedDate = new Date(dob);
+                updatedDate.setFullYear(newYear);
+                setDob(updatedDate);
+            }
+        };
+    
+        const renderYearOptions = () => {
+            const years = [];
+            const startYear = new Date().getFullYear() - 100;
+            const endYear = new Date().getFullYear() + 10;
+            for (let i = startYear; i <= endYear; i++) {
+                years.push(i);
+            }
+            return years.map(year => (
+                <option key={year} value={year}>{year}</option>
+            ));
+        };
     return (
         <div className='container'>
             <br></br>
@@ -110,14 +141,36 @@ const EmployeeCreateComponent = () => {
                                  value={previousOrganisation} 
                                  onChange={(e) => setPreviousOrganisation(e.target.value)} />
                             </div>
-                            <div className='form-group'>
+                            {/* <div className='form-group'>
                                 <label className='form-label'>Date of Birth</label>
                                 <input type='text' 
                                 placeholder='Enter dob'
                                 className='form-control'
                                  value={dob} 
                                  onChange={(e) => setDob(e.target.value)} />
-                            </div>
+                            </div> */}
+            <div className='form-group'>
+            <label className='form-label'>Date of Birth</label>
+            <div style={{ display: 'flex', gap: '10px' }}>
+                <select
+                    value={year}
+                    onChange={handleYearChange}
+                    className='form-control'
+                >
+                    {renderYearOptions()}
+                </select>
+                <DatePicker
+                    selected={dob}
+                    onChange={handleDateChange}
+                    className='form-control'
+                    placeholderText='Enter dob'
+                    dateFormat='MM/dd'
+                    showMonthDropdown
+                    showDayDropdown
+                    dropdownMode="select"
+                />
+            </div>
+        </div>
                             <div className='form-group'>
                                 <label className='form-label'>Marital Status</label>
                                 <input type='text' 
