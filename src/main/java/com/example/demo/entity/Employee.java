@@ -7,6 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -60,15 +61,22 @@ public class Employee {
 	@Column(name = "refferal")
     private String refferal;
 
+	@Column(name = "status")
+	private String status;
 	
+	
+	@Column(name = "aadhar_filename")
+	private String aadharFilename;
 	
 	public Employee() {
 		super();
 	}
 
+	
+	
 	public Employee(Long id, String fullName, String email, String jobProfile, String qualification, Long mobileNo,
 			String permanentAddress, String currentAddress, String gender, String previousOrganisation, Date dob,
-			String maritalStatus, String refferal) {
+			String maritalStatus, String refferal, String aadharFilename) {
 		super();
 		this.id = id;
 		this.fullName = fullName;
@@ -83,7 +91,28 @@ public class Employee {
 		this.dob = dob;
 		this.maritalStatus = maritalStatus;
 		this.refferal = refferal;
+		this.aadharFilename = aadharFilename;
 	}
+
+	public String getAadharFilename() {
+		return aadharFilename;
+	}
+
+
+
+	public void setAadharFilename(String aadharFilename) {
+		this.aadharFilename = aadharFilename;
+	}
+
+	public String getStatus() {
+		return status;
+	}
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+	
 
 	public Long getId() {
 		return id;
@@ -108,6 +137,8 @@ public class Employee {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+
+	
 
 	public String getJobProfile() {
 		return jobProfile;

@@ -3,12 +3,13 @@ package com.example.demo.dto;
 import java.util.Date;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Lob;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-//@Getter
-//@Setter
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class EmployeeDto {
@@ -26,10 +27,14 @@ public class EmployeeDto {
     private Date  dob;	
     private String maritalStatus;	
     private String refferal;
+    private String aadharFilename;
+    
+
+	
 
 	public EmployeeDto(Long id, String fullName, String email, String jobProfile, String qualification, Long mobileNo,
 			String permanentAddress, String currentAddress, String gender, String previousOrganisation, Date dob,
-			String maritalStatus, String refferal) {
+			String maritalStatus, String refferal ,String aadharFilename) {
 		super();
 		this.id = id;
 		this.fullName = fullName;
@@ -44,6 +49,15 @@ public class EmployeeDto {
 		this.dob = dob;
 		this.maritalStatus = maritalStatus;
 		this.refferal = refferal;
+		this.aadharFilename = aadharFilename;
+	}
+
+	public String getAadharFilename() {
+		return aadharFilename;
+	}
+
+	public void setAadharFilename(String aadharFilename) {
+		this.aadharFilename = aadharFilename;
 	}
 
 	public Long getId() {
@@ -124,7 +138,5 @@ public class EmployeeDto {
 	public void setRefferal(String refferal) {
 		this.refferal = refferal;
 	}
-    
-    
     
 }

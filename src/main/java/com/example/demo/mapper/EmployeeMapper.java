@@ -19,7 +19,8 @@ public class EmployeeMapper {
 				employee.getPreviousOrganisation(),
 				employee.getDob(),
 				employee.getMaritalStatus(),
-				employee.getRefferal()		
+				employee.getRefferal(),
+				employee.getAadharFilename()
 				
 				);
 	}
@@ -39,9 +40,8 @@ public class EmployeeMapper {
 			  employeeDto.getPreviousOrganisation(),
 			  employeeDto.getDob(),
 			  employeeDto.getMaritalStatus(),
-			  employeeDto.getRefferal()		
-				
-			  
+			  employeeDto.getRefferal(),
+			  employeeDto.getAadharFilename()
 			  );
   }
 }

@@ -1,16 +1,25 @@
 package com.example.demo.serviceImpl;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.dto.EmployeeDto;
 import com.example.demo.entity.Employee;
+import com.example.demo.entity.StatusHistory;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.mapper.EmployeeMapper;
 import com.example.demo.repository.EmployeeRepository;
+import com.example.demo.repository.StatusHistoryRepository;
 import com.example.demo.service.EmployeeService;
 
 @Service
@@ -19,7 +28,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	
 	private EmployeeRepository employeeRepository;
 	
-	
+	 private static final String UPLOAD_DIR = "./src/main/resources/static/img";
 
 	public EmployeeServiceImpl(EmployeeRepository employeeRepository) {
 		super();
@@ -28,13 +37,27 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 
 
+//	@Override
+//	public EmployeeDto createEmployee(EmployeeDto employeeDto) {		
+//		Employee employee = EmployeeMapper.mapToEmployee(employeeDto);
+//		Employee savedEmployee = employeeRepository.save(employee);
+//		return EmployeeMapper.mapToEmployeeDto(savedEmployee);
+//	}
 	@Override
-	public EmployeeDto createEmployee(EmployeeDto employeeDto) {		
+	public EmployeeDto createEmployee(EmployeeDto employeeDto, MultipartFile aadharFile) throws IOException{
+		 File uploadDir = new File(UPLOAD_DIR);
+	        if (!uploadDir.exists()) {
+	            uploadDir.mkdirs();
+	        }
+		String aadharFilename = StringUtils.cleanPath(aadharFile.getOriginalFilename());
+		String filePath = UPLOAD_DIR + File.separator + aadharFilename;
+		Files.copy(aadharFile.getInputStream(), Paths.get(filePath));
+
+		employeeDto.setAadharFilename(aadharFilename);
 		Employee employee = EmployeeMapper.mapToEmployee(employeeDto);
 		Employee savedEmployee = employeeRepository.save(employee);
 		return EmployeeMapper.mapToEmployeeDto(savedEmployee);
 	}
-
 
 
 	@Override
@@ -88,5 +111,32 @@ public class EmployeeServiceImpl implements EmployeeService {
 		
 		employeeRepository.deleteById(employeeId);		
 	}
+
+
+
+	@Override
+	public EmployeeDto updateStatus(Long employeeId, String newStatus) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
+//
+//	@Override
+//	public EmployeeDto updateStatus(Long employeeId, String newStatus) {
+//		Employee employee = employeeRepository.findById(employeeId).orElseThrow(()->
+//		new ResourceNotFoundException("Employee is not exists with given id : "+ employeeId));
+//		StatusHistory statusHistory = new StatusHistory();
+//		statusHistory.setEmployee(employee);
+//		statusHistory.setStatus(newStatus);
+//		statusHistory.setChangesDateTime(LocalDateTime.now());
+//		StatusHistory save = StatusHistoryRepository.save(statusHistory);
+//		
+//		Employee .setStatus(newStatus);
+//		
+//		return employeeRepository.save(emplo);
+//		
+//	}
 
 }
