@@ -10,14 +10,15 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
+//@Data
 //@Getter
 //@Setter
-@NoArgsConstructor
-@AllArgsConstructor
+//@NoArgsConstructor
+//@AllArgsConstructor
 @Entity
 @Table(name = "employees")
 public class Employee {
@@ -67,6 +68,7 @@ public class Employee {
 	
 	@Column(name = "aadhar_filename")
 	private String aadharFilename;
+	
 	
 	public Employee() {
 		super();

@@ -21,6 +21,7 @@ import com.example.demo.mapper.EmployeeMapper;
 import com.example.demo.repository.EmployeeRepository;
 import com.example.demo.repository.StatusHistoryRepository;
 import com.example.demo.service.EmployeeService;
+import com.example.demo.service.FileService;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -28,11 +29,14 @@ public class EmployeeServiceImpl implements EmployeeService {
 	
 	private EmployeeRepository employeeRepository;
 	
+	private FileService fileService;
+	
 	 private static final String UPLOAD_DIR = "./src/main/resources/static/img";
 
 	public EmployeeServiceImpl(EmployeeRepository employeeRepository) {
 		super();
 		this.employeeRepository = employeeRepository;
+		this.fileService = fileService;
 	}
 
 
@@ -43,22 +47,24 @@ public class EmployeeServiceImpl implements EmployeeService {
 //		Employee savedEmployee = employeeRepository.save(employee);
 //		return EmployeeMapper.mapToEmployeeDto(savedEmployee);
 //	}
+
 	@Override
-	public EmployeeDto createEmployee(EmployeeDto employeeDto, MultipartFile aadharFile) throws IOException{
-		 File uploadDir = new File(UPLOAD_DIR);
-	        if (!uploadDir.exists()) {
-	            uploadDir.mkdirs();
-	        }
-		String aadharFilename = StringUtils.cleanPath(aadharFile.getOriginalFilename());
-		String filePath = UPLOAD_DIR + File.separator + aadharFilename;
-		Files.copy(aadharFile.getInputStream(), Paths.get(filePath));
+	public EmployeeDto createEmployee(EmployeeDto employeeDto, MultipartFile file, String path) throws IOException {
+		// TODO Auto-generated method stub
+		  String fileName = fileService.uploadImage(path, file);
 
-		employeeDto.setAadharFilename(aadharFilename);
-		Employee employee = EmployeeMapper.mapToEmployee(employeeDto);
-		Employee savedEmployee = employeeRepository.save(employee);
-		return EmployeeMapper.mapToEmployeeDto(savedEmployee);
+	        // Set the filename in the employeeDto
+	        employeeDto.setAadharFilename(fileName);
+
+	        // Convert DTO to entity
+	        Employee employee = EmployeeMapper.mapToEmployee(employeeDto);
+
+	        // Save the employee entity
+			Employee savedEmployee = employeeRepository.save(employee);
+
+	        // Convert entity to DTO and return
+	        return EmployeeMapper.mapToEmployeeDto(savedEmployee);
 	}
-
 
 	@Override
 	public EmployeeDto getEmployeeById(Long employeeId) {
@@ -119,6 +125,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+
+
+
 
 
 
