@@ -15,7 +15,7 @@ public class StatusHistory {
 	private Long id;
 	
 	@ManyToOne
-	@JoinColumn(name = "employee_entity_id" , nullable = false)
+	@JoinColumn(name = "employee_id" , nullable = false)
 	private Employee employee;
 	
 	@Column(nullable = false)

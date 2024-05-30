@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,21 +26,23 @@ import com.example.demo.service.FileService;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
-	
-	
+
+	@Autowired
 	private EmployeeRepository employeeRepository;
-	
+
+	@Autowired
 	private FileService fileService;
 	
-	 private static final String UPLOAD_DIR = "./src/main/resources/static/img";
+	 @Autowired
+	 private StatusHistoryServiceImpl statusHistoryServiceImpl;
+	 
+	private static final String UPLOAD_DIR = "./src/main/resources/static/img";
 
 	public EmployeeServiceImpl(EmployeeRepository employeeRepository) {
 		super();
 		this.employeeRepository = employeeRepository;
 		this.fileService = fileService;
 	}
-
-
 
 //	@Override
 //	public EmployeeDto createEmployee(EmployeeDto employeeDto) {		
@@ -51,74 +54,71 @@ public class EmployeeServiceImpl implements EmployeeService {
 	@Override
 	public EmployeeDto createEmployee(EmployeeDto employeeDto, MultipartFile file, String path) throws IOException {
 		// TODO Auto-generated method stub
-		  String fileName = fileService.uploadImage(path, file);
+		String fileName = fileService.uploadImage(path, file);
 
-	        // Set the filename in the employeeDto
-	        employeeDto.setAadharFilename(fileName);
+		// Set the filename in the employeeDto
+		employeeDto.setAadharFilename(fileName);
 
-	        // Convert DTO to entity
-	        Employee employee = EmployeeMapper.mapToEmployee(employeeDto);
+		// Convert DTO to entity
+		Employee employee = EmployeeMapper.mapToEmployee(employeeDto);
 
-	        // Save the employee entity
-			Employee savedEmployee = employeeRepository.save(employee);
+		// Save the employee entity
+		Employee savedEmployee = employeeRepository.save(employee);
 
-	        // Convert entity to DTO and return
-	        return EmployeeMapper.mapToEmployeeDto(savedEmployee);
+		// Convert entity to DTO and return
+//		createInitialStatus(savedEmployee);
+		 
+		return EmployeeMapper.mapToEmployeeDto(savedEmployee);
 	}
 
 	@Override
 	public EmployeeDto getEmployeeById(Long employeeId) {
-		Employee employee =  employeeRepository.findById(employeeId)
-		.orElseThrow(() -> 
-		new ResourceNotFoundException("Employee is not Exist with the given id" + employeeId));
+		Employee employee = employeeRepository.findById(employeeId).orElseThrow(
+				() -> new ResourceNotFoundException("Employee is not Exist with the given id" + employeeId));
 		return EmployeeMapper.mapToEmployeeDto(employee);
 	}
-
-
 
 	@Override
 	public List<EmployeeDto> getAllEmployees() {
 		List<Employee> employees = employeeRepository.findAll();
-		return employees.stream().map((employee)->EmployeeMapper.mapToEmployeeDto(employee))
+		return employees.stream().map((employee) -> EmployeeMapper.mapToEmployeeDto(employee))
 				.collect(Collectors.toList());
 	}
 
-
-
 	@Override
 	public EmployeeDto updateEmployee(Long employeeId, EmployeeDto updatedEmployee) {
-		Employee employee =  employeeRepository.findById(employeeId).orElseThrow(()-> 
-		new ResourceNotFoundException("Employee is not exists with given id : "+ employeeId));
-		
-	    employee.setFullName(updatedEmployee.getFullName());
-	    employee.setEmail(updatedEmployee.getEmail());
-	    employee.setJobProfile(updatedEmployee.getJobProfile());
-	    employee.setQualification(updatedEmployee.getQualification());
-	    employee.setMobileNo(updatedEmployee.getMobileNo());
-	    employee.setPermanentAddress(updatedEmployee.getPermanentAddress());
-	    employee.setCurrentAddress(updatedEmployee.getCurrentAddress());
-	    employee.setGender(updatedEmployee.getGender());
-	    employee.setPreviousOrganisation(updatedEmployee.getPreviousOrganisation());
-	    employee.setDob(updatedEmployee.getDob());
-	    employee.setMaritalStatus(updatedEmployee.getMaritalStatus());
-	    employee.setRefferal(updatedEmployee.getRefferal());
-	    
-	    Employee updatedEmployeeObj  = employeeRepository.save(employee);
-	    
+		Employee employee = employeeRepository.findById(employeeId).orElseThrow(
+				() -> new ResourceNotFoundException("Employee is not exists with given id : " + employeeId));
+
+		employee.setFullName(updatedEmployee.getFullName());
+		employee.setEmail(updatedEmployee.getEmail());
+		employee.setJobProfile(updatedEmployee.getJobProfile());
+		employee.setQualification(updatedEmployee.getQualification());
+		employee.setMobileNo(updatedEmployee.getMobileNo());
+		employee.setPermanentAddress(updatedEmployee.getPermanentAddress());
+		employee.setCurrentAddress(updatedEmployee.getCurrentAddress());
+		employee.setGender(updatedEmployee.getGender());
+		employee.setPreviousOrganisation(updatedEmployee.getPreviousOrganisation());
+		employee.setDob(updatedEmployee.getDob());
+		employee.setMaritalStatus(updatedEmployee.getMaritalStatus());
+		employee.setRefferal(updatedEmployee.getRefferal());
+
+		Employee updatedEmployeeObj = employeeRepository.save(employee);
+
+//		 if (!employee.getStatus().equals(updatedEmployeeDto.getStatus())) {
+//	            updateStatus(employeeId, updatedEmployeeDto.getStatus());
+//	        }
+//		 
 		return EmployeeMapper.mapToEmployeeDto(updatedEmployeeObj);
 	}
 
-
-
 	@Override
 	public void deleteEmployee(Long employeeId) {
-		Employee employee =  employeeRepository.findById(employeeId).orElseThrow(()-> 
-		new ResourceNotFoundException("Employee is not exists with given id : "+ employeeId));
-		
-		employeeRepository.deleteById(employeeId);		
+		Employee employee = employeeRepository.findById(employeeId).orElseThrow(
+				() -> new ResourceNotFoundException("Employee is not exists with given id : " + employeeId));
+
+		employeeRepository.deleteById(employeeId);
 	}
-
-
 
 	@Override
 	public EmployeeDto updateStatus(Long employeeId, String newStatus) {
@@ -126,27 +126,21 @@ public class EmployeeServiceImpl implements EmployeeService {
 		return null;
 	}
 
-
-
-
-
-
-
-//
-//	@Override
-//	public EmployeeDto updateStatus(Long employeeId, String newStatus) {
-//		Employee employee = employeeRepository.findById(employeeId).orElseThrow(()->
-//		new ResourceNotFoundException("Employee is not exists with given id : "+ employeeId));
-//		StatusHistory statusHistory = new StatusHistory();
-//		statusHistory.setEmployee(employee);
-//		statusHistory.setStatus(newStatus);
-//		statusHistory.setChangesDateTime(LocalDateTime.now());
-//		StatusHistory save = StatusHistoryRepository.save(statusHistory);
-//		
-//		Employee .setStatus(newStatus);
-//		
-//		return employeeRepository.save(emplo);
-//		
-//	}
-
+	/**
+	 * @Override public EmployeeDto updateStatus(Long employeeId, String newStatus)
+	 *           { Employee employee =
+	 *           employeeRepository.findById(employeeId).orElseThrow(()-> new
+	 *           ResourceNotFoundException("Employee is not exists with given id :
+	 *           "+ employeeId)); StatusHistory statusHistory = new StatusHistory();
+	 *           statusHistory.setEmployee(employee);
+	 *           statusHistory.setStatus(newStatus);
+	 *           statusHistory.setChangesDateTime(LocalDateTime.now());
+	 *           StatusHistory save = StatusHistoryRepository.save(statusHistory);
+	 * 
+	 *           Employee .setStatus(newStatus);
+	 * 
+	 *           return employeeRepository.save(emplo);
+	 * 
+	 *           }
+	 */
 }

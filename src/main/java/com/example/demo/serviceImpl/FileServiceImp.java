@@ -17,27 +17,17 @@ public class FileServiceImp implements FileService {
 
 	@Override
 	public String uploadImage(String path, MultipartFile file) throws IOException {
-		// TODO Auto-generated method stub
-		//File name
-		 String name = file.getOriginalFilename();
-		 
+
+		 String name = file.getOriginalFilename();		 
 		 String randomID = UUID.randomUUID().toString();
 		 String fileName1 = randomID.concat(name.substring(name.lastIndexOf(".")));
-		 
-		//Fullpath
 		 String filePath = path+ File.separator+fileName1;
-		 
-		 
-		
-		//create folder if not created
 		 File f = new File(path);
 		 if(!f.exists()) {
 			 f.mkdir();
-		 }
-		
-		//file copy
+		 }	
 		 Files.copy(file.getInputStream(),Paths.get(filePath));
-		return name;
+		return randomID;
 	}
 
 }

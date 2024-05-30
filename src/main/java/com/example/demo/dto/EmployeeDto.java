@@ -1,6 +1,9 @@
 package com.example.demo.dto;
 
 import java.util.Date;
+import java.util.List;
+
+import com.example.demo.entity.StatusHistory;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Lob;
@@ -28,13 +31,13 @@ public class EmployeeDto {
     private String maritalStatus;	
     private String refferal;
     private String aadharFilename;
-    
-
-	
+    private String status;
+    private List<StatusHistory> statusHistories;
+    	
 
 	public EmployeeDto(Long id, String fullName, String email, String jobProfile, String qualification, Long mobileNo,
 			String permanentAddress, String currentAddress, String gender, String previousOrganisation, Date dob,
-			String maritalStatus, String refferal ,String aadharFilename) {
+			String maritalStatus, String refferal ,String aadharFilename, String status, List<StatusHistory> statusHistories) {
 		super();
 		this.id = id;
 		this.fullName = fullName;
@@ -50,15 +53,10 @@ public class EmployeeDto {
 		this.maritalStatus = maritalStatus;
 		this.refferal = refferal;
 		this.aadharFilename = aadharFilename;
+		this.status = status;
+		this.statusHistories = statusHistories;
 	}
 
-	public String getAadharFilename() {
-		return aadharFilename;
-	}
-
-	public void setAadharFilename(String aadharFilename) {
-		this.aadharFilename = aadharFilename;
-	}
 
 	public Long getId() {
 		return id;
@@ -138,5 +136,33 @@ public class EmployeeDto {
 	public void setRefferal(String refferal) {
 		this.refferal = refferal;
 	}
+	public String getAadharFilename() {
+		return aadharFilename;
+	}
+
+	public void setAadharFilename(String aadharFilename) {
+		this.aadharFilename = aadharFilename;
+	}
+
+
+	public String getStatus() {
+		return status;
+	}
+
+
+	public void setStatus(String status) {
+		this.status = status;
+	}
+
+
+	public List<StatusHistory> getStatusHistories() {
+		return statusHistories;
+	}
+
+
+	public void setStatusHistories(List<StatusHistory> statusHistories) {
+		this.statusHistories = statusHistories;
+	}
+
     
 }

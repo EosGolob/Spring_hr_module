@@ -1,19 +1,24 @@
 package com.example.demo.entity;
 
 import java.util.Date;
+import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 //@Data
 //@Getter
 //@Setter
@@ -25,60 +30,59 @@ public class Employee {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@Column(name = "full_name")
 	private String fullName;
-	
-	@Column(name = "email", nullable = false , unique = true)
-	private String email; 
-	
+
+	@Column(name = "email", nullable = false, unique = true)
+	private String email;
+
 	@Column(name = "job_profile")
 	private String jobProfile;
-	
+
 	@Column(name = "Qualification")
 	private String Qualification;
-	
+
 	@Column(name = "mobile_no")
 	private Long mobileNo;
-	
+
 	@Column(name = "permanent_address")
 	private String permanentAddress;
-	
+
 	@Column(name = "current_address")
 	private String currentAddress;
-	
+
 	@Column(name = "gender")
 	private String gender;
-	
+
 	@Column(name = "previous_Organisation")
 	private String previousOrganisation;
-	
+
 	@Column(name = "dob")
-    private Date  dob;
-	
+	private Date dob;
+
 	@Column(name = "marital_status")
-    private String maritalStatus;
-	
+	private String maritalStatus;
+
 	@Column(name = "refferal")
-    private String refferal;
+	private String refferal;
 
 	@Column(name = "status")
 	private String status;
-	
-	
+
+	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private List<StatusHistory> statusHistories;
+
 	@Column(name = "aadhar_filename")
 	private String aadharFilename;
-	
-	
+
 	public Employee() {
 		super();
 	}
 
-	
-	
 	public Employee(Long id, String fullName, String email, String jobProfile, String qualification, Long mobileNo,
 			String permanentAddress, String currentAddress, String gender, String previousOrganisation, Date dob,
-			String maritalStatus, String refferal, String aadharFilename) {
+			String maritalStatus, String refferal, String aadharFilename, String status, List<StatusHistory> statusHistories) {
 		super();
 		this.id = id;
 		this.fullName = fullName;
@@ -94,13 +98,13 @@ public class Employee {
 		this.maritalStatus = maritalStatus;
 		this.refferal = refferal;
 		this.aadharFilename = aadharFilename;
+		this.status=status;
+		this.statusHistories = statusHistories;
 	}
 
 	public String getAadharFilename() {
 		return aadharFilename;
 	}
-
-
 
 	public void setAadharFilename(String aadharFilename) {
 		this.aadharFilename = aadharFilename;
@@ -113,8 +117,6 @@ public class Employee {
 	public void setStatus(String status) {
 		this.status = status;
 	}
-
-	
 
 	public Long getId() {
 		return id;
@@ -139,8 +141,6 @@ public class Employee {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-
-	
 
 	public String getJobProfile() {
 		return jobProfile;
@@ -221,8 +221,13 @@ public class Employee {
 	public void setRefferal(String refferal) {
 		this.refferal = refferal;
 	}
-    
 
-	
-	
+	public List<StatusHistory> getStatusHistories() {
+		return statusHistories;
+	}
+
+	public void setStatusHistories(List<StatusHistory> statusHistories) {
+		this.statusHistories = statusHistories;
+	}
+
 }
