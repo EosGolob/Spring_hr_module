@@ -3,20 +3,23 @@ import { deleteEmployee, listEmployees } from '../services/EmployeeService'
 import {useNavigate} from 'react-router-dom'
 
 const ListEmployeeComponent = () => {
-    const [ employees,setEmployees] = useState([])
+    const [ employees,setEmployees] = useState([]);
     const navigator = useNavigate();
 
     useEffect(() => {
      getAllEmployees();
-    },[])
+    },[]);
 
 function getAllEmployees(){
-      listEmployees().then((response) => {
-            setEmployees(response.data);
+      listEmployees()
+      .then((response) => {
+        console.log('Response Data:', response.data);
+        setEmployees(response.data);
         }).catch(error => {
             console.error(error)
-    })
+    });
 }
+
     function addNewEmployee(){
         navigator('/add-employee')
 
@@ -32,7 +35,7 @@ function getAllEmployees(){
 
         }).catch(error => {
             console.error(error)
-        })
+        });
     }
   return (
     <div className='container'>
@@ -55,8 +58,9 @@ function getAllEmployees(){
             </thead>
             <tbody>
                 {
-                employees.map(employee =>
-                    <tr key={employee.id}>
+                // employees.map((employee =>(
+                    Array.isArray(employees) && employees.map((employee) => (
+                   <tr key={employee.id}>
                         <td>{employee.id}</td>
                         <td>{employee.fullName}</td>
                         <td>{employee.email}</td>
@@ -72,12 +76,12 @@ function getAllEmployees(){
                             style={{marginLeft:'10px' }}
                             >Delete</button>
                         </td>
-                        </tr>)
-                }
+                        </tr>
+  ))}
             </tbody>
          </table>
     </div>
-  )
-}
+  );
+};
 
 export default ListEmployeeComponent
