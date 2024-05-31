@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -29,22 +30,23 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RestController
 @RequestMapping("/api/employees")
 public class EmployeeController {
-	
+
 	@Autowired
 	private EmployeeService employeeService;
-	
+
 	@Autowired
 	private StatusHistoryRepository statusHistoryRepository;
-	
-	@Value("${project.image}")
+
+////	@Value("${project.image}")
+	@Value("${file.upload-dir}")
 	private String path;
 
 	public EmployeeController(EmployeeService employeeService) {
 		super();
 		this.employeeService = employeeService;
 	}
-	
-    //Build add Employee REST API
+
+	// Build add Employee REST API
 //	@PostMapping
 //	public ResponseEntity<EmployeeDto> createEmployee(@RequestBody EmployeeDto employeeDto){
 //		EmployeeDto savedEmployee = employeeService.createEmployee(employeeDto);
@@ -53,49 +55,53 @@ public class EmployeeController {
 //	}
 
 	@PostMapping
-	public ResponseEntity<EmployeeDto> createEmployee(
-			@RequestPart("employee") EmployeeDto employeeDto,
-			@RequestParam("image") MultipartFile image){
-		 try {
-	            EmployeeDto savedEmployee = employeeService.createEmployee(employeeDto, image, path);
-	            return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
-	        } catch (IOException e) {
-	            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-	        }
-		
+	public ResponseEntity<EmployeeDto> createEmployee(@RequestPart("employee") EmployeeDto employeeDto,
+			@RequestParam("image") MultipartFile image) {
+		try {
+			EmployeeDto savedEmployee = employeeService.createEmployee(employeeDto, image, path);
+			return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
+		} catch (IOException e) {
+			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
 	}
-	
-	//Build get Employee REST API
+
+	// Build get Employee REST API
 	@GetMapping("{id}")
-	public ResponseEntity<EmployeeDto> getEmployeeById(@PathVariable("id") Long employeeId){
-		 EmployeeDto employeeDto = employeeService.getEmployeeById(employeeId);
-		 return ResponseEntity.ok(employeeDto);
-		 
+	public ResponseEntity<EmployeeDto> getEmployeeById(@PathVariable("id") Long employeeId) {
+		EmployeeDto employeeDto = employeeService.getEmployeeById(employeeId);
+		return ResponseEntity.ok(employeeDto);
+
 	}
-	
-	//Build get allEmployee Rest API
+
+	// Build get allEmployee Rest API
 	@GetMapping
-	public ResponseEntity<List<EmployeeDto>> getAllEmployees(){
-		 List<EmployeeDto> employees = employeeService.getAllEmployees();
+	public ResponseEntity<List<EmployeeDto>> getAllEmployees() {
+		List<EmployeeDto> employees = employeeService.getAllEmployees();
 		return ResponseEntity.ok(employees);
-		
+
 	}
-	
-	//Build update Employee REST API
+
+	// Build update Employee REST API
 	@PutMapping("{id}")
 	public ResponseEntity<EmployeeDto> updateEmployee( @PathVariable("id") Long employeeId , @RequestBody EmployeeDto updatedEmployee){
 	EmployeeDto employeeDto =	employeeService.updateEmployee(employeeId, updatedEmployee);
 	return ResponseEntity.ok(employeeDto);
 	}
-	
-	//Build Delete EmployeeREST APi
+//	@PutMapping("{id}")
+//	public ResponseEntity<EmployeeDto> updateEmployee(@PathVariable("id") Long employeeId, @ModelAttribute EmployeeDto updatedEmployee,  @RequestParam MultipartFile file) throws IOException {
+//		EmployeeDto updatedEmployeeDto = employeeService.updateEmployee(employeeId, updatedEmployee, file);
+//		return ResponseEntity.ok(updatedEmployeeDto);
+//	}
+
+	// Build Delete EmployeeREST APi
 	@DeleteMapping("{id}")
-	public ResponseEntity<String> deleteEmployee(@PathVariable("id") Long employeeId){
+	public ResponseEntity<String> deleteEmployee(@PathVariable("id") Long employeeId) {
 		employeeService.deleteEmployee(employeeId);
 		return ResponseEntity.ok("Employee deleted successfully");
 	}
-	
+
 //	@PutMapping("/{id/status}")
 //	public Emplo
-	
+
 }

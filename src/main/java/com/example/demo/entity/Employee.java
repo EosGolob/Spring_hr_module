@@ -3,6 +3,8 @@ package com.example.demo.entity;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,11 +21,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-//@Data
-//@Getter
-//@Setter
-//@NoArgsConstructor
-//@AllArgsConstructor
+@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "employees")
 public class Employee {
@@ -71,14 +73,15 @@ public class Employee {
 	private String status;
 
 	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JsonIgnore
 	private List<StatusHistory> statusHistories;
 
 	@Column(name = "aadhar_filename")
 	private String aadharFilename;
 
-	public Employee() {
-		super();
-	}
+//	public Employee() {
+//		super();
+//	}
 
 	public Employee(Long id, String fullName, String email, String jobProfile, String qualification, Long mobileNo,
 			String permanentAddress, String currentAddress, String gender, String previousOrganisation, Date dob,

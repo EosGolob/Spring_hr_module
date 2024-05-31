@@ -17,10 +17,14 @@ public interface EmployeeService {
 
 	EmployeeDto updateEmployee(Long employeeId, EmployeeDto updatedEmployee);
 
+//	EmployeeDto updateEmployee(Long employeeId, EmployeeDto updatedEmployee, MultipartFile file) throws IOException;
+	
 	void deleteEmployee(Long employeeId);
 
 	EmployeeDto updateStatus(Long employeeId, String newStatus);
 
 	EmployeeDto createEmployee(EmployeeDto employeeDto, MultipartFile file, String path) throws IOException;
+
+	
 
 }

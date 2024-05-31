@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,6 +15,9 @@ import com.example.demo.service.FileService;
 
 @Service
 public class FileServiceImp implements FileService {
+	
+	@Value("${file.upload-dir}")
+	private String path;
 
 	@Override
 	public String uploadImage(String path, MultipartFile file) throws IOException {

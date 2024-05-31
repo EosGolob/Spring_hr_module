@@ -10,8 +10,11 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.dto.EmployeeDto;
@@ -23,6 +26,7 @@ import com.example.demo.repository.EmployeeRepository;
 import com.example.demo.repository.StatusHistoryRepository;
 import com.example.demo.service.EmployeeService;
 import com.example.demo.service.FileService;
+import com.example.demo.service.StatusHistoryService;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -34,7 +38,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 	private FileService fileService;
 	
 	 @Autowired
-	 private StatusHistoryServiceImpl statusHistoryServiceImpl;
+	 private StatusHistoryService statusHistoryService;
+	 
+    @Value("${file.upload-dir}")
+	private String path;
 	 
 	private static final String UPLOAD_DIR = "./src/main/resources/static/img";
 
@@ -42,6 +49,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 		super();
 		this.employeeRepository = employeeRepository;
 		this.fileService = fileService;
+		this.statusHistoryService = statusHistoryService;
 	}
 
 //	@Override
@@ -66,7 +74,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 		Employee savedEmployee = employeeRepository.save(employee);
 
 		// Convert entity to DTO and return
-//		createInitialStatus(savedEmployee);
+		statusHistoryService.createInitialStatus(savedEmployee);
 		 
 		return EmployeeMapper.mapToEmployeeDto(savedEmployee);
 	}
@@ -86,7 +94,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 	@Override
-	public EmployeeDto updateEmployee(Long employeeId, EmployeeDto updatedEmployee) {
+	public EmployeeDto updateEmployee(Long employeeId, EmployeeDto updatedEmployee){
 		Employee employee = employeeRepository.findById(employeeId).orElseThrow(
 				() -> new ResourceNotFoundException("Employee is not exists with given id : " + employeeId));
 
@@ -103,12 +111,16 @@ public class EmployeeServiceImpl implements EmployeeService {
 		employee.setMaritalStatus(updatedEmployee.getMaritalStatus());
 		employee.setRefferal(updatedEmployee.getRefferal());
 
-		Employee updatedEmployeeObj = employeeRepository.save(employee);
-
-//		 if (!employee.getStatus().equals(updatedEmployeeDto.getStatus())) {
-//	            updateStatus(employeeId, updatedEmployeeDto.getStatus());
+//		 if (!file.isEmpty()) {
+//	            String fileName = fileService.uploadImage(path, file);
+//	            employee.setAadharFilename(fileName);
 //	        }
-//		 
+//
+//	        if (!employee.getStatus().equals(updatedEmployee.getStatus())) {
+//	            statusHistoryService.trackStatusChange(employee);
+//	        }
+		
+		Employee updatedEmployeeObj = employeeRepository.save(employee);	 
 		return EmployeeMapper.mapToEmployeeDto(updatedEmployeeObj);
 	}
 
