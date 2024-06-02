@@ -28,7 +28,12 @@ public class EmployeeMapper {
 				employee.getRefferal(),
 				employee.getAadharFilename(),
 				employee.getStatus(),
-				employee.getStatusHistories()
+				employee.getStatusHistories(),
+				employee.getAadhaarNumber(),
+				employee.getLanguages(),
+				employee.getExperience(),
+				employee.getSource(),
+				employee.getSubSource()
 				
 				);
 //		return employees;
@@ -50,10 +55,16 @@ public class EmployeeMapper {
 			  employeeDto.getPreviousOrganisation(),
 			  employeeDto.getDob(),
 			  employeeDto.getMaritalStatus(),
-			  employeeDto.getRefferal(),
-			  employeeDto.getAadharFilename(),
+			  employeeDto.getRefferal(),  		 
+			  employeeDto.getAadhaarNumber(),
+			  employeeDto.getLanguages(),
+			  employeeDto.getExperience(),
+			  employeeDto.getSource(),
+			  employeeDto.getSubSource(),
 			  employeeDto.getStatus(),
-			  employeeDto.getStatusHistories()
+			  employeeDto.getStatusHistories(),
+			  employeeDto.getAadharFilename()
+				
 			  );
 //	return emp;
   }

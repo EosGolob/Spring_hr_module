@@ -68,6 +68,21 @@ public class Employee {
 
 	@Column(name = "refferal")
 	private String refferal;
+	
+	@Column(name = "aadhaar_number")
+	private String aadhaarNumber;
+	
+	@Column(name = "languages")
+	private String  languages;
+	
+	@Column(name ="experience")
+	private int experience;
+	
+	@Column(name = "source")
+	private String source;
+	
+	@Column(name = "sub_source")
+	private String subSource;
 
 	@Column(name = "status")
 	private String status;
@@ -79,13 +94,21 @@ public class Employee {
 	@Column(name = "aadhar_filename")
 	private String aadharFilename;
 
-//	public Employee() {
-//		super();
-//	}
+	
+	
+
+
+	public Employee() {
+		super();
+	}
+
+
 
 	public Employee(Long id, String fullName, String email, String jobProfile, String qualification, Long mobileNo,
 			String permanentAddress, String currentAddress, String gender, String previousOrganisation, Date dob,
-			String maritalStatus, String refferal, String aadharFilename, String status, List<StatusHistory> statusHistories) {
+			String maritalStatus, String refferal, String aadhaarNumber, String languages, int experience,
+			String source, String subSource, String status, List<StatusHistory> statusHistories,
+			String aadharFilename) {
 		super();
 		this.id = id;
 		this.fullName = fullName;
@@ -100,10 +123,17 @@ public class Employee {
 		this.dob = dob;
 		this.maritalStatus = maritalStatus;
 		this.refferal = refferal;
-		this.aadharFilename = aadharFilename;
-		this.status=status;
+		this.aadhaarNumber = aadhaarNumber;
+		this.languages = languages;
+		this.experience = experience;
+		this.source = source;
+		this.subSource = subSource;
+		this.status = status;
 		this.statusHistories = statusHistories;
+		this.aadharFilename = aadharFilename;
 	}
+
+
 
 	public String getAadharFilename() {
 		return aadharFilename;
@@ -233,4 +263,65 @@ public class Employee {
 		this.statusHistories = statusHistories;
 	}
 
+
+
+	public String getAadhaarNumber() {
+		return aadhaarNumber;
+	}
+
+
+
+	public void setAadhaarNumber(String aadhaarNumber) {
+		this.aadhaarNumber = aadhaarNumber;
+	}
+
+
+
+	public String getLanguages() {
+		return languages;
+	}
+
+
+
+	public void setLanguages(String languages) {
+		this.languages = languages;
+	}
+
+
+
+	public int getExperience() {
+		return experience;
+	}
+
+
+
+	public void setExperience(int experience) {
+		this.experience = experience;
+	}
+
+
+
+	public String getSource() {
+		return source;
+	}
+
+
+
+	public void setSource(String source) {
+		this.source = source;
+	}
+
+
+
+	public String getSubSource() {
+		return subSource;
+	}
+
+
+
+	public void setSubSource(String subSource) {
+		this.subSource = subSource;
+	}
+    
+	
 }

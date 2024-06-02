@@ -36,13 +36,13 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	@Autowired
 	private FileService fileService;
-	
-	 @Autowired
-	 private StatusHistoryService statusHistoryService;
-	 
-    @Value("${file.upload-dir}")
+
+	@Autowired
+	private StatusHistoryService statusHistoryService;
+
+	@Value("${file.upload-dir}")
 	private String path;
-	 
+
 	private static final String UPLOAD_DIR = "./src/main/resources/static/img";
 
 	public EmployeeServiceImpl(EmployeeRepository employeeRepository) {
@@ -75,7 +75,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 		// Convert entity to DTO and return
 		statusHistoryService.createInitialStatus(savedEmployee);
-		 
+
 		return EmployeeMapper.mapToEmployeeDto(savedEmployee);
 	}
 
@@ -94,7 +94,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 	@Override
-	public EmployeeDto updateEmployee(Long employeeId, EmployeeDto updatedEmployee){
+	public EmployeeDto updateEmployee(Long employeeId, EmployeeDto updatedEmployee) {
 		Employee employee = employeeRepository.findById(employeeId).orElseThrow(
 				() -> new ResourceNotFoundException("Employee is not exists with given id : " + employeeId));
 
@@ -119,8 +119,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 //	        if (!employee.getStatus().equals(updatedEmployee.getStatus())) {
 //	            statusHistoryService.trackStatusChange(employee);
 //	        }
-		
-		Employee updatedEmployeeObj = employeeRepository.save(employee);	 
+
+		Employee updatedEmployeeObj = employeeRepository.save(employee);
 		return EmployeeMapper.mapToEmployeeDto(updatedEmployeeObj);
 	}
 
