@@ -42,7 +42,6 @@ public class EmployeeController {
 	private String path;
 
 	public EmployeeController(EmployeeService employeeService) {
-		super();
 		this.employeeService = employeeService;
 	}
 
@@ -53,11 +52,18 @@ public class EmployeeController {
 //		return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
 //		
 //	}
-
 	@PostMapping
 	public ResponseEntity<EmployeeDto> createEmployee(@RequestPart("employee") EmployeeDto employeeDto,
-			@RequestParam("image") MultipartFile image) {
-		try {
+            @RequestParam("image") MultipartFile image) {
+	    try {
+	        if (employeeDto == null || image == null || image.isEmpty()) {
+	            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+	        }
+
+	        // Debugging statements
+	        System.out.println("EmployeeDto: " + employeeDto);
+	        System.out.println("Image Original Filename: " + image.getOriginalFilename());
+			
 			EmployeeDto savedEmployee = employeeService.createEmployee(employeeDto, image, path);
 			return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
 		} catch (IOException e) {
@@ -65,6 +71,8 @@ public class EmployeeController {
 		}
 
 	}
+
+
 
 	// Build get Employee REST API
 	@GetMapping("{id}")

@@ -33,11 +33,18 @@ public class EmployeeDto {
     private String aadharFilename;
     private String status;
     private List<StatusHistory> statusHistories;
-    	
+	private String aadhaarNumber;
+	private String  languages;
+	private int experience;
+	private String source;
+	private String subSource;
 
+   
 	public EmployeeDto(Long id, String fullName, String email, String jobProfile, String qualification, Long mobileNo,
 			String permanentAddress, String currentAddress, String gender, String previousOrganisation, Date dob,
-			String maritalStatus, String refferal ,String aadharFilename, String status, List<StatusHistory> statusHistories) {
+			String maritalStatus, String refferal, String aadharFilename, String status,
+			List<StatusHistory> statusHistories, String aadhaarNumber, String languages, int experience, String source,
+			String subSource) {
 		super();
 		this.id = id;
 		this.fullName = fullName;
@@ -55,6 +62,11 @@ public class EmployeeDto {
 		this.aadharFilename = aadharFilename;
 		this.status = status;
 		this.statusHistories = statusHistories;
+		this.aadhaarNumber = aadhaarNumber;
+		this.languages = languages;
+		this.experience = experience;
+		this.source = source;
+		this.subSource = subSource;
 	}
 
 
@@ -162,6 +174,56 @@ public class EmployeeDto {
 
 	public void setStatusHistories(List<StatusHistory> statusHistories) {
 		this.statusHistories = statusHistories;
+	}
+
+
+	public String getAadhaarNumber() {
+		return aadhaarNumber;
+	}
+
+
+	public void setAadhaarNumber(String aadhaarNumber) {
+		this.aadhaarNumber = aadhaarNumber;
+	}
+
+
+	public String getLanguages() {
+		return languages;
+	}
+
+
+	public void setLanguages(String languages) {
+		this.languages = languages;
+	}
+
+
+	public int getExperience() {
+		return experience;
+	}
+
+
+	public void setExperience(int experience) {
+		this.experience = experience;
+	}
+
+
+	public String getSource() {
+		return source;
+	}
+
+
+	public void setSource(String source) {
+		this.source = source;
+	}
+
+
+	public String getSubSource() {
+		return subSource;
+	}
+
+
+	public void setSubSource(String subSource) {
+		this.subSource = subSource;
 	}
 
     

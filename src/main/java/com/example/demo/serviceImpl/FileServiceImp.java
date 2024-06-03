@@ -19,19 +19,38 @@ public class FileServiceImp implements FileService {
 	@Value("${file.upload-dir}")
 	private String path;
 
+//	@Override
+//	public String uploadImage(String path, MultipartFile file) throws IOException {
+//
+//		 String name = file.getOriginalFilename();		 
+//		 String randomID = UUID.randomUUID().toString();
+//		 String fileName1 = randomID.concat(name.substring(name.lastIndexOf(".")));
+//		 String filePath = path+ File.separator+fileName1;
+//		 File f = new File(path);
+//		 if(!f.exists()) {
+//			 f.mkdir();
+//		 }	
+//		 Files.copy(file.getInputStream(),Paths.get(filePath));
+//		return randomID;
+//	}
 	@Override
 	public String uploadImage(String path, MultipartFile file) throws IOException {
+	    String name = file.getOriginalFilename();
+	    if (name == null || name.isEmpty()) {
+	        throw new IOException("Invalid file name");
+	    }
 
-		 String name = file.getOriginalFilename();		 
-		 String randomID = UUID.randomUUID().toString();
-		 String fileName1 = randomID.concat(name.substring(name.lastIndexOf(".")));
-		 String filePath = path+ File.separator+fileName1;
-		 File f = new File(path);
-		 if(!f.exists()) {
-			 f.mkdir();
-		 }	
-		 Files.copy(file.getInputStream(),Paths.get(filePath));
-		return randomID;
+	    String randomID = UUID.randomUUID().toString();
+	    String fileName1 = randomID.concat(name.substring(name.lastIndexOf(".")));
+	    String filePath = path + File.separator + fileName1;
+	    File f = new File(path);
+	    if (!f.exists()) {
+	        if (!f.mkdirs()) {
+	            throw new IOException("Failed to create directory: " + path);
+	        }
+	    }
+	    Files.copy(file.getInputStream(), Paths.get(filePath));
+	    return fileName1;
 	}
 
 }
