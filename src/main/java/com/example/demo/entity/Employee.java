@@ -24,8 +24,8 @@ import lombok.Setter;
 @Data
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
+//@NoArgsConstructor
+//@AllArgsConstructor
 @Entity
 @Table(name = "employees")
 public class Employee {

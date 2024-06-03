@@ -25,6 +25,8 @@ public interface EmployeeService {
 
 	EmployeeDto createEmployee(EmployeeDto employeeDto, MultipartFile file, String path) throws IOException;
 
+	EmployeeDto updateEmployeeStatus(Long employeeId, String newStatus);
+
 	
 
 }

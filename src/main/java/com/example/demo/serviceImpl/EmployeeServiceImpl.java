@@ -39,6 +39,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	@Autowired
 	private StatusHistoryService statusHistoryService;
+	
+	@Autowired
+	private StatusHistoryRepository statusHistoryRepository;
 
 	@Value("${file.upload-dir}")
 	private String path;
@@ -75,7 +78,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 		// Convert entity to DTO and return
 		statusHistoryService.createInitialStatus(savedEmployee);
-
+		
+		updateEmployeeStatus(savedEmployee);
+		
 		return EmployeeMapper.mapToEmployeeDto(savedEmployee);
 	}
 
@@ -155,4 +160,18 @@ public class EmployeeServiceImpl implements EmployeeService {
 	 * 
 	 *           }
 	 */
+	private void updateEmployeeStatus(Employee employee) {
+	    StatusHistory latestStatus = statusHistoryRepository.findTopByEmployeeOrderByChangesDateTimeDesc(employee);
+	    if (latestStatus != null) {
+	        employee.setStatus(latestStatus.getStatus());
+	        employeeRepository.save(employee);
+	    }
+}
+	@Override
+	public EmployeeDto updateEmployeeStatus(Long employeeId, String newStatus) {
+		Employee employee = employeeRepository.findById(employeeId).orElseThrow(()-> new ResourceNotFoundException("Employee not found"));
+		statusHistoryService.trackStatusChange(employee, newStatus);
+		return EmployeeMapper.mapToEmployeeDto(employee);
+	}
+	
 }
