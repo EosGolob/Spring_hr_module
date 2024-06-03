@@ -1,6 +1,6 @@
 import React from 'react'
 
-const EducationalDetailsComponent= ({formData , handleChange}) => {
+const EducationalDetailsComponent= ({formData ,errors}) => {
   return (
     <div>
       <form>
@@ -10,7 +10,7 @@ const EducationalDetailsComponent= ({formData , handleChange}) => {
                   type="text"
                   placeholder="Enter qualification"
                   className={`form-control ${errors.qualification} ?'is-invalid':''}`}
-                  value={qualification}
+                  value={formData.qualification}
                   onChange={(e) => setQualification(e.target.value)}
                 />
                 {errors.qualification && (
@@ -23,7 +23,7 @@ const EducationalDetailsComponent= ({formData , handleChange}) => {
                   type="text"
                   placeholder="Enter Previous Organisation"
                   className={`form-control ${errors.previousOrganisation} ?'is-invalid':''}`}
-                  value={previousOrganisation}
+                  value={formData.previousOrganisation}
                   onChange={(e) => setPreviousOrganisation(e.target.value)}
                 />
                 {errors.previousOrganisation && (
@@ -38,7 +38,7 @@ const EducationalDetailsComponent= ({formData , handleChange}) => {
                   type="text"
                   placeholder="Enter languages"
                   className={`form-control ${errors.languages} ?'is-invalid':''}`}
-                  value={languages}
+                  value={formData.languages}
                   onChange={(e) => setLanguages(e.target.value)}
                 />
                 {errors.languages && (
@@ -51,7 +51,7 @@ const EducationalDetailsComponent= ({formData , handleChange}) => {
                   type="text"
                   placeholder="Enter Total Experience"
                   className={`form-control ${errors.experience} ?'is-invalid':''}`}
-                  value={experience}
+                  value={formData.experience}
                   onChange={(e) => setExperience(e.target.value)}
                 />
                 {errors.experience && (
