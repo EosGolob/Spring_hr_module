@@ -1,6 +1,9 @@
-import React from 'react'
+import React,{useState} from 'react'
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
-const PersonalDetailsComponent = ({formData , handleChange}) => {
+const PersonalDetailsComponent = ({formData ,errors,handleYearChange,renderYearOptions,handleDateChange}) => {
+  const [fullName, setFirstName] = useState("");
   return (
     <div>
       <h2>Personal Details</h2>
@@ -11,7 +14,7 @@ const PersonalDetailsComponent = ({formData , handleChange}) => {
                   type="text"
                   placeholder="Enter Full Name"
                   className={`form-control ${errors.fullName} ?'is-invalid':''}`}
-                  value={fullName}
+                  value={formData.fullName}
                   onChange={(e) => setFirstName(e.target.value)}
                 />
                 {errors.fullName && (
@@ -24,7 +27,7 @@ const PersonalDetailsComponent = ({formData , handleChange}) => {
                   type="text"
                   placeholder="Enter Email"
                   className={`form-control ${errors.email} ?'is-invalid':''}`}
-                  value={email}
+                  value={formData.email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
                 {errors.email && (
@@ -37,7 +40,7 @@ const PersonalDetailsComponent = ({formData , handleChange}) => {
                   type="text"
                   placeholder="Enter Full Name"
                   className={`form-control ${errors.mobileNo} ?'is-invalid':''}`}
-                  value={mobileNo}
+                  value={formData.mobileNo}
                   onChange={(e) => setMobileNo(e.target.value)}
                 />
                 {errors.mobileNo && (
@@ -50,7 +53,7 @@ const PersonalDetailsComponent = ({formData , handleChange}) => {
                   className={`form-control ${
                     errors.gender ? "is-invalid" : ""
                   }`}
-                  value={gender}
+                  value={formData.gender}
                   onChange={(e) => setGender(e.target.value)}
                 >
                   <option value="" disabled>
@@ -68,14 +71,14 @@ const PersonalDetailsComponent = ({formData , handleChange}) => {
                 <label className="form-label">Date of Birth</label>
                 <div style={{ display: "flex", gap: "10px" }}>
                   <select
-                    value={year}
+                    value={formData.year}
                     onChange={handleYearChange}
                     className="form-control"
                   >
                     {renderYearOptions()}
                   </select>
                   <DatePicker
-                    selected={dob}
+                    selected={formData.dob}
                     onChange={handleDateChange}
                     className="form-control"
                     placeholderText="Enter dob"
@@ -92,7 +95,7 @@ const PersonalDetailsComponent = ({formData , handleChange}) => {
                   type="text"
                   placeholder="Enter Marital status"
                   className={`form-control ${errors.maritalStatus} ?'is-invalid':''}`}
-                  value={maritalStatus}
+                  value={formData.maritalStatus}
                   onChange={(e) => setMaritalStatus(e.target.value)}
                 />
                 {errors.maritalStatus && (

@@ -1,6 +1,6 @@
 import React from 'react'
 
-const AdditionalDetailsComponent= ({formData , handleChange}) => {
+const AdditionalDetailsComponent= ({formData ,errors,handleSourceChange}) => {
   return (
     <div>
       <form>
@@ -10,7 +10,7 @@ const AdditionalDetailsComponent= ({formData , handleChange}) => {
                   type="text"
                   placeholder="job profile is required"
                   className={`form-control ${errors.jobProfile} ?'is-invalid':''}`}
-                  value={jobProfile}
+                  value={formData.jobProfile}
                   onChange={(e) => setJobProfile(e.target.value)}
                 />
                 {errors.jobProfile && (
@@ -23,7 +23,7 @@ const AdditionalDetailsComponent= ({formData , handleChange}) => {
                   type="text"
                   placeholder="Enter Permanent Address"
                   className={`form-control ${errors.permanentAddress} ?'is-invalid':''}`}
-                  value={permanentAddress}
+                  value={formData.permanentAddress}
                   onChange={(e) => setPermanentAddress(e.target.value)}
                 />
                 {errors.permanentAddress && (
@@ -38,7 +38,7 @@ const AdditionalDetailsComponent= ({formData , handleChange}) => {
                   type="text"
                   placeholder="Enter Current Address"
                   className={`form-control ${errors.currentAddress} ?'is-invalid':''}`}
-                  value={currentAddress}
+                  value={formData.currentAddress}
                   onChange={(e) => setCurrentAddress(e.target.value)}
                 />
                 {errors.currentAddress && (
@@ -53,7 +53,7 @@ const AdditionalDetailsComponent= ({formData , handleChange}) => {
                   type="text"
                   placeholder="Enter Refferal"
                   className={`form-control ${errors.refferal} ?'is-invalid':''}`}
-                  value={refferal}
+                  value={formData.refferal}
                   onChange={(e) => setRefferal(e.target.value)}
                 />
                 {errors.refferal && (
@@ -66,7 +66,7 @@ const AdditionalDetailsComponent= ({formData , handleChange}) => {
                   type="text"
                   placeholder="Enter Aadhar No"
                   className={`form-control ${errors.aadhaarNumber} ?'is-invalid':''}`}
-                  value={aadhaarNumber}
+                  value={formData.aadhaarNumber}
                   onChange={(e) => setAadhaarNumber(e.target.value)}
                 />
                 {errors.aadhaarNumber && (
@@ -92,7 +92,7 @@ const AdditionalDetailsComponent= ({formData , handleChange}) => {
                   className={`form-control ${
                     errors.source ? "is-invalid" : ""
                   }`}
-                  value={source}
+                  value={formData.source}
                   onChange={handleSourceChange}
                 >
                   <option value="" disabled>
@@ -110,7 +110,7 @@ const AdditionalDetailsComponent= ({formData , handleChange}) => {
                   <div className="invalid-feedback">{errors.source}</div>
                 )}
 
-                {source === "Vendor" && (
+                {formData.source === "Vendor" && (
                   <div className="form-group">
                     <label className="form-label">
                       Sub Source (Name of Vendor)
@@ -121,7 +121,7 @@ const AdditionalDetailsComponent= ({formData , handleChange}) => {
                       className={`form-control ${
                         errors.subSource ? "is-invalid" : ""
                       }`}
-                      value={subSource}
+                      value={formData.subSource}
                       onChange={handleSubSourceChange}
                     />
                     {errors.subSource && (
@@ -130,7 +130,7 @@ const AdditionalDetailsComponent= ({formData , handleChange}) => {
                   </div>
                 )}
 
-                {source === "Emp Ref" && (
+                {formData.source === "Emp Ref" && (
                   <div className="form-group">
                     <label className="form-label">
                       Sub Source (Employee Code)
@@ -141,7 +141,7 @@ const AdditionalDetailsComponent= ({formData , handleChange}) => {
                       className={`form-control ${
                         errors.subSource ? "is-invalid" : ""
                       }`}
-                      value={subSource}
+                      value={formData.subSource}
                       onChange={handleSubSourceChange}
                     />
                     {errors.subSource && (
@@ -149,7 +149,7 @@ const AdditionalDetailsComponent= ({formData , handleChange}) => {
                     )}
                   </div>
                 )}
-                {source === "Portal" && (
+                {formData.source === "Portal" && (
                   <div className="form-group">
                     <label className="form-label">Sub Source (Portal)</label>
                     <input
@@ -158,7 +158,7 @@ const AdditionalDetailsComponent= ({formData , handleChange}) => {
                       className={`form-control ${
                         errors.subSource ? "is-invalid" : ""
                       }`}
-                      value={subSource}
+                      value={formData.subSource}
                       onChange={handleSubSourceChange}
                     />
                     {errors.subSource && (
@@ -166,7 +166,7 @@ const AdditionalDetailsComponent= ({formData , handleChange}) => {
                     )}
                   </div>
                 )}
-                {source === "Social Media" && (
+                {formData.source === "Social Media" && (
                   <div className="form-group">
                     <label className="form-label">
                       Sub Source (Social Media)
@@ -177,7 +177,7 @@ const AdditionalDetailsComponent= ({formData , handleChange}) => {
                       className={`form-control ${
                         errors.subSource ? "is-invalid" : ""
                       }`}
-                      value={subSource}
+                      value={formData.subSource}
                       onChange={handleSubSourceChange}
                     />
                     {errors.subSource && (
@@ -185,7 +185,7 @@ const AdditionalDetailsComponent= ({formData , handleChange}) => {
                     )}
                   </div>
                 )}
-                {source === "NGO" && (
+                {formData.source === "NGO" && (
                   <div className="form-group">
                     <label className="form-label">Sub Source (NGO)</label>
                     <input
@@ -194,7 +194,7 @@ const AdditionalDetailsComponent= ({formData , handleChange}) => {
                       className={`form-control ${
                         errors.subSource ? "is-invalid" : ""
                       }`}
-                      value={subSource}
+                      value={formData.subSource}
                       onChange={handleSubSourceChange}
                     />
                     {errors.subSource && (
@@ -202,7 +202,7 @@ const AdditionalDetailsComponent= ({formData , handleChange}) => {
                     )}
                   </div>
                 )}
-                {source === "Campus" && (
+                {formData.source === "Campus" && (
                   <div className="form-group">
                     <label className="form-label">Sub Source (Campus)</label>
                     <input
@@ -211,7 +211,7 @@ const AdditionalDetailsComponent= ({formData , handleChange}) => {
                       className={`form-control ${
                         errors.subSource ? "is-invalid" : ""
                       }`}
-                      value={subSource}
+                      value={formData.subSource}
                       onChange={handleSubSourceChange}
                     />
                     {errors.subSource && (
@@ -219,7 +219,7 @@ const AdditionalDetailsComponent= ({formData , handleChange}) => {
                     )}
                   </div>
                 )}
-                {source === "Walk In" && (
+                {formData.source === "Walk In" && (
                   <div className="form-group">
                     <label className="form-label">Sub Source (Walk In)</label>
                     <input
@@ -228,7 +228,7 @@ const AdditionalDetailsComponent= ({formData , handleChange}) => {
                       className={`form-control ${
                         errors.subSource ? "is-invalid" : ""
                       }`}
-                      value={subSource}
+                      value={formData.subSource}
                       onChange={handleSubSourceChange}
                     />
                     {errors.subSource && (
