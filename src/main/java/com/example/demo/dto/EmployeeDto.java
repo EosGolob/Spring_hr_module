@@ -3,6 +3,7 @@ package com.example.demo.dto;
 import java.util.Date;
 import java.util.List;
 
+import com.example.demo.entity.InterviewProcesses;
 import com.example.demo.entity.StatusHistory;
 
 import jakarta.persistence.Column;
@@ -11,10 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-@Getter
-@Setter
-@NoArgsConstructor
-//@AllArgsConstructor
+
 public class EmployeeDto {
 	
 	private Long id;
@@ -33,6 +31,7 @@ public class EmployeeDto {
     private String aadharFilename;
     private String status;
     private List<StatusHistory> statusHistories;
+    private List<InterviewProcesses> interviewProcesses;
 	private String aadhaarNumber;
 	private String  languages;
 	private int experience;
@@ -43,7 +42,7 @@ public class EmployeeDto {
 	public EmployeeDto(Long id, String fullName, String email, String jobProfile, String qualification, Long mobileNo,
 			String permanentAddress, String currentAddress, String gender, String previousOrganisation, Date dob,
 			String maritalStatus, String refferal, String aadharFilename, String status,
-			List<StatusHistory> statusHistories, String aadhaarNumber, String languages, int experience, String source,
+			List<StatusHistory> statusHistories, List<InterviewProcesses> interviewProcesses, String aadhaarNumber, String languages, int experience, String source,
 			String subSource) {
 		super();
 		this.id = id;
@@ -62,6 +61,7 @@ public class EmployeeDto {
 		this.aadharFilename = aadharFilename;
 		this.status = status;
 		this.statusHistories = statusHistories;
+		this.interviewProcesses=interviewProcesses;
 		this.aadhaarNumber = aadhaarNumber;
 		this.languages = languages;
 		this.experience = experience;
@@ -225,6 +225,18 @@ public class EmployeeDto {
 	public void setSubSource(String subSource) {
 		this.subSource = subSource;
 	}
+
+
+	public List<InterviewProcesses> getInterviewProcesses() {
+		return interviewProcesses;
+	}
+
+
+	public void setInterviewProcesses(List<InterviewProcesses> interviewProcesses) {
+		this.interviewProcesses = interviewProcesses;
+	}
+
+  
 
     
 }

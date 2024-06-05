@@ -29,6 +29,7 @@ public class EmployeeMapper {
 				employee.getAadharFilename(),
 				employee.getStatus(),
 				employee.getStatusHistories(),
+				employee.getInterviewProcesses(),
 				employee.getAadhaarNumber(),
 				employee.getLanguages(),
 				employee.getExperience(),
@@ -63,6 +64,7 @@ public class EmployeeMapper {
 			  employeeDto.getSubSource(),
 			  employeeDto.getStatus(),
 			  employeeDto.getStatusHistories(),
+			  employeeDto.getInterviewProcesses(),
 			  employeeDto.getAadharFilename()
 				
 			  );

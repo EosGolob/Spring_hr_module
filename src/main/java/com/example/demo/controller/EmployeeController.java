@@ -23,6 +23,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.dto.EmployeeDto;
+import com.example.demo.dto.InterviewsRequestDto;
+import com.example.demo.entity.Employee;
 import com.example.demo.repository.StatusHistoryRepository;
 import com.example.demo.service.EmployeeService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -120,4 +122,9 @@ public class EmployeeController {
 	        EmployeeDto updatedEmployee = employeeService.updateEmployeeStatus(employeeId, newStatus);
 	        return new ResponseEntity<>(updatedEmployee, HttpStatus.OK);
 	    }
-}
+
+
+
+	 }
+	 
+

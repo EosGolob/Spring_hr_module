@@ -1,39 +1,45 @@
 package com.example.demo.serviceImpl;
 
+
+import java.util.Arrays;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.dto.UserDto;
+import com.example.demo.dto.UserRegistrationDto;
+import com.example.demo.entity.Role;
 import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.UserService;
 
-import lombok.AllArgsConstructor;
 
 @Service
-@AllArgsConstructor
-public class UserServiceImpl implements UserService {
-     
+public class UserServiceImpl implements UserService{
+	
+//	@Autowired
 	private UserRepository userRepository;
 	
-	@Override
-	public UserDto addUser(UserDto userDto) {
+	
 
-		User user = new User();
-		user.setEmail(userDto.getEmail());
-		user.setName(userDto.getName());
-		user.setUserName(userDto.getUserName());
-		
-		User savedUser = userRepository.save(user);
-		
-		UserDto savedUserDto = new UserDto();
-		savedUser.setId(savedUser.getId());
-		savedUser.setEmail(savedUser.getEmail());
-		savedUser.setCreatedDate(savedUserDto.getCreatedDate());
-		savedUser.setName(savedUserDto.getName());
-		savedUser.setUserName(savedUserDto.getUserName());
-		
-		
-		return savedUserDto;
+	public UserServiceImpl(UserRepository userRepository) {
+	super();
+	this.userRepository = userRepository;
+}
+
+
+
+	@Override
+	public User save(UserRegistrationDto registrationDto) {
+		User user = new User(registrationDto.getFirstName(),
+				registrationDto.getLastName(),
+				registrationDto.getEmail(),
+				registrationDto.getPassword(),
+				registrationDto.getCreatedDate(),
+				Arrays.asList(new Role("ROLE USER"))
+				);
+		return userRepository.save(user);
 	}
+     
+	
 
 }

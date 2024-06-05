@@ -22,8 +22,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Data
-@Getter
-@Setter
+//@Getter
+//@Setter
 //@NoArgsConstructor
 //@AllArgsConstructor
 @Entity
@@ -86,10 +86,15 @@ public class Employee {
 
 	@Column(name = "status")
 	private String status;
+	
+
 
 	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JsonIgnore
 	private List<StatusHistory> statusHistories;
+	
+	@OneToMany(mappedBy = "employee", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	private List<InterviewProcesses> interviewProcesses;
 
 	@Column(name = "aadhar_filename")
 	private String aadharFilename;
@@ -107,7 +112,7 @@ public class Employee {
 	public Employee(Long id, String fullName, String email, String jobProfile, String qualification, Long mobileNo,
 			String permanentAddress, String currentAddress, String gender, String previousOrganisation, Date dob,
 			String maritalStatus, String refferal, String aadhaarNumber, String languages, int experience,
-			String source, String subSource, String status, List<StatusHistory> statusHistories,
+			String source, String subSource, String status, List<StatusHistory> statusHistories, List<InterviewProcesses> interviewProcesses,
 			String aadharFilename) {
 		super();
 		this.id = id;
@@ -130,6 +135,7 @@ public class Employee {
 		this.subSource = subSource;
 		this.status = status;
 		this.statusHistories = statusHistories;
+		this.interviewProcesses= interviewProcesses;
 		this.aadharFilename = aadharFilename;
 	}
 
@@ -323,5 +329,12 @@ public class Employee {
 		this.subSource = subSource;
 	}
     
+	public List<InterviewProcesses> getInterviewProcesses() {
+		return interviewProcesses;
+	}
+
+	public void setInterviewProcesses(List<InterviewProcesses> interviewProcesses) {
+		this.interviewProcesses = interviewProcesses;
+	}
 	
 }
