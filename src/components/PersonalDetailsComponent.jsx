@@ -2,8 +2,7 @@ import React,{useState} from 'react'
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-const PersonalDetailsComponent = ({formData ,errors,handleYearChange,renderYearOptions,handleDateChange}) => {
-  const [fullName, setFirstName] = useState("");
+const PersonalDetailsComponent = ({formData ,errors,handleYearChange,renderYearOptions,handleDateChange,handleChange}) => {
   return (
     <div>
       <h2>Personal Details</h2>
@@ -15,7 +14,7 @@ const PersonalDetailsComponent = ({formData ,errors,handleYearChange,renderYearO
                   placeholder="Enter Full Name"
                   className={`form-control ${errors.fullName} ?'is-invalid':''}`}
                   value={formData.fullName}
-                  onChange={(e) => setFirstName(e.target.value)}
+                  onChange={(e) => handleChange('fullName',e.target.value)}
                 />
                 {errors.fullName && (
                   <div className="invalid-feedback">{errors.fullName}</div>
@@ -28,7 +27,7 @@ const PersonalDetailsComponent = ({formData ,errors,handleYearChange,renderYearO
                   placeholder="Enter Email"
                   className={`form-control ${errors.email} ?'is-invalid':''}`}
                   value={formData.email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => handleChange('email',e.target.value)}
                 />
                 {errors.email && (
                   <div className="invalid-feedback">{errors.email}</div>
@@ -41,7 +40,7 @@ const PersonalDetailsComponent = ({formData ,errors,handleYearChange,renderYearO
                   placeholder="Enter Full Name"
                   className={`form-control ${errors.mobileNo} ?'is-invalid':''}`}
                   value={formData.mobileNo}
-                  onChange={(e) => setMobileNo(e.target.value)}
+                  onChange={(e) => handleChange('mobileNo',e.target.value)}
                 />
                 {errors.mobileNo && (
                   <div className="invalid-feedback">{errors.mobileNo}</div>
@@ -54,7 +53,7 @@ const PersonalDetailsComponent = ({formData ,errors,handleYearChange,renderYearO
                     errors.gender ? "is-invalid" : ""
                   }`}
                   value={formData.gender}
-                  onChange={(e) => setGender(e.target.value)}
+                  onChange={(e) => handleChange('gender',e.target.value)}
                 >
                   <option value="" disabled>
                     Select Gender
@@ -96,7 +95,7 @@ const PersonalDetailsComponent = ({formData ,errors,handleYearChange,renderYearO
                   placeholder="Enter Marital status"
                   className={`form-control ${errors.maritalStatus} ?'is-invalid':''}`}
                   value={formData.maritalStatus}
-                  onChange={(e) => setMaritalStatus(e.target.value)}
+                  onChange={(e) => handleChange('maritalStatus',e.target.value)}
                 />
                 {errors.maritalStatus && (
                   <div className="invalid-feedback">{errors.maritalStatus}</div>

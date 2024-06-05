@@ -1,6 +1,6 @@
 import React from 'react'
 
-const EducationalDetailsComponent= ({formData ,errors}) => {
+const EducationalDetailsComponent= ({formData ,errors,handleChange}) => {
   return (
     <div>
       <form>
@@ -11,7 +11,7 @@ const EducationalDetailsComponent= ({formData ,errors}) => {
                   placeholder="Enter qualification"
                   className={`form-control ${errors.qualification} ?'is-invalid':''}`}
                   value={formData.qualification}
-                  onChange={(e) => setQualification(e.target.value)}
+                  onChange={(e) => handleChange('qualification',e.target.value)}
                 />
                 {errors.qualification && (
                   <div className="invalid-feedback">{errors.qualification}</div>
@@ -24,7 +24,7 @@ const EducationalDetailsComponent= ({formData ,errors}) => {
                   placeholder="Enter Previous Organisation"
                   className={`form-control ${errors.previousOrganisation} ?'is-invalid':''}`}
                   value={formData.previousOrganisation}
-                  onChange={(e) => setPreviousOrganisation(e.target.value)}
+                  onChange={(e) => handleChange('previousOrganisation',e.target.value)}
                 />
                 {errors.previousOrganisation && (
                   <div className="invalid-feedback">
@@ -39,7 +39,7 @@ const EducationalDetailsComponent= ({formData ,errors}) => {
                   placeholder="Enter languages"
                   className={`form-control ${errors.languages} ?'is-invalid':''}`}
                   value={formData.languages}
-                  onChange={(e) => setLanguages(e.target.value)}
+                  onChange={(e) => handleChange('languages',e.target.value)}
                 />
                 {errors.languages && (
                   <div className="invalid-feedback">{errors.languages}</div>
@@ -52,7 +52,7 @@ const EducationalDetailsComponent= ({formData ,errors}) => {
                   placeholder="Enter Total Experience"
                   className={`form-control ${errors.experience} ?'is-invalid':''}`}
                   value={formData.experience}
-                  onChange={(e) => setExperience(e.target.value)}
+                  onChange={(e) => handleChange('experience',e.target.value)}
                 />
                 {errors.experience && (
                   <div className="invalid-feedback">{errors.experience}</div>

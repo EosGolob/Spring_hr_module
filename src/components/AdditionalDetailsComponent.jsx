@@ -1,6 +1,6 @@
 import React from 'react'
 
-const AdditionalDetailsComponent= ({formData ,errors,handleSourceChange}) => {
+const AdditionalDetailsComponent= ({formData ,errors,handleSourceChange,handleChange}) => {
   return (
     <div>
       <form>
@@ -11,7 +11,7 @@ const AdditionalDetailsComponent= ({formData ,errors,handleSourceChange}) => {
                   placeholder="job profile is required"
                   className={`form-control ${errors.jobProfile} ?'is-invalid':''}`}
                   value={formData.jobProfile}
-                  onChange={(e) => setJobProfile(e.target.value)}
+                  onChange={(e) => handleChange('jobProfile',e.target.value)}
                 />
                 {errors.jobProfile && (
                   <div className="invalid-feedback">{errors.jobProfile}</div>
@@ -24,7 +24,7 @@ const AdditionalDetailsComponent= ({formData ,errors,handleSourceChange}) => {
                   placeholder="Enter Permanent Address"
                   className={`form-control ${errors.permanentAddress} ?'is-invalid':''}`}
                   value={formData.permanentAddress}
-                  onChange={(e) => setPermanentAddress(e.target.value)}
+                  onChange={(e) => handleChange('permanentAddress',e.target.value)}
                 />
                 {errors.permanentAddress && (
                   <div className="invalid-feedback">
@@ -39,7 +39,7 @@ const AdditionalDetailsComponent= ({formData ,errors,handleSourceChange}) => {
                   placeholder="Enter Current Address"
                   className={`form-control ${errors.currentAddress} ?'is-invalid':''}`}
                   value={formData.currentAddress}
-                  onChange={(e) => setCurrentAddress(e.target.value)}
+                  onChange={(e) => handleChange('currentAddress',e.target.value)}
                 />
                 {errors.currentAddress && (
                   <div className="invalid-feedback">
@@ -54,7 +54,7 @@ const AdditionalDetailsComponent= ({formData ,errors,handleSourceChange}) => {
                   placeholder="Enter Refferal"
                   className={`form-control ${errors.refferal} ?'is-invalid':''}`}
                   value={formData.refferal}
-                  onChange={(e) => setRefferal(e.target.value)}
+                  onChange={(e) => handleChange('refferal',e.target.value)}
                 />
                 {errors.refferal && (
                   <div className="invalid-feedback">{errors.refferal}</div>
@@ -67,7 +67,7 @@ const AdditionalDetailsComponent= ({formData ,errors,handleSourceChange}) => {
                   placeholder="Enter Aadhar No"
                   className={`form-control ${errors.aadhaarNumber} ?'is-invalid':''}`}
                   value={formData.aadhaarNumber}
-                  onChange={(e) => setAadhaarNumber(e.target.value)}
+                  onChange={(e) => handleChange('aadhaarNumber',e.target.value)}
                 />
                 {errors.aadhaarNumber && (
                   <div className="invalid-feedback">{errors.aadhaarNumber}</div>
@@ -80,7 +80,8 @@ const AdditionalDetailsComponent= ({formData ,errors,handleSourceChange}) => {
                   id="image"
                   placeholder="select your Aadhar File"
                   className={`form-control ${errors.file ? "is-invalid" : ""}`}
-                  onChange={(e) => setFile(e.target.files[0])}
+                  // onChange={(e) => setFile(e.target.files[0])}
+                  onChange={(e) => handleChange('file',e.target.files[0])}
                 />
                 {errors.file && (
                   <div className="invalid-feedback">{errors.file}</div>
