@@ -23,6 +23,8 @@ const EmployeeCreatePageComponent = () => {
     file: null,
     source: "",
     subSource: "",
+    language: "",
+    experience: ""
   });
   const [errors, setErrors] = useState({
     fullName: "",
@@ -41,6 +43,8 @@ const EmployeeCreatePageComponent = () => {
     file: "",
     source: "",
     subSource: "",
+    language: "",
+    experience: ""
   });
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -59,33 +63,51 @@ const EmployeeCreatePageComponent = () => {
     setCurrentPage((prevPage) => prevPage - 1);
   };
 
+
+
+
   const saveEmployee = () => {
-    // Perform form submission logic
-    creatEmployee(formData)
+    const formDataToSend = new FormData();
+    formDataToSend.append("employee", JSON.stringify(formData));
+    formDataToSend.append("image", formData.file, formData.file.name);
+
+    creatEmployee(formDataToSend, {
+      headers: {
+        'Content-Type': `multipart/form-data; boundary=${formDataToSend._boundary}`,
+      },
+    })
       .then((response) => {
         console.log(response.data);
-        // Redirect or navigate to another page
       })
       .catch((errors) => {
-        console.errors(errors);
+        console.error(errors);
       });
   };
 
   const handleDateChange = (date) => {
     if (date) {
       const updatedDate = new Date(date);
-      updatedDate.setFullYear(year);
-      setDob(updatedDate);
+      updatedDate.setFullYear(formData.year);
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        dob: updatedDate,
+      }));
     }
   };
 
   const handleYearChange = (event) => {
     const newYear = parseInt(event.target.value, 10);
-    setYear(newYear);
-    if (dob) {
-      const updatedDate = new Date(dob);
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      year: newYear,
+    }));
+    if (formData.dob) {
+      const updatedDate = new Date(formData.dob);
       updatedDate.setFullYear(newYear);
-      setDob(updatedDate);
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        dob: updatedDate,
+      }));
     }
   };
 
@@ -102,15 +124,22 @@ const EmployeeCreatePageComponent = () => {
       </option>
     ));
   }
+
   const handleSourceChange = (e) => {
-    setSource(e.target.value);
-    setSubSource(""); // Reset subSource when source changes
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      source: e.target.value,
+      subSource: "",
+    }));
   };
+
 
   const handleSubSourceChange = (e) => {
-    setSubSource(e.target.value);
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      subSource: e.target.value,
+    }));
   };
-
   return (
     <div>
       {currentPage === 1 && (
@@ -119,8 +148,8 @@ const EmployeeCreatePageComponent = () => {
           handleChange={handleChange}
           handleYearChange={handleYearChange}
           renderYearOptions={renderYearOptions}
-          handleDateChange = {handleDateChange}
-          
+          handleDateChange={handleDateChange}
+
           errors={errors}
         />
       )}
@@ -137,7 +166,7 @@ const EmployeeCreatePageComponent = () => {
           handleChange={handleChange}
           errors={errors}
           handleSourceChange={handleSourceChange}
-          // handleSubSourceChange={handleSubSourceChange}
+          handleSubSourceChange={handleSubSourceChange}
         />
       )}
       {currentPage > 1 && (
