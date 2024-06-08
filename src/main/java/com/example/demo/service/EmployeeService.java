@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.dto.EmployeeDto;
 import com.example.demo.dto.InterviewsRequestDto;
+import com.example.demo.entity.InterviewProcesses;
 
 public interface EmployeeService {
 
@@ -30,6 +31,6 @@ public interface EmployeeService {
 
 	EmployeeDto updateEmployeeStatus(Long employeeId, String newStatus);
 	
-	
+	void assignInterviewProcessAndUpdateStatus(Long employeeId, InterviewProcesses interviewProcesses, String newStatus);
 
 }

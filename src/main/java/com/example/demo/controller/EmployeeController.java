@@ -6,6 +6,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,6 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.demo.dto.EmployeeDto;
 import com.example.demo.dto.InterviewsRequestDto;
 import com.example.demo.entity.Employee;
+import com.example.demo.entity.InterviewProcesses;
 import com.example.demo.repository.StatusHistoryRepository;
 import com.example.demo.service.EmployeeService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -123,6 +125,14 @@ public class EmployeeController {
 	        return new ResponseEntity<>(updatedEmployee, HttpStatus.OK);
 	    }
 
+	 
+	 @PostMapping("/{employeeId}/interview-process")
+	    public ResponseEntity<Void> assignInterviewProcess(
+	            @PathVariable Long employeeId,
+	            @RequestBody InterviewProcesses interviewProcesses) {
+	        employeeService.assignInterviewProcessAndUpdateStatus(employeeId, interviewProcesses, "Interview Process Assigned");
+	        return ResponseEntity.ok().build();
+	    }
 
 
 	 }

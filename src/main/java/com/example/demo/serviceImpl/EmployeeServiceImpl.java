@@ -20,10 +20,12 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.demo.dto.EmployeeDto;
 import com.example.demo.dto.InterviewsRequestDto;
 import com.example.demo.entity.Employee;
+import com.example.demo.entity.InterviewProcesses;
 import com.example.demo.entity.StatusHistory;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.mapper.EmployeeMapper;
 import com.example.demo.repository.EmployeeRepository;
+import com.example.demo.repository.InterviewProcessesRepository;
 import com.example.demo.repository.StatusHistoryRepository;
 import com.example.demo.service.EmployeeService;
 import com.example.demo.service.FileService;
@@ -44,6 +46,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 	@Autowired
 	private StatusHistoryRepository statusHistoryRepository;
 
+	@Autowired
+	private InterviewProcessesRepository interviewProcessesRepository;
+	
 	@Value("${file.upload-dir}")
 	private String path;
 
@@ -173,6 +178,23 @@ public class EmployeeServiceImpl implements EmployeeService {
 		Employee employee = employeeRepository.findById(employeeId).orElseThrow(()-> new ResourceNotFoundException("Employee not found"));
 		statusHistoryService.trackStatusChange(employee, newStatus);
 		return EmployeeMapper.mapToEmployeeDto(employee);
+	}
+
+	@Override
+	public void assignInterviewProcessAndUpdateStatus(Long employeeId, InterviewProcesses interviewProcesses,
+			String newStatus) {
+		// TODO Auto-generated method stub
+		Employee employee = employeeRepository.findById(employeeId).orElseThrow(()->  new RuntimeException("Employee not found"));
+		interviewProcesses.setEmployee(employee);
+		InterviewProcesses savedInterviewProcess = interviewProcessesRepository.save(interviewProcesses);
+		
+		    StatusHistory statusHistory = new StatusHistory();
+	        statusHistory.setEmployee(employee);
+	        statusHistory.setInterviewProcess(savedInterviewProcess);
+	        statusHistory.setStatus(newStatus);
+	        statusHistory.setChangesDateTime(LocalDateTime.now());
+
+	        statusHistoryRepository.save(statusHistory);
 	}
 
 	

@@ -1,9 +1,12 @@
 package com.example.demo.entity;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -12,6 +15,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 
 @Entity
 public class InterviewProcesses {
@@ -25,6 +29,11 @@ public class InterviewProcesses {
 	@JsonIgnore
 	private Employee employee;
 	
+	@OneToMany(mappedBy = "interviewProcess", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private List<StatusHistory> statusHistories;
+	
+	
+	
 	@Column(name = "process_name")
 	private String processName;
 	
@@ -37,13 +46,14 @@ public class InterviewProcesses {
 	@Column(name = "status")
 	private String status;
 	
+		
 	public InterviewProcesses() {
 	super();
 }
 
 
 public InterviewProcesses(Long id, Employee employee, String processName, Date interviewDate, String interviewTime,
-		String status) {
+		String status ) {
 	super();
 	this.id = id;
 	this.employee = employee;
@@ -51,7 +61,13 @@ public InterviewProcesses(Long id, Employee employee, String processName, Date i
 	this.interviewDate = interviewDate;
 	this.interviewTime = interviewTime;
 	this.status = status;
+//	this.interviewStatus = interviewStatus;
 }
+
+
+
+
+
 
 
 	public Long getId() {
@@ -101,6 +117,16 @@ public InterviewProcesses(Long id, Employee employee, String processName, Date i
 	public void setStatus(String status) {
 		this.status = status;
 	}
+
+
+//	public List<StatusHistory> getInterviewStatus() {
+//		return interviewStatus;
+//	}
+//
+//
+//	public void setInterviewStatus(List<StatusHistory> interviewStatus) {
+//		this.interviewStatus = interviewStatus;
+//	}
 
 	
 
