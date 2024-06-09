@@ -3,9 +3,13 @@ package com.example.demo.service;
 import java.io.IOException;
 import java.util.List;
 
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.dto.EmployeeDto;
+import com.example.demo.dto.InterviewsRequestDto;
+import com.example.demo.entity.InterviewProcesses;
 
 public interface EmployeeService {
 
@@ -26,7 +30,7 @@ public interface EmployeeService {
 	EmployeeDto createEmployee(EmployeeDto employeeDto, MultipartFile file, String path) throws IOException;
 
 	EmployeeDto updateEmployeeStatus(Long employeeId, String newStatus);
-
 	
+	void assignInterviewProcessAndUpdateStatus(Long employeeId, InterviewProcesses interviewProcesses, String newStatus);
 
 }

@@ -19,12 +19,18 @@ public class StatusHistory {
 	
 	@ManyToOne
 	@JoinColumn(name = "employee_id" , nullable = false)
-	private Employee employee;
+	private Employee employee; 
+	
+	//new field 
+	@ManyToOne
+	@JoinColumn(name = "interview_process_id")
+	private InterviewProcesses interviewProcess;
+	
 	
 	@Column(nullable = false)
 	private String status;
 	
-	 @Column(nullable = false)
+	@Column(nullable = false)
 	private LocalDateTime changesDateTime;
 	 
 
@@ -59,6 +65,16 @@ public class StatusHistory {
 	public void setChangesDateTime(LocalDateTime changesDateTime) {
 		this.changesDateTime = changesDateTime;
 	}
+
+	public InterviewProcesses getInterviewProcess() {
+		return interviewProcess;
+	}
+
+	public void setInterviewProcess(InterviewProcesses interviewProcess) {
+		this.interviewProcess = interviewProcess;
+	}
+
+	
 	
 
 }

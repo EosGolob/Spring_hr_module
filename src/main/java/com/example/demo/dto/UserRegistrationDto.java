@@ -8,34 +8,26 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-//@Setter
-//@Getter
-@NoArgsConstructor
-@AllArgsConstructor
-public class UserDto {
+
+public class UserRegistrationDto {
 	
-	private Long id;
-	private String userName;
-	private String name;
+	private String firstName;
+	private String lastName;
 	private String email;
+	private String password;
 	private Date createdDate;
-	public Long getId() {
-		return id;
+	
+	public String getFirstName() {
+		return firstName;
 	}
-	public void setId(Long id) {
-		this.id = id;
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
 	}
-	public String getUserName() {
-		return userName;
+	public String getLastName() {
+		return lastName;
 	}
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 	public String getEmail() {
 		return email;
@@ -43,12 +35,22 @@ public class UserDto {
 	public void setEmail(String email) {
 		this.email = email;
 	}
+	public String getPassword() {
+		return password;
+	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
 	public Date getCreatedDate() {
 		return createdDate;
 	}
 	public void setCreatedDate(Date createdDate) {
 		this.createdDate = createdDate;
 	}
+	
+	
+	
+	
 	
 	
 	
