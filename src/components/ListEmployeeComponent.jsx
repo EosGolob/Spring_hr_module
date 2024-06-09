@@ -1,9 +1,12 @@
 import React ,{useEffect, useState} from 'react'
-import { deleteEmployee, listEmployees } from '../services/EmployeeService'
+import { deleteEmployee, listEmployees ,updateEmployeeStatus } from '../services/EmployeeService'
 import {useNavigate} from 'react-router-dom'
 
 const ListEmployeeComponent = () => {
     const [ employees,setEmployees] = useState([]);
+    // const [newStatus, setNewStatus] = useState('');
+    const [statusUpdates, setStatusUpdates] = useState({});
+    const [buttonDisabled, setButtonDisabled] = useState({});
     const navigator = useNavigate();
 
     useEffect(() => {
@@ -37,6 +40,29 @@ function getAllEmployees(){
             console.error(error)
         });
     }
+    function handleStatusChange(id) {
+        const newStatus = statusUpdates[id];
+        if (!newStatus) {
+          alert('Please enter a status.');
+          return;
+        }
+        updateEmployeeStatus(id, newStatus).then((response) => {
+          getAllEmployees();
+          setButtonDisabled((prevState) => ({
+            ...prevState,
+            [id]: true,
+          }));
+        }).catch(error => {
+          console.error(error);
+        });
+      }
+    
+      function handleInputChange(id, value) {
+        setStatusUpdates((prevStatusUpdates) => ({
+          ...prevStatusUpdates,
+          [id]: value,
+        }));
+      }
   return (
     <div className='container'>
         <h2 className='text-center'>ListEmployeeComponent</h2>
@@ -53,7 +79,8 @@ function getAllEmployees(){
                 <th>Current Address</th>
                 <th>Gender</th>
                 <th>Previous Organisation</th>     
-                <th>Actions</th>      
+                <th>Actions</th> 
+                <th>Status Update</th>     
                 </tr>
             </thead>
             <tbody>
@@ -75,6 +102,21 @@ function getAllEmployees(){
                             <button className='btn btn-danger' onClick={() => removeEmployee(employee.id) }
                             style={{marginLeft:'10px' }}
                             >Delete</button>
+                        </td>
+                        <td>
+                        <input
+                  type="text"
+                  placeholder="New Status"
+                  value={statusUpdates[employee.id] || ''}
+                  onChange={(e) => handleInputChange(employee.id, e.target.value)}
+                />
+                <button
+                  className='btn btn-primary'
+                  onClick={() => handleStatusChange(employee.id)}
+                  disabled={buttonDisabled[employee.id] || false}
+                >
+                  Update Status
+                </button>
                         </td>
                         </tr>
   ))}
