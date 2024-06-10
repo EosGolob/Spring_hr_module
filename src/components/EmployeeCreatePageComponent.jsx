@@ -4,7 +4,7 @@ import PersonalDetailsComponent from "./PersonalDetailsComponent";
 import EducationalDetailsComponent from "./EducationalDetailsComponent";
 import AdditionalDetailsComponent from "./AdditionalDetailsComponent";
 import { creatEmployee } from "../services/EmployeeService";
-
+import '../components/EmployeeCreatePageComponent.css';
 const EmployeeCreatePageComponent = () => {
   const [formData, setFormData] = useState({
     fullName: "",
@@ -63,17 +63,14 @@ const EmployeeCreatePageComponent = () => {
     setCurrentPage((prevPage) => prevPage - 1);
   };
 
-
-
-
   const saveEmployee = () => {
     const formDataToSend = new FormData();
-    formDataToSend.append("employee", JSON.stringify(formData));
-    formDataToSend.append("image", formData.file, formData.file.name);
-
+    formDataToSend.append("employee", new Blob([JSON.stringify(formData)], { type: "application/json" }));
+    formDataToSend.append("image", formData.file);
+  
     creatEmployee(formDataToSend, {
       headers: {
-        'Content-Type': `multipart/form-data; boundary=${formDataToSend._boundary}`,
+        'Content-Type': 'multipart/form-data', // Do not set the boundary, it will be set automatically by the browser
       },
     })
       .then((response) => {
@@ -83,8 +80,7 @@ const EmployeeCreatePageComponent = () => {
         console.error(errors);
       });
   };
-
-  const handleDateChange = (date) => {
+    const handleDateChange = (date) => {
     if (date) {
       const updatedDate = new Date(date);
       updatedDate.setFullYear(formData.year);
@@ -169,14 +165,17 @@ const EmployeeCreatePageComponent = () => {
           handleSubSourceChange={handleSubSourceChange}
         />
       )}
+      <div className="button-container">
+
       {currentPage > 1 && (
-        <button onClick={previousPage}>Previous</button>
+        <button  onClick={previousPage}>Previous</button>
       )}
       {currentPage < 3 ? (
         <button onClick={nextPage}>Next</button>
       ) : (
         <button onClick={saveEmployee}>Submit</button>
       )}
+    </div>
     </div>
   );
 };
