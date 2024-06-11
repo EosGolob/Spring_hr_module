@@ -21,17 +21,7 @@ export const scheduleInterview = (employeeId, interviewDetails) => {
 export const listInterviewsByEmployeeId = (employeeId) => {
   return axios.get(`${INTERVIEW_API_BASE_URL}/${employeeId}/interviews`);
 };
-export const creatEmployee2 = (employeeDto) => {
-  const formData = new FormData();
-  // formData.append(
-  //   "image",
-  //   new Blob([JSON.stringify(employeeDto)], { type: "application/json" })
-  // );
-  formData.append("image", new Blob([JSON.stringify(employeeDto)], { type: "application/json" }));
-
-  return axios.post(REST_API_BASE_URL, formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
-  });
+// export const selectInterviewProcess = (employeeId) => `${REST_API_BASE_URL}/${employeeId}/interview-process`;
+export const selectInterviewProcess = (employeeId, interviewData) => {
+  return axios.post(`${REST_API_BASE_URL}/${employeeId}/interview-process`, interviewData);
 };
