@@ -42,7 +42,6 @@ public class EmployeeController {
 	@Autowired
 	private StatusHistoryRepository statusHistoryRepository;
 
-////	@Value("${project.image}")
 	@Value("${file.upload-dir}")
 	private String path;
 
@@ -114,8 +113,8 @@ public class EmployeeController {
 		return ResponseEntity.ok("Employee deleted successfully");
 	}
 
-//	@PutMapping("/{id/status}")
-//	public Emplo
+
+
 
 	
 	 @PatchMapping("/{id}/status")
@@ -130,7 +129,8 @@ public class EmployeeController {
 	    public ResponseEntity<Void> assignInterviewProcess(
 	            @PathVariable Long employeeId,
 	            @RequestBody InterviewProcesses interviewProcesses) {
-	        employeeService.assignInterviewProcessAndUpdateStatus(employeeId, interviewProcesses, "Interview Process Assigned");
+		    String newStatus = interviewProcesses.getStatus();
+	        employeeService.assignInterviewProcessAndUpdateStatus(employeeId, interviewProcesses, newStatus);
 	        return ResponseEntity.ok().build();
 	    }
 

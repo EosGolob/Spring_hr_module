@@ -62,6 +62,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 //	@Override
+	
 //	public EmployeeDto createEmployee(EmployeeDto employeeDto) {		
 //		Employee employee = EmployeeMapper.mapToEmployee(employeeDto);
 //		Employee savedEmployee = employeeRepository.save(employee);
@@ -70,12 +71,16 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	@Override
 	public EmployeeDto createEmployee(EmployeeDto employeeDto, MultipartFile file, String path) throws IOException {
+		 if (checkDuplicateEmailAndAddharNo(employeeDto.getEmail(), employeeDto.getAadhaarNumber())) {
+		        throw new RuntimeException("Email or Aadhaar number already exists");
+		    }
 		// TODO Auto-generated method stub
 		String fileName = fileService.uploadImage(path, file);
-
+	
 		// Set the filename in the employeeDto
-		employeeDto.setAadharFilename(fileName);
 
+		employeeDto.setAadharFilename(fileName);
+		
 		// Convert DTO to entity
 		Employee employee = EmployeeMapper.mapToEmployee(employeeDto);
 
@@ -192,9 +197,18 @@ public class EmployeeServiceImpl implements EmployeeService {
 	        statusHistory.setEmployee(employee);
 	        statusHistory.setInterviewProcess(savedInterviewProcess);
 	        statusHistory.setStatus(newStatus);
+	     
 	        statusHistory.setChangesDateTime(LocalDateTime.now());
 
 	        statusHistoryRepository.save(statusHistory);
+	}
+
+	@Override
+	public boolean checkDuplicateEmailAndAddharNo(String email, String aadhaarNumber) {
+		// TODO Auto-generated method stub
+		boolean emailExists = employeeRepository.existsByEmail(email);
+		boolean addharnoExists = employeeRepository.existsByAadhaarNumber(aadhaarNumber);
+		return emailExists || addharnoExists;
 	}
 
 	

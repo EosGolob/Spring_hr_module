@@ -32,5 +32,6 @@ public interface EmployeeService {
 	EmployeeDto updateEmployeeStatus(Long employeeId, String newStatus);
 	
 	void assignInterviewProcessAndUpdateStatus(Long employeeId, InterviewProcesses interviewProcesses, String newStatus);
-
+	
+    boolean checkDuplicateEmailAndAddharNo(String email ,String aadhaarNumber);
 }

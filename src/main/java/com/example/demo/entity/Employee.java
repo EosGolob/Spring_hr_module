@@ -70,7 +70,7 @@ public class Employee {
 	@Column(name = "refferal")
 	private String refferal;
 	
-	@Column(name = "aadhaar_number")
+	@Column(name = "aadhaar_number",nullable = false, unique = true)
 	private String aadhaarNumber;
 	
 	@Column(name = "languages")
