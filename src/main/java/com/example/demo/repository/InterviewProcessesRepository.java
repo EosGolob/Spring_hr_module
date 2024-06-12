@@ -15,5 +15,8 @@ public interface InterviewProcessesRepository extends JpaRepository<InterviewPro
 	    List<InterviewProcesses> findAllByEmployeeId(@Param("employeeId") Long employeeId);
 	    
 	    List<InterviewProcesses> findByEmployeeId(Long employeeId);
+	    
+	    List<InterviewProcesses> findByStatus(String status);
+	    
 
 }

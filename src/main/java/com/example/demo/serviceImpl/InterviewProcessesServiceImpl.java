@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.dto.EmployeeDto;
 import com.example.demo.dto.InterviewsRequestDto;
 import com.example.demo.entity.Employee;
 import com.example.demo.entity.InterviewProcesses;
@@ -23,6 +24,9 @@ public class InterviewProcessesServiceImpl implements InterviewProcessesService 
 
 	    @Autowired
 	    private EmployeeRepository employeeRepository;
+	    
+//	    @Autowired
+//	    private InterviewProcessesService interviewProcessesService;
 
 	
 	@Override
@@ -44,6 +48,7 @@ public class InterviewProcessesServiceImpl implements InterviewProcessesService 
 	                .map(InterviewProcessesMapper::mapToInterviewProcessesDto)
 	                .collect(Collectors.toList());
 	    }
+
 	
 
 	

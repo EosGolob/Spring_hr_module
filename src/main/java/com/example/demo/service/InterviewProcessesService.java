@@ -8,5 +8,7 @@ public interface InterviewProcessesService {
 	InterviewsRequestDto addInterviewProcess(InterviewsRequestDto interviewProcessesDto);
 
 	List<InterviewsRequestDto> getAllInterviewProcessesByEmployeeId(Long employeeId);
+	
+
 
 }

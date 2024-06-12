@@ -134,7 +134,13 @@ public class EmployeeController {
 	        return ResponseEntity.ok().build();
 	    }
 
-
+//	 @GetMapping("/employeesProcessesInterview")
+//	    public ResponseEntity<List<EmployeeDto>> getEmployeesByInterviewProcessStatus(@RequestParam String status) {
+//		 List<EmployeeDto> employees = employeeService.getEmployeesByInterviewProcessStatus(status);
+//			return ResponseEntity.ok(employees);
+//	    }
+	 
+	
 	 }
 	 
 
