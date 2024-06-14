@@ -123,12 +123,10 @@ public class EmployeeController {
 	        EmployeeDto updatedEmployee = employeeService.updateEmployeeStatus(employeeId, newStatus);
 	        return new ResponseEntity<>(updatedEmployee, HttpStatus.OK);
 	    }
-
+     
 	 
 	 @PostMapping("/{employeeId}/interview-process")
-	    public ResponseEntity<Void> assignInterviewProcess(
-	            @PathVariable Long employeeId,
-	            @RequestBody InterviewProcesses interviewProcesses) {
+	    public ResponseEntity<Void> assignInterviewProcess( @PathVariable Long employeeId,@RequestBody InterviewProcesses interviewProcesses) {
 		    String newStatus = interviewProcesses.getStatus();
 	        employeeService.assignInterviewProcessAndUpdateStatus(employeeId, interviewProcesses, newStatus);
 	        return ResponseEntity.ok().build();
@@ -140,6 +138,19 @@ public class EmployeeController {
 //			return ResponseEntity.ok(employees);
 //	    }
 	 
+	@GetMapping("/employees-schedule-interview")
+	 public ResponseEntity<List<EmployeeDto>> employeeScheduleInterview(){
+		List<EmployeeDto> employees = employeeService.getAllScheduleInterview();
+		return ResponseEntity.ok(employees);
+	}
+	
+	 @PutMapping("/{id}/hrResponse")
+	    public ResponseEntity<EmployeeDto> updateEmployeehrRespone(@PathVariable("id") Long employeeId,
+	                                                            @RequestParam String newStatus) {
+	        EmployeeDto updatedEmployee = employeeService.updateEmployeeHrResponseStatus(employeeId, newStatus);
+	        return new ResponseEntity<>(updatedEmployee, HttpStatus.OK);
+	    }
+  
 	
 	 }
 	 

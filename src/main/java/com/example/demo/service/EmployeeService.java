@@ -36,5 +36,9 @@ public interface EmployeeService {
 	void assignInterviewProcessAndUpdateStatus(Long employeeId, InterviewProcesses interviewProcesses, String newStatus);
 	
     boolean checkDuplicateEmailAndAddharNo(String email ,String aadhaarNumber);
+
+	List<EmployeeDto> getAllScheduleInterview();
+
+	EmployeeDto updateEmployeeHrResponseStatus(Long employeeId, String newStatus);
     
 }

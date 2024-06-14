@@ -89,8 +89,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 		Employee savedEmployee = employeeRepository.save(employee);
 
 		// Convert entity to DTO and return
-		statusHistoryService.createInitialStatus(savedEmployee);
 		
+		statusHistoryService.createInitialStatus(savedEmployee);
+
 		updateEmployeeStatus(savedEmployee);
 		
 		return EmployeeMapper.mapToEmployeeDto(savedEmployee);
@@ -175,7 +176,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 	private void updateEmployeeStatus(Employee employee) {
 	    StatusHistory latestStatus = statusHistoryRepository.findTopByEmployeeOrderByChangesDateTimeDesc(employee);
 	    if (latestStatus != null) {
-	        employee.setStatus(latestStatus.getStatus());
+//	        employee.setStatus(latestStatus.getStatus());
+	    	employee.setInitialStatus(latestStatus.getStatus());
 	        employeeRepository.save(employee);
 	    }
 }
@@ -193,7 +195,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 		Employee employee = employeeRepository.findById(employeeId).orElseThrow(()->  new RuntimeException("Employee not found"));
 		interviewProcesses.setEmployee(employee);
 		InterviewProcesses savedInterviewProcess = interviewProcessesRepository.save(interviewProcesses);
-		
+		    
+		    employee.setProcessesStatus(newStatus);
 		    StatusHistory statusHistory = new StatusHistory();
 	        statusHistory.setEmployee(employee);
 	        statusHistory.setInterviewProcess(savedInterviewProcess);
@@ -212,6 +215,12 @@ public class EmployeeServiceImpl implements EmployeeService {
 		return emailExists || addharnoExists;
 	}
 
+	@Override
+	public List<EmployeeDto> getAllScheduleInterview() {
+		List<Employee> employees = employeeRepository.findEmployeesWithScheduledInterviews();
+		return employees.stream().map((employee) -> EmployeeMapper.mapToEmployeeDto(employee))
+				.collect(Collectors.toList());
+	}
 //	@Override
 //	public List<EmployeeDto> getEmployeesByInterviewProcessStatus(String status) {
 //		List<EmployeeDto> employees = employeeRepository.findByInterviewProcessStatus(status);
@@ -219,5 +228,13 @@ public class EmployeeServiceImpl implements EmployeeService {
 //				.map(employee -> EmployeeMapper.mapToEmployeeDto(employee))
 //				.collect(Collectors.toList());
 //	}
+
+	@Override
+	public EmployeeDto updateEmployeeHrResponseStatus(Long employeeId, String newStatus) {
+		Employee employee = employeeRepository.findById(employeeId).orElseThrow(()-> new ResourceNotFoundException("Employee not found"));
+		employee.setHrStatus(newStatus);
+		statusHistoryService.trackStatusChange(employee, newStatus);
+		return EmployeeMapper.mapToEmployeeDto(employee);
+	}
 	
 }

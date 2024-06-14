@@ -18,4 +18,10 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
 //	@Query("SELECT e FROM Employee e JOIN InterviewProcess ip ON e.id = ip.employee.id WHERE ip.status = :status")
 //    List<EmployeeDto> findByInterviewProcessStatus(@Param("status") String status);
+	
+//	@Query("SELECT e FROM Employee e JOIN e.interviewProcesses ip WHERE ip.status = 'Scheduled'")
+//	 @Query(value = "SELECT e.* FROM employees e JOIN interview_processes ip ON e.id = ip.employee_id WHERE ip.status = 'Scheduled'", nativeQuery = true)
+//	 @Query("SELECT e, ip.processName FROM Employee e JOIN e.interviewProcesses ip WHERE ip.status = 'Scheduled'")
+	@Query("SELECT e FROM Employee e WHERE e.processesStatus = 'scheduled'")
+    List<Employee> findEmployeesWithScheduledInterviews();
 }
