@@ -9,7 +9,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class StatusHistory {
 	
@@ -32,49 +37,5 @@ public class StatusHistory {
 	
 	@Column(nullable = false)
 	private LocalDateTime changesDateTime;
-	 
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public Employee getEmployee() {
-		return employee;
-	}
-
-	public void setEmployee(Employee employee) {
-		this.employee = employee;
-	}
-
-	public String getStatus() {
-		return status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
-	}
-
-	public LocalDateTime getChangesDateTime() {
-		return changesDateTime;
-	}
-
-	public void setChangesDateTime(LocalDateTime changesDateTime) {
-		this.changesDateTime = changesDateTime;
-	}
-
-	public InterviewProcesses getInterviewProcess() {
-		return interviewProcess;
-	}
-
-	public void setInterviewProcess(InterviewProcesses interviewProcess) {
-		this.interviewProcess = interviewProcess;
-	}
-
-	
-	
-
+		
 }

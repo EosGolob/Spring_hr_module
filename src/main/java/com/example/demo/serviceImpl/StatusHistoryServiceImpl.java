@@ -50,8 +50,9 @@ public class StatusHistoryServiceImpl implements StatusHistoryService {
 			statusHistory.setChangesDateTime(LocalDateTime.now());
 			statusHistoryRepository.save(statusHistory);
 			employeeRepository.save(employee);
-			employee.setStatus(newStatus);
-			employeeRepository.save(employee);
+//			employee.setStatus(newStatus);
+//			employee.setInitialStatus(newStatus);
+//			employeeRepository.save(employee);
 		}
 
 	}

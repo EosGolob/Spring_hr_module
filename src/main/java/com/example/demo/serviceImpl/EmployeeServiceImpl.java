@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
@@ -62,6 +63,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 //	@Override
+	
 //	public EmployeeDto createEmployee(EmployeeDto employeeDto) {		
 //		Employee employee = EmployeeMapper.mapToEmployee(employeeDto);
 //		Employee savedEmployee = employeeRepository.save(employee);
@@ -70,12 +72,16 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	@Override
 	public EmployeeDto createEmployee(EmployeeDto employeeDto, MultipartFile file, String path) throws IOException {
+		 if (checkDuplicateEmailAndAddharNo(employeeDto.getEmail(), employeeDto.getAadhaarNumber())) {
+		        throw new RuntimeException("Email or Aadhaar number already exists");
+		    }
 		// TODO Auto-generated method stub
 		String fileName = fileService.uploadImage(path, file);
-
+	
 		// Set the filename in the employeeDto
-		employeeDto.setAadharFilename(fileName);
 
+		employeeDto.setAadharFilename(fileName);
+		
 		// Convert DTO to entity
 		Employee employee = EmployeeMapper.mapToEmployee(employeeDto);
 
@@ -83,8 +89,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 		Employee savedEmployee = employeeRepository.save(employee);
 
 		// Convert entity to DTO and return
-		statusHistoryService.createInitialStatus(savedEmployee);
 		
+		statusHistoryService.createInitialStatus(savedEmployee);
+
 		updateEmployeeStatus(savedEmployee);
 		
 		return EmployeeMapper.mapToEmployeeDto(savedEmployee);
@@ -169,7 +176,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 	private void updateEmployeeStatus(Employee employee) {
 	    StatusHistory latestStatus = statusHistoryRepository.findTopByEmployeeOrderByChangesDateTimeDesc(employee);
 	    if (latestStatus != null) {
-	        employee.setStatus(latestStatus.getStatus());
+//	        employee.setStatus(latestStatus.getStatus());
+	    	employee.setInitialStatus(latestStatus.getStatus());
 	        employeeRepository.save(employee);
 	    }
 }
@@ -187,18 +195,46 @@ public class EmployeeServiceImpl implements EmployeeService {
 		Employee employee = employeeRepository.findById(employeeId).orElseThrow(()->  new RuntimeException("Employee not found"));
 		interviewProcesses.setEmployee(employee);
 		InterviewProcesses savedInterviewProcess = interviewProcessesRepository.save(interviewProcesses);
-		
+		    
+		    employee.setProcessesStatus(newStatus);
 		    StatusHistory statusHistory = new StatusHistory();
 	        statusHistory.setEmployee(employee);
 	        statusHistory.setInterviewProcess(savedInterviewProcess);
 	        statusHistory.setStatus(newStatus);
+	     
 	        statusHistory.setChangesDateTime(LocalDateTime.now());
 
 	        statusHistoryRepository.save(statusHistory);
 	}
 
-	
+	@Override
+	public boolean checkDuplicateEmailAndAddharNo(String email, String aadhaarNumber) {
+		// TODO Auto-generated method stub
+		boolean emailExists = employeeRepository.existsByEmail(email);
+		boolean addharnoExists = employeeRepository.existsByAadhaarNumber(aadhaarNumber);
+		return emailExists || addharnoExists;
+	}
 
+	@Override
+	public List<EmployeeDto> getAllScheduleInterview() {
+		List<Employee> employees = employeeRepository.findEmployeesWithScheduledInterviews();
+		return employees.stream().map((employee) -> EmployeeMapper.mapToEmployeeDto(employee))
+				.collect(Collectors.toList());
+	}
+//	@Override
+//	public List<EmployeeDto> getEmployeesByInterviewProcessStatus(String status) {
+//		List<EmployeeDto> employees = employeeRepository.findByInterviewProcessStatus(status);
+//		return employees.stream()
+//				.map(employee -> EmployeeMapper.mapToEmployeeDto(employee))
+//				.collect(Collectors.toList());
+//	}
 
+	@Override
+	public EmployeeDto updateEmployeeHrResponseStatus(Long employeeId, String newStatus) {
+		Employee employee = employeeRepository.findById(employeeId).orElseThrow(()-> new ResourceNotFoundException("Employee not found"));
+		employee.setHrStatus(newStatus);
+		statusHistoryService.trackStatusChange(employee, newStatus);
+		return EmployeeMapper.mapToEmployeeDto(employee);
+	}
 	
 }

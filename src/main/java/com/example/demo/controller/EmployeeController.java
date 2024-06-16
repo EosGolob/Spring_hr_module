@@ -42,7 +42,6 @@ public class EmployeeController {
 	@Autowired
 	private StatusHistoryRepository statusHistoryRepository;
 
-////	@Value("${project.image}")
 	@Value("${file.upload-dir}")
 	private String path;
 
@@ -114,8 +113,8 @@ public class EmployeeController {
 		return ResponseEntity.ok("Employee deleted successfully");
 	}
 
-//	@PutMapping("/{id/status}")
-//	public Emplo
+
+
 
 	
 	 @PatchMapping("/{id}/status")
@@ -124,17 +123,35 @@ public class EmployeeController {
 	        EmployeeDto updatedEmployee = employeeService.updateEmployeeStatus(employeeId, newStatus);
 	        return new ResponseEntity<>(updatedEmployee, HttpStatus.OK);
 	    }
-
+     
 	 
 	 @PostMapping("/{employeeId}/interview-process")
-	    public ResponseEntity<Void> assignInterviewProcess(
-	            @PathVariable Long employeeId,
-	            @RequestBody InterviewProcesses interviewProcesses) {
-	        employeeService.assignInterviewProcessAndUpdateStatus(employeeId, interviewProcesses, "Interview Process Assigned");
+	    public ResponseEntity<Void> assignInterviewProcess( @PathVariable Long employeeId,@RequestBody InterviewProcesses interviewProcesses) {
+		    String newStatus = interviewProcesses.getStatus();
+	        employeeService.assignInterviewProcessAndUpdateStatus(employeeId, interviewProcesses, newStatus);
 	        return ResponseEntity.ok().build();
 	    }
 
-
+//	 @GetMapping("/employeesProcessesInterview")
+//	    public ResponseEntity<List<EmployeeDto>> getEmployeesByInterviewProcessStatus(@RequestParam String status) {
+//		 List<EmployeeDto> employees = employeeService.getEmployeesByInterviewProcessStatus(status);
+//			return ResponseEntity.ok(employees);
+//	    }
+	 
+	@GetMapping("/employees-schedule-interview")
+	 public ResponseEntity<List<EmployeeDto>> employeeScheduleInterview(){
+		List<EmployeeDto> employees = employeeService.getAllScheduleInterview();
+		return ResponseEntity.ok(employees);
+	}
+	
+	 @PutMapping("/{id}/hrResponse")
+	    public ResponseEntity<EmployeeDto> updateEmployeehrRespone(@PathVariable("id") Long employeeId,
+	                                                            @RequestParam String newStatus) {
+	        EmployeeDto updatedEmployee = employeeService.updateEmployeeHrResponseStatus(employeeId, newStatus);
+	        return new ResponseEntity<>(updatedEmployee, HttpStatus.OK);
+	    }
+  
+	
 	 }
 	 
 

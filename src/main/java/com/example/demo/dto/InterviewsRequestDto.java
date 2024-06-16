@@ -10,10 +10,6 @@ public class InterviewsRequestDto {
 	private String interviewTime;
 	private String status;
 	
-//	public InterviewsRequestDto(Long id2, Long id3, String processName2, Date interviewDate, String interviewTime2,
-//			String status2) {
-//		// TODO Auto-generated constructor stub
-//	}
 	
 	public InterviewsRequestDto(Long id, Long employeeId, String processName, Date interviewData, String interviewTime,
 			String status) {
