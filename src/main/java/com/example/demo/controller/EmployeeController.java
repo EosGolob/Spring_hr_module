@@ -2,6 +2,7 @@ package com.example.demo.controller;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,11 +37,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RequestMapping("/api/employees")
 public class EmployeeController {
 
-	@Autowired
+//	@Autowired
 	private EmployeeService employeeService;
+	
+	
 
-	@Autowired
-	private StatusHistoryRepository statusHistoryRepository;
+//	@Autowired
+//	private StatusHistoryRepository statusHistoryRepository;
 
 	@Value("${file.upload-dir}")
 	private String path;
@@ -48,6 +51,14 @@ public class EmployeeController {
 	public EmployeeController(EmployeeService employeeService) {
 		this.employeeService = employeeService;
 	}
+    
+	
+//	
+//	public EmployeeController(StatusHistoryRepository statusHistoryRepository) {
+//		this.statusHistoryRepository = statusHistoryRepository;
+//	}
+
+
 
 	// Build add Employee REST API
 //	@PostMapping
@@ -58,16 +69,16 @@ public class EmployeeController {
 //	}
 	@PostMapping
 	public ResponseEntity<EmployeeDto> createEmployee(@RequestPart("employee") EmployeeDto employeeDto,
-            @RequestParam("image") MultipartFile image) {
-	    try {
-	        if (employeeDto == null || image == null || image.isEmpty()) {
-	            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-	        }
+			@RequestParam("image") MultipartFile image) {
+		try {
+			if (employeeDto == null || image == null || image.isEmpty()) {
+				return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+			}
 
-	        // Debugging statements
-	        System.out.println("EmployeeDto: " + employeeDto);
-	        System.out.println("Image Original Filename: " + image.getOriginalFilename());
-			
+			// Debugging statements
+			System.out.println("EmployeeDto: " + employeeDto);
+			System.out.println("Image Original Filename: " + image.getOriginalFilename());
+
 			EmployeeDto savedEmployee = employeeService.createEmployee(employeeDto, image, path);
 			return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
 		} catch (IOException e) {
@@ -75,8 +86,6 @@ public class EmployeeController {
 		}
 
 	}
-
-
 
 	// Build get Employee REST API
 	@GetMapping("{id}")
@@ -93,12 +102,20 @@ public class EmployeeController {
 		return ResponseEntity.ok(employees);
 
 	}
+	
+	@GetMapping("/getAllEmp")
+	public ResponseEntity<List<EmployeeDto>> getAllEmp(){
+		List<EmployeeDto> employees = employeeService.getEmployeeWithSelectedValuefiled();
+		return ResponseEntity.ok(employees);	
+		
+	}
 
 	// Build update Employee REST API
 	@PutMapping("{id}")
-	public ResponseEntity<EmployeeDto> updateEmployee( @PathVariable("id") Long employeeId , @RequestBody EmployeeDto updatedEmployee){
-	EmployeeDto employeeDto =	employeeService.updateEmployee(employeeId, updatedEmployee);
-	return ResponseEntity.ok(employeeDto);
+	public ResponseEntity<EmployeeDto> updateEmployee(@PathVariable("id") Long employeeId,
+			@RequestBody EmployeeDto updatedEmployee) {
+		EmployeeDto employeeDto = employeeService.updateEmployee(employeeId, updatedEmployee);
+		return ResponseEntity.ok(employeeDto);
 	}
 //	@PutMapping("{id}")
 //	public ResponseEntity<EmployeeDto> updateEmployee(@PathVariable("id") Long employeeId, @ModelAttribute EmployeeDto updatedEmployee,  @RequestParam MultipartFile file) throws IOException {
@@ -113,45 +130,55 @@ public class EmployeeController {
 		return ResponseEntity.ok("Employee deleted successfully");
 	}
 
+	@PatchMapping("/{id}/status")
+	public ResponseEntity<EmployeeDto> updateEmployeeStatus(@PathVariable("id") Long employeeId,
+			@RequestParam String newStatus) {
+		EmployeeDto updatedEmployee = employeeService.updateEmployeeStatus(employeeId, newStatus);
+		return new ResponseEntity<>(updatedEmployee, HttpStatus.OK);
+	}
 
-
-
-	
-	 @PatchMapping("/{id}/status")
-	    public ResponseEntity<EmployeeDto> updateEmployeeStatus(@PathVariable("id") Long employeeId,
-	                                                            @RequestParam String newStatus) {
-	        EmployeeDto updatedEmployee = employeeService.updateEmployeeStatus(employeeId, newStatus);
-	        return new ResponseEntity<>(updatedEmployee, HttpStatus.OK);
-	    }
-     
-	 
-	 @PostMapping("/{employeeId}/interview-process")
-	    public ResponseEntity<Void> assignInterviewProcess( @PathVariable Long employeeId,@RequestBody InterviewProcesses interviewProcesses) {
-		    String newStatus = interviewProcesses.getStatus();
-	        employeeService.assignInterviewProcessAndUpdateStatus(employeeId, interviewProcesses, newStatus);
-	        return ResponseEntity.ok().build();
-	    }
+	@PostMapping("/{employeeId}/interview-process")
+	public ResponseEntity<Void> assignInterviewProcess(@PathVariable Long employeeId,
+			@RequestBody InterviewProcesses interviewProcesses) {
+		String newStatus = interviewProcesses.getStatus();
+		employeeService.assignInterviewProcessAndUpdateStatus(employeeId, interviewProcesses, newStatus);
+		return ResponseEntity.ok().build();
+	}
 
 //	 @GetMapping("/employeesProcessesInterview")
 //	    public ResponseEntity<List<EmployeeDto>> getEmployeesByInterviewProcessStatus(@RequestParam String status) {
 //		 List<EmployeeDto> employees = employeeService.getEmployeesByInterviewProcessStatus(status);
 //			return ResponseEntity.ok(employees);
 //	    }
-	 
+
 	@GetMapping("/employees-schedule-interview")
-	 public ResponseEntity<List<EmployeeDto>> employeeScheduleInterview(){
+	public ResponseEntity<List<EmployeeDto>> employeeScheduleInterview() {
 		List<EmployeeDto> employees = employeeService.getAllScheduleInterview();
 		return ResponseEntity.ok(employees);
 	}
-	
-	 @PutMapping("/{id}/hrResponse")
-	    public ResponseEntity<EmployeeDto> updateEmployeehrRespone(@PathVariable("id") Long employeeId,
-	                                                            @RequestParam String newStatus) {
-	        EmployeeDto updatedEmployee = employeeService.updateEmployeeHrResponseStatus(employeeId, newStatus);
-	        return new ResponseEntity<>(updatedEmployee, HttpStatus.OK);
-	    }
-  
-	
-	 }
-	 
 
+	@PutMapping("/{id}/hrResponse")
+	public ResponseEntity<EmployeeDto> updateEmployeehrRespone(@PathVariable("id") Long employeeId,
+			@RequestBody Map<String, String> requestBody) {
+		String newStatus = requestBody.get("newStatus");
+		EmployeeDto updatedEmployee = employeeService.updateEmployeeHrResponseStatus(employeeId, newStatus);
+		System.out.println("new Status value" + newStatus);
+		return new ResponseEntity<>(updatedEmployee, HttpStatus.OK);
+	}
+
+	@GetMapping("/managerResponeField")
+	public ResponseEntity<List<EmployeeDto>> managerResponseField() {
+		List<EmployeeDto> employees = employeeService.getAllHrResponseValue();
+		return ResponseEntity.ok(employees);
+	}
+	
+	@PutMapping("/{id}/mRResponse")
+	public ResponseEntity<EmployeeDto> updateEmployeeMrRespone(@PathVariable("id") Long employeeId,
+			@RequestBody Map<String, String> requestBody) {
+		String newStatus = requestBody.get("newStatus");
+		EmployeeDto updatedEmployee = employeeService.updateEmployeeMrResponseStatus(employeeId, newStatus);
+		System.out.println("new Status value" + newStatus);
+		return new ResponseEntity<>(updatedEmployee, HttpStatus.OK);
+	}
+
+}

@@ -1,10 +1,10 @@
 package com.example.demo.entity;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -16,8 +16,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class InterviewProcesses {
 	
 	@Id
@@ -26,13 +32,10 @@ public class InterviewProcesses {
 	
 	@ManyToOne(fetch = FetchType.LAZY,optional = false )
 	@JoinColumn(name = "employee_id" , nullable = false)
-	@JsonIgnore
 	private Employee employee;
 	
 	@OneToMany(mappedBy = "interviewProcess", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	private List<StatusHistory> statusHistories;
-	
-	
 	
 	@Column(name = "process_name")
 	private String processName;
@@ -46,89 +49,13 @@ public class InterviewProcesses {
 	@Column(name = "status")
 	private String status;
 	
-		
-	public InterviewProcesses() {
-	super();
-}
-
-
-public InterviewProcesses(Long id, Employee employee, String processName, Date interviewDate, String interviewTime,
-		String status ) {
-	super();
-	this.id = id;
-	this.employee = employee;
-	this.processName = processName;
-	this.interviewDate = interviewDate;
-	this.interviewTime = interviewTime;
-	this.status = status;
-//	this.interviewStatus = interviewStatus;
-}
-
-
-
-
-
-
-
-	public Long getId() {
-		return id;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public Employee getEmployee() {
-		return employee;
-	}
-
-	public void setEmployee(Employee employee) {
-		this.employee = employee;
-	}
-
-	public String getProcessName() {
-		return processName;
-	}
-
-	public void setProcessName(String processName) {
-		this.processName = processName;
-	}
-
-	public Date getInterviewDate() {
-		return interviewDate;
-	}
-
-	public void setInterviewDate(Date interviewDate) {
-		this.interviewDate = interviewDate;
-	}
-
-	public String getInterviewTime() {
-		return interviewTime;
-	}
-
-	public void setInterviewTime(String interviewTime) {
-		this.interviewTime = interviewTime;
-	}
-
-	public String getStatus() {
-		return status;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
-	}
-
-
-//	public List<StatusHistory> getInterviewStatus() {
-//		return interviewStatus;
-//	}
-//
-//
-//	public void setInterviewStatus(List<StatusHistory> interviewStatus) {
-//		this.interviewStatus = interviewStatus;
-//	}
-
+	@ManyToOne(fetch = FetchType.LAZY , optional = true)
+	@JoinColumn(name = "managerDetails_id")
+	private ManagerDetails managerDetails;
 	
+
+
+
 
 	
 	

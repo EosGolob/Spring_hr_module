@@ -16,10 +16,16 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/interviews")
 public class InterviewProcessesController {
 
-    @Autowired
+//    @Autowired
     private InterviewProcessesService interviewProcessesService;
+    
+    
+    
+    public InterviewProcessesController(InterviewProcessesService interviewProcessesService) {
+		this.interviewProcessesService = interviewProcessesService;
+	}
 
-    @PostMapping
+	@PostMapping
     public ResponseEntity<InterviewsRequestDto> addInterviewProcess(@RequestBody InterviewsRequestDto interviewProcessesDto) {
         InterviewsRequestDto createdInterviewProcess = interviewProcessesService.addInterviewProcess(interviewProcessesDto);
         return new ResponseEntity<>(createdInterviewProcess, HttpStatus.CREATED);

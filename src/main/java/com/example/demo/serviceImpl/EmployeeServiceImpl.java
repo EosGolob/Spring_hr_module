@@ -22,11 +22,13 @@ import com.example.demo.dto.EmployeeDto;
 import com.example.demo.dto.InterviewsRequestDto;
 import com.example.demo.entity.Employee;
 import com.example.demo.entity.InterviewProcesses;
+import com.example.demo.entity.ManagerDetails;
 import com.example.demo.entity.StatusHistory;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.mapper.EmployeeMapper;
 import com.example.demo.repository.EmployeeRepository;
 import com.example.demo.repository.InterviewProcessesRepository;
+import com.example.demo.repository.ManagerDetailsRepository;
 import com.example.demo.repository.StatusHistoryRepository;
 import com.example.demo.service.EmployeeService;
 import com.example.demo.service.FileService;
@@ -50,6 +52,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 	@Autowired
 	private InterviewProcessesRepository interviewProcessesRepository;
 	
+    @Autowired
+	private ManagerDetailsRepository managerDetailsRepository;
+	
 	@Value("${file.upload-dir}")
 	private String path;
 
@@ -61,6 +66,12 @@ public class EmployeeServiceImpl implements EmployeeService {
 		this.fileService = fileService;
 		this.statusHistoryService = statusHistoryService;
 	}
+
+
+
+
+
+
 
 //	@Override
 	
@@ -110,7 +121,31 @@ public class EmployeeServiceImpl implements EmployeeService {
 		return employees.stream().map((employee) -> EmployeeMapper.mapToEmployeeDto(employee))
 				.collect(Collectors.toList());
 	}
+	
+	@Override
+	public List<EmployeeDto> getEmployeeWithSelectedValuefiled() {
+		// TODO Auto-generated method stub
+		List<Object[]> results = employeeRepository.getEmployeeWithSelectedValue();
+		List<EmployeeDto> employees = new ArrayList<>();
+//		return employees.stream().map((employee) -> EmployeeMapper.mapToEmployeeDto(employee))
+//				.collect(Collectors.toList());
+		
+		for (Object[] result : results) {
+            EmployeeDto employee = new EmployeeDto();
+            employee.setId((Long) result[0]);
+            employee.setFullName((String) result[1]);
+            employee.setEmail((String) result[2]);
+            employee.setJobProfile((String) result[3]);
+            employee.setMobileNo((Long) result[4]);
+            employee.setPermanentAddress((String) result[5]);
+            employee.setGender((String) result[6]);
 
+            employees.add(employee);
+        }
+		  return employees;
+	}
+	
+	
 	@Override
 	public EmployeeDto updateEmployee(Long employeeId, EmployeeDto updatedEmployee) {
 		Employee employee = employeeRepository.findById(employeeId).orElseThrow(
@@ -191,20 +226,18 @@ public class EmployeeServiceImpl implements EmployeeService {
 	@Override
 	public void assignInterviewProcessAndUpdateStatus(Long employeeId, InterviewProcesses interviewProcesses,
 			String newStatus) {
-		// TODO Auto-generated method stub
-		Employee employee = employeeRepository.findById(employeeId).orElseThrow(()->  new RuntimeException("Employee not found"));
+		Employee employee = employeeRepository.findById(employeeId)
+				.orElseThrow(()->  new RuntimeException("Employee not found"));
 		interviewProcesses.setEmployee(employee);
+		assignManagerForInterview(interviewProcesses);
+		
+		
 		InterviewProcesses savedInterviewProcess = interviewProcessesRepository.save(interviewProcesses);
+//		interviewProcesses.setManagerDetails(managerId);
+		setStatusHistoryRecored(employeeId,savedInterviewProcess, newStatus,employee)  ; 
+		employee.setProcessesStatus(newStatus);
 		    
-		    employee.setProcessesStatus(newStatus);
-		    StatusHistory statusHistory = new StatusHistory();
-	        statusHistory.setEmployee(employee);
-	        statusHistory.setInterviewProcess(savedInterviewProcess);
-	        statusHistory.setStatus(newStatus);
-	     
-	        statusHistory.setChangesDateTime(LocalDateTime.now());
-
-	        statusHistoryRepository.save(statusHistory);
+		   
 	}
 
 	@Override
@@ -235,6 +268,62 @@ public class EmployeeServiceImpl implements EmployeeService {
 		employee.setHrStatus(newStatus);
 		statusHistoryService.trackStatusChange(employee, newStatus);
 		return EmployeeMapper.mapToEmployeeDto(employee);
+	}
+	
+	@Override
+	public EmployeeDto updateEmployeeMrResponseStatus(Long employeeId, String newStatus) {
+		Employee employee = employeeRepository.findById(employeeId).orElseThrow(()-> new ResourceNotFoundException("Employee not found"));
+		employee.setManagerStatus(newStatus);
+		statusHistoryService.trackStatusChange(employee, newStatus);
+		return EmployeeMapper.mapToEmployeeDto(employee);
+	}
+
+	@Override
+	public List<EmployeeDto> getAllHrResponseValue() {
+		// TODO Auto-generated method stub
+		List<Employee> employees = employeeRepository.findEmployeeWithHrResponseStatus();
+		return employees.stream().map((employee) -> EmployeeMapper.mapToEmployeeDto(employee))
+				.collect(Collectors.toList());
+	}
+	
+	
+	private void assignManagerForInterview(InterviewProcesses interviewProcesses) {
+		 Long managerId = null;
+         String processType = interviewProcesses.getProcessName();
+         if(processType != null) {
+         	switch (processType) {
+				case "HDFC": {
+					managerId = 1L;
+					break;
+				}
+				case "ICICI": {
+					managerId = 2L;
+					break;
+				}
+				case "MIS": {
+					managerId = 3L;
+					break;
+				}
+				default:
+					throw new IllegalArgumentException("Unexpected value: " + processType);
+				}
+         }
+         
+         if (managerId != null) {
+           ManagerDetails ma = managerDetailsRepository.findById(managerId) 
+           		.orElseThrow(() -> new RuntimeException("Manager details not found for id: "));;
+            interviewProcesses.setManagerDetails(ma);
+         }
+	}
+	
+	private void setStatusHistoryRecored(Long employeeId , InterviewProcesses savedInterviewProcess ,String newStatus ,Employee employee ) {
+		 StatusHistory statusHistory = new StatusHistory();
+	        statusHistory.setEmployee(employee);
+	        statusHistory.setInterviewProcess(savedInterviewProcess);
+	        statusHistory.setStatus(newStatus);	     
+	        statusHistory.setChangesDateTime(LocalDateTime.now());     
+//         interviewProcessesRepository.save(savedInterviewProcess);
+	        statusHistoryRepository.save(statusHistory);
 	}
 	
 }

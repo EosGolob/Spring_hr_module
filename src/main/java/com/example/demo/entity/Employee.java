@@ -20,7 +20,8 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
+@Getter
+@Setter
 @Data
 @Entity
 @AllArgsConstructor
@@ -100,19 +101,11 @@ public class Employee {
 	@JsonIgnore
 	private List<StatusHistory> statusHistories;
 	
+	@JsonIgnore
 	@OneToMany(mappedBy = "employee", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<InterviewProcesses> interviewProcesses;
 
 	@Column(name = "aadhar_filename")
 	private String aadharFilename;
-
-	
-	
-
-
-	
-
-
-
 	
 }

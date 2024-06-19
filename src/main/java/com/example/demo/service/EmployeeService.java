@@ -40,5 +40,12 @@ public interface EmployeeService {
 	List<EmployeeDto> getAllScheduleInterview();
 
 	EmployeeDto updateEmployeeHrResponseStatus(Long employeeId, String newStatus);
+	
+	
+	List<EmployeeDto> getAllHrResponseValue();
+
+	EmployeeDto updateEmployeeMrResponseStatus(Long employeeId, String newStatus);
+
+	List<EmployeeDto> getEmployeeWithSelectedValuefiled();
     
 }
