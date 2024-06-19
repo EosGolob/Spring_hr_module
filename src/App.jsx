@@ -8,6 +8,7 @@ import UserRegisterComponent from './components/UserRegisterComponent'
 import EmployeeProcessSelection from './components/EmployeeProcessSelection'
 import EmployeeTable from './components/EmployeeTable'
 import HrInterviewResponse from './components/HrInterviewResponse'
+import MrInterviewResponse from './components/MrInterviewResponse'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -25,6 +26,7 @@ function App() {
       <Route path = '/process-Selection' element = {<EmployeeProcessSelection/>}></Route>
       <Route path = '/xyx' element ={<EmployeeTable></EmployeeTable>}></Route>
       <Route path = '/hr-Scheduled' element = {<HrInterviewResponse/>}></Route>
+      <Route path = '/mrpage' element = {<MrInterviewResponse/>}></Route>
     </Routes>
     </BrowserRouter>
     </>

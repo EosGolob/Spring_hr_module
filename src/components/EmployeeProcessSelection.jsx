@@ -5,6 +5,8 @@ import { listEmployees , selectInterviewProcess } from '../services/EmployeeServ
 const EmployeeProcessSelection = () => {
     const [employees, setEmployees] = useState([]);
     // const [selectedProcess, setSelectedProcess] = useState([]);
+   
+   
     useEffect(() => {
         getAllEmployees();
     }, []);
@@ -28,7 +30,17 @@ const EmployeeProcessSelection = () => {
                 return employee;
             }));
         };
+   
 
+    // const handleProcessChange = (e, employeeId) => {
+    //     const selectedProcess = e.target.value;
+    //     setEmployees(prevEmployees => prevEmployees.map(employee => {
+    //         if (employee.id === employeeId) {
+    //             return { ...employee, selectedProcess: selectedProcess };
+    //         }
+    //         return employee;
+    //     }));
+    // };
         const handleAddInterviewProcess = (employeeId) => {
             const employee = employees.find(emp => emp.id === employeeId);
             const interviewDate = new Date().toISOString().slice(0, 10);
@@ -53,7 +65,7 @@ const EmployeeProcessSelection = () => {
                 });
         };
         
-
+     
         return (
             <div className='container'>
                 <h2 className='text-center'>SELECT PROCESS</h2>
@@ -76,7 +88,8 @@ const EmployeeProcessSelection = () => {
                     <tbody>
                         {
                             
-                            Array.isArray(employees) && employees.map((employee) => (
+                            Array.isArray(employees) && 
+                            employees.map((employee) => (
                                 <tr key={employee.id}>
 
                                     <td>{employee.fullName}</td>

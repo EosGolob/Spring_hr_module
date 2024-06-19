@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom'
 
 const ListEmployeeComponent = () => {
   const [employees, setEmployees] = useState([]);
-  // const [newStatus, setNewStatus] = useState('');
   const [statusUpdates, setStatusUpdates] = useState({});
   const [buttonDisabled, setButtonDisabled] = useState({});
   const navigator = useNavigate();
@@ -13,40 +12,45 @@ const ListEmployeeComponent = () => {
     getAllEmployees();
   }, []);
 
-  function getAllEmployees() {
+  const getAllEmployees = () =>{
     listEmployees()
       .then((response) => {
         console.log('Response Data:', response.data);
         setEmployees(response.data);
       }).catch(error => {
-        console.error(error)
+        console.error('Error featching employees' ,error)
       });
-  }
+  };
 
-  function addNewEmployee() {
+  const addNewEmployee = () => {
     navigator('/add-employee2')
 
-  }
+  };
 
-  function updatedEmployee(id) {
+  const updatedEmployee = (id) =>{
     navigator(`/edit-employee/${id}`)
-  }
-  function removeEmployee(id) {
+  };
+
+  const removeEmployee = (id) => {
     console.log(id);
-    deleteEmployee(id).then((response) => {
+    deleteEmployee(id)
+    .then(() => {
       getAllEmployees();
 
-    }).catch(error => {
+    })
+    .catch(error => {
       console.error(error)
     });
-  }
-  function handleStatusChange(id) {
+  };
+
+  const handleStatusChange = (id) => {
     const newStatus = statusUpdates[id];
     if (!newStatus) {
       alert('Please enter a status.');
       return;
     }
-    updateEmployeeStatus(id, newStatus).then((response) => {
+    updateEmployeeStatus(id, newStatus)
+    .then(() => {
       getAllEmployees();
       setButtonDisabled((prevState) => ({
         ...prevState,
@@ -55,14 +59,15 @@ const ListEmployeeComponent = () => {
     }).catch(error => {
       console.error(error);
     });
-  }
+  };
 
-  function handleInputChange(id, value) {
+  const handleInputChange = (id, value) => {
     setStatusUpdates((prevStatusUpdates) => ({
       ...prevStatusUpdates,
       [id]: value,
     }));
-  }
+  };
+
   return (
     <div className='container'>
       <h2 className='text-center'>ListEmployeeComponent</h2>
@@ -84,9 +89,7 @@ const ListEmployeeComponent = () => {
           </tr>
         </thead>
         <tbody>
-          {
-            // employees.map((employee =>(
-            Array.isArray(employees) && employees.map((employee) => (
+          {Array.isArray(employees) && employees.map(employee => (
               <tr key={employee.id}>
                 <td>{employee.id}</td>
                 <td>{employee.fullName}</td>
@@ -99,9 +102,7 @@ const ListEmployeeComponent = () => {
                 <td>{employee.previousOrganisation}</td>
                 <td>
                   <button className='btn btn-info' onClick={() => updatedEmployee(employee.id)}>Update</button>
-                  <button className='btn btn-danger' onClick={() => removeEmployee(employee.id)}
-                    style={{ marginLeft: '10px' }}
-                  >Delete</button>
+                  <button className='btn btn-danger' onClick={() => removeEmployee(employee.id)}style={{ marginLeft: '10px' }} >Delete</button>
                 </td>
                 <td>
                   <input

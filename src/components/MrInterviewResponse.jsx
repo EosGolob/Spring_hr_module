@@ -1,7 +1,7 @@
 import React, { useState, useEffect} from 'react'
-import {getlistOfEmpIntSchedule,hrResponseSubmit}  from '../services/EmployeeService';
+import {getlistOfManagerResponeField,MrResponseSubmit}  from '../services/EmployeeService';
 
-const HrInterviewResponse = () => {
+const MrInterviewResponse = () => {
 
   const [employees, setEmployees] = useState([]);
   const [selectedResponse, setSelectedResponse] = useState({}); 
@@ -12,7 +12,7 @@ const HrInterviewResponse = () => {
 
   
   function getAllEmployees() {
-   getlistOfEmpIntSchedule()
+    getlistOfManagerResponeField()
       .then((response) => {
         console.log('Response Data:', response.data);
         setEmployees(response.data);
@@ -32,7 +32,7 @@ const HrInterviewResponse = () => {
   const handleHrResponseValue = (employeeId) => {
     const selectedValue = selectedResponse[employeeId];
     console.log('Submitting HR Response for Employee:', employeeId, 'Response:', selectedValue);
-    hrResponseSubmit(employeeId, selectedValue)
+    MrResponseSubmit(employeeId, selectedValue)
       .then(response => {
         console.log('Response from Backend:', response.data);
         setEmployees(prevEmployees =>
@@ -48,7 +48,7 @@ const HrInterviewResponse = () => {
   };
   return (
     <div className='container'>
-      <h2 className='text-center'>HR Response</h2>
+      <h2 className='text-center'>Manager Response</h2>
       <table className='table table-striped table-bordered'>
         <thead>
           <tr>
@@ -77,7 +77,7 @@ const HrInterviewResponse = () => {
                 <td>{employee.permanentAddress}</td>
                 <td>{employee.gender}</td>
                 <td>{employee.previousOrganisation}</td>
-                <td>{employee.initialStatus}</td>
+                <td>{employee.hrStatus}</td>
                 <td>
                   <select value={employee.selectedResponse} onChange={e=> handleHrResponse(e,employee.id)}>
                   <option value="">Select response</option>
@@ -97,4 +97,4 @@ const HrInterviewResponse = () => {
   
 };
 
-export default HrInterviewResponse
+export default MrInterviewResponse
