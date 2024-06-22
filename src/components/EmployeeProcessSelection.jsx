@@ -18,7 +18,7 @@ const EmployeeProcessSelection = () => {
                 const updatedEmployees = response.data.map(employee => ({ ...employee, selectedProcess: null }));
                 setEmployees(updatedEmployees);
             }).catch(error => {
-                console.error(error)
+                console.error(error.massage)
             });
         };
         const handleProcessChange = (e, employeeId) => {
