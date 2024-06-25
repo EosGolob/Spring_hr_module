@@ -1,0 +1,6 @@
+.blue-icon {
+    color: blue; /* Sets the color of the icons to blue */
+  }
+.icon-left-margin .input-group-text {
+    margin-right: 10px; 
+ }

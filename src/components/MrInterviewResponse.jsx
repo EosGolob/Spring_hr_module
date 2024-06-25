@@ -1,5 +1,5 @@
 import React, { useState, useEffect} from 'react'
-import {getlistOfManagerResponeField,MrResponseSubmit}  from '../services/EmployeeService';
+import {getlistOfManagerResponeField,MrResponseSubmit}  from './services/EmployeeService';
 
 const MrInterviewResponse = () => {
 

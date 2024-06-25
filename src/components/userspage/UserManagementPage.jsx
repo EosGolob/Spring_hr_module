@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 // import UserService from '../service/UserService';
-import UsersService from '../../services/UsersService';
+import UsersService from '../services/UsersService';
 
 function UserManagementPage() {
   const [users, setUsers] = useState([]);

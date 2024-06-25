@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 // import UserService from '../service/UserService';
-import UsersService from '../../services/UsersService';
+import UsersService from '../services/UsersService';
 import { Link } from 'react-router-dom';
 
 

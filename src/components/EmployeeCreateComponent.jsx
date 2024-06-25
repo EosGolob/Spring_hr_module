@@ -3,7 +3,7 @@ import {
   creatEmployee,
   getEmployee,
   updateEmployee,
-} from "../services/EmployeeService";
+} from "./services/EmployeeService";
 import { useNavigate, useParams } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";

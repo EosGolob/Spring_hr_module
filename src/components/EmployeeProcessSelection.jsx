@@ -1,26 +1,49 @@
 import React, { useEffect, useState } from 'react'
-import { listEmployees , selectInterviewProcess } from '../services/EmployeeService'
-
+import {selectInterviewProcess } from './services/EmployeeService'
+import {listEmployees} from './services/EmployeeServiceJWT';
+// import EmployeeServiceJWT from '../services/EmployeeServiceJWT'
 
 const EmployeeProcessSelection = () => {
     const [employees, setEmployees] = useState([]);
     // const [selectedProcess, setSelectedProcess] = useState([]);
-   
+    const [token, setToken] = useState(localStorage.getItem('token'));
    
     useEffect(() => {
-        getAllEmployees();
-    }, []);
 
-    function getAllEmployees() {
-        listEmployees()
+        if (!token) {
+            // Handle case where token is not available (redirect to login or fetch token)
+            console.error('Token not found.');
+            return;
+        }
+
+
+
+        getAllEmployees(token);
+    }, [token]);
+
+    // function getAllEmployees() {
+    //     listEmployees()
+    //         .then((response) => {
+    //             console.log('Response Data:', response.data);
+    //             const updatedEmployees = response.data.map(employee => ({ ...employee, selectedProcess: null }));
+    //             setEmployees(updatedEmployees);
+    //         }).catch(error => {
+    //             console.error(error.massage)
+    //         });
+    //     };
+
+
+    const getAllEmployees = (token) => {
+        listEmployees(token)
             .then((response) => {
                 console.log('Response Data:', response.data);
                 const updatedEmployees = response.data.map(employee => ({ ...employee, selectedProcess: null }));
                 setEmployees(updatedEmployees);
-            }).catch(error => {
-                console.error(error.massage)
+            })
+            .catch(error => {
+                console.error('Error fetching employees:', error.message);
             });
-        };
+    };
         const handleProcessChange = (e, employeeId) => {
             const selectedProcess = e.target.value;
             setEmployees(prevEmployees => prevEmployees.map(employee => {

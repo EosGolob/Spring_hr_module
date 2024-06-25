@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import PersonalDetailsComponent from "./PersonalDetailsComponent";
 import EducationalDetailsComponent from "./EducationalDetailsComponent";
 import AdditionalDetailsComponent from "./AdditionalDetailsComponent";
-import { creatEmployee } from "../services/EmployeeService";
+import { creatEmployee } from "./services/EmployeeService";
 import '../components/EmployeeCreatePageComponent.css';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';

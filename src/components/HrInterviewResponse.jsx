@@ -1,5 +1,5 @@
 import React, { useState, useEffect} from 'react'
-import {getlistOfEmpIntSchedule,hrResponseSubmit}  from '../services/EmployeeService';
+import {getlistOfEmpIntSchedule,hrResponseSubmit}  from './services/EmployeeService';
 
 const HrInterviewResponse = () => {
 

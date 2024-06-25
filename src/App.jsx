@@ -14,7 +14,9 @@ import ProfilePage from './components/userspage/ProfilePage'
 import RegistrationPage from './components/auth/RegistrationPage'
 import UserManagementPage from './components/userspage/UserManagementPage'
 import UpdateUser from './components/userspage/UpdateUser'
-import UsersService from './services/UsersService'
+import UsersService from './components/services/UsersService'
+import Navbar from './components/common/Navbar'
+import  FooterComponent from './components/common/Footer'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -22,6 +24,9 @@ function App() {
   return (
     <>
     <BrowserRouter>
+    <div className='App'>
+      <Navbar/>
+      <div className="content">
     {/* <Routes> */}
       
       {/* <Route path="/" element={<ListEmployeeComponent/>} /> */}
@@ -37,13 +42,14 @@ function App() {
 
        <Routes>
             <Route exact path="/" element={<LoginPage />} />
-            <Route exact path="/login" element={<LoginPage />} />
-            <Route path="/profile" element={<ProfilePage />} />
-            <Route path = '/process-Selection' element = {<EmployeeProcessSelection/>}></Route>
-
+            {/* <Route exact path="/login" element={<LoginPage />} /> */}
+            {/* <Route path="/profile" element={<ProfilePage />} /> */}
+            {/* <Route path='/add-employee2' element = {<EmployeeCreatePageComponent/>}></Route> */}
+            {/* <Route path = '/process-Selection' element = {<EmployeeProcessSelection/>}></Route> */}
             {/* Check if user is authenticated and admin before rendering admin-only routes */}
             {UsersService.adminOnly() && (
               <>
+                <Route path = '/process-Selection' element = {<EmployeeProcessSelection/>}></Route>
                 <Route path="/register" element={<RegistrationPage />} />
                 <Route path="/admin/user-management" element={<UserManagementPage />} />
                 <Route path = "/admin/process-Selection" element = {<EmployeeProcessSelection/>}></Route>
@@ -52,11 +58,13 @@ function App() {
             )}
             <Route path="*" element={<Navigate to="/login" />} />‰
           </Routes>
-     
+     </div>
     {/* </Routes> */}
+    </div>
+  <FooterComponent/>
     </BrowserRouter>
     </>
-  )
+  );
 }
 
 export default App

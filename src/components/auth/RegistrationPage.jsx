@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 // import UserService from '../service/UserService';
-import UsersService from '../../services/UsersService';
+import UsersService from '../services/UsersService';
 import { useNavigate } from 'react-router-dom';
 
 function RegistrationPage() {
