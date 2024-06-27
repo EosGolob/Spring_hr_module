@@ -25,10 +25,37 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 	@Query("SELECT e FROM Employee e WHERE e.processesStatus = 'scheduled'")
     List<Employee> findEmployeesWithScheduledInterviews();
 	
-	@Query("SELECT e FROM Employee e WHERE e.hrStatus = 'Approved' or e.hrStatus = 'Rejected' ")
-	List<Employee> findEmployeeWithHrResponseStatus();
+//	@Query("SELECT e.id,e.fullName,e.email, e.jobProfile, e.mobileNo, e.permanentAddress ,e.gender"+ " FROM Employee e "+" WHERE e.hrStatus = 'Approved' or e.hrStatus = 'Rejected'"+"ORDER BY e.creationDate ASC")
+	@Query("SELECT e.id,e.fullName,e.email, e.jobProfile, e.mobileNo, e.permanentAddress ,e.gender FROM Employee e  WHERE e.hrStatus = 'Approved' or e.hrStatus = 'Rejected'")
+	List<Object[]> findEmployeeWithHrResponseStatus();
 	
-	@Query("SELECT e.id,e.fullName,e.email, e.jobProfile, e.mobileNo, e.permanentAddress ,e.gender From Employee e")
+	@Query("SELECT e.id,e.fullName,e.email, e.jobProfile, e.mobileNo, e.permanentAddress ,e.gender From Employee e where e.initialStatus = 'Active'")
 	List<Object[]> getEmployeeWithSelectedValue();
+	
+	@Query("SELECT e.id,e.fullName,e.email, e.jobProfile, e.mobileNo, e.permanentAddress ,e.gender " +
+	           "FROM Employee e " +
+	           "JOIN e.interviewProcesses ip " +
+	           "WHERE ip.processName = 'HDFC'")
+	List<Object[]> findEmployeeOnHdfcProcesses();
+
+	
+	@Query("SELECT e.id,e.fullName,e.email, e.jobProfile, e.mobileNo, e.permanentAddress ,e.gender " +
+	           "FROM Employee e " +
+	           "JOIN e.interviewProcesses ip " +
+	           "WHERE ip.processName = 'MIS'")
+	List<Object[]> findEmployeeOnMisProcesses();
+    
+	@Query("SELECT e.id,e.fullName,e.email, e.jobProfile, e.mobileNo, e.permanentAddress ,e.gender " +
+	           "FROM Employee e " +
+	           "JOIN e.interviewProcesses ip " +
+	           "WHERE ip.processName = 'ICICI'")
+	List<Object[]> findEmployeeOnIciciProcesses();
+    
+	 @Query("SELECT e.id, e.fullName, e.aadhaarNumber, e.email, e.creationDate, sh.status, sh.changesDateTime " +
+	           "FROM Employee e " +
+	           "JOIN StatusHistory sh ON e.id = sh.employee.id " +
+	           "WHERE e.id = :id")
+	List<Object[]> getEmpDetailsInfoById(@Param("id") Long employeeId);
+	
 	
 }

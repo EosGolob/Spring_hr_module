@@ -5,8 +5,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -20,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.dto.EmployeeDto;
 import com.example.demo.dto.InterviewsRequestDto;
+import com.example.demo.dto.StatusHistoryDto;
 import com.example.demo.entity.Employee;
 import com.example.demo.entity.InterviewProcesses;
 import com.example.demo.entity.ManagerDetails;
@@ -281,11 +286,144 @@ public class EmployeeServiceImpl implements EmployeeService {
 	@Override
 	public List<EmployeeDto> getAllHrResponseValue() {
 		// TODO Auto-generated method stub
-		List<Employee> employees = employeeRepository.findEmployeeWithHrResponseStatus();
-		return employees.stream().map((employee) -> EmployeeMapper.mapToEmployeeDto(employee))
-				.collect(Collectors.toList());
+//		List<Employee> employees = employeeRepository.findEmployeeWithHrResponseStatus();
+//		return employees.stream().map((employee) -> EmployeeMapper.mapToEmployeeDto(employee))
+//				.collect(Collectors.toList());
+		 List<Object[]> employeeObjects = employeeRepository.findEmployeeWithHrResponseStatus();
+		 List<EmployeeDto> employees = new ArrayList<>();
+
+			for (Object[] result : employeeObjects) {
+	            EmployeeDto employee = new EmployeeDto();
+	            employee.setId((Long) result[0]);
+	            employee.setFullName((String) result[1]);
+	            employee.setEmail((String) result[2]);
+	            employee.setJobProfile((String) result[3]);
+	            employee.setMobileNo((Long) result[4]);
+	            employee.setPermanentAddress((String) result[5]);
+	            employee.setGender((String) result[6]);
+
+	            employees.add(employee);
+	        }
+			  return employees;
 	}
 	
+	@Override
+	public List<EmployeeDto> getAllHdfcResponseValue() {
+		
+		 List<Object[]> employeeObjects = employeeRepository.findEmployeeOnHdfcProcesses();
+		 List<EmployeeDto> employees = new ArrayList<>();
+			for (Object[] result : employeeObjects) {
+	            EmployeeDto employee = new EmployeeDto();
+	            employee.setId((Long) result[0]);
+	            employee.setFullName((String) result[1]);
+	            employee.setEmail((String) result[2]);
+	            employee.setJobProfile((String) result[3]);
+	            employee.setMobileNo((Long) result[4]);
+	            employee.setPermanentAddress((String) result[5]);
+	            employee.setGender((String) result[6]);
+
+	            employees.add(employee);
+	        }
+			  return employees;
+	}
+	
+
+	@Override
+	public List<EmployeeDto> getAllIciciResponseValue() {
+		 List<Object[]> employeeObjects = employeeRepository.findEmployeeOnIciciProcesses();
+		 List<EmployeeDto> employees = new ArrayList<>();
+			for (Object[] result : employeeObjects) {
+	            EmployeeDto employee = new EmployeeDto();
+	            employee.setId((Long) result[0]);
+	            employee.setFullName((String) result[1]);
+	            employee.setEmail((String) result[2]);
+	            employee.setJobProfile((String) result[3]);
+	            employee.setMobileNo((Long) result[4]);
+	            employee.setPermanentAddress((String) result[5]);
+	            employee.setGender((String) result[6]);
+
+	            employees.add(employee);
+	        }
+			  return employees;
+	}
+
+
+
+	@Override
+	public List<EmployeeDto> getAllMisResponseValue() {
+		 List<Object[]> employeeObjects = employeeRepository.findEmployeeOnMisProcesses();
+		 List<EmployeeDto> employees = new ArrayList<>();
+			for (Object[] result : employeeObjects) {
+	            EmployeeDto employee = new EmployeeDto();
+	            employee.setId((Long) result[0]);
+	            employee.setFullName((String) result[1]);
+	            employee.setEmail((String) result[2]);
+	            employee.setJobProfile((String) result[3]);
+	            employee.setMobileNo((Long) result[4]);
+	            employee.setPermanentAddress((String) result[5]);
+	            employee.setGender((String) result[6]);
+
+	            employees.add(employee);
+	        }
+			  return employees;
+	}
+	
+	@Override
+	public List<EmployeeDto> getEmpDetailsInfoById(Long employeeId) {
+		// TODO Auto-generated method stub
+		List <Object[]> empObj = employeeRepository.getEmpDetailsInfoById(employeeId);
+//		 List<EmployeeDto> employees = new ArrayList<>();
+//		 for (Object[] result : empObj) {
+//	            EmployeeDto employee = new EmployeeDto();
+//	            employee.setId((Long) result[0]);
+//	            employee.setFullName((String) result[1]);
+//	            employee.setAadhaarNumber((String) result[2]);
+//	            employee.setEmail((String) result[3]);
+//	            // Assuming creationDate is of type java.util.Date or java.sql.Timestamp
+//	            employee.setCreationDate((Date) result[4]);
+//	            employee.setStatus((String) result[5]);
+//	            // Assuming changesDateTime is of type java.util.Date or java.sql.Timestamp
+//	            employee.setChangesDateTime((Date) result[6]);
+//
+//	            employees.add(employee);
+//	        }
+//
+//	        return employees;
+		 Map<Long, EmployeeDto> employeeMap = new HashMap<>();
+
+	        for (Object[] result : empObj) {
+	            Long id = (Long) result[0];
+	            String fullName = (String) result[1];
+	            String aadhaarNumber = (String) result[2];
+	            String email = (String) result[3];
+	            // Assuming creationDate is of type java.util.Date or java.sql.Timestamp
+	            Date creationDate = (Date) result[4];
+	            String status = (String) result[5];
+	            // Assuming changesDateTime is of type java.util.Date or java.sql.Timestamp
+	            Date changesDateTime = (Date) result[6];
+
+	            if (!employeeMap.containsKey(id)) {
+	                EmployeeDto employeeDetailsDto = new EmployeeDto();
+	                employeeDetailsDto.setId(id);
+	                employeeDetailsDto.setFullName(fullName);
+	                employeeDetailsDto.setAadhaarNumber(aadhaarNumber);
+	                employeeDetailsDto.setEmail(email);
+	                employeeDetailsDto.setCreationDate(creationDate);
+	                
+	                List<StatusHistory> statusHistoryList = new ArrayList<>();
+	                employeeDetailsDto.setStatusHistories(statusHistoryList);
+	                employeeMap.put(id, employeeDetailsDto);
+	            }
+
+	            StatusHistory statusHistory = new StatusHistory();
+	            statusHistory.setStatus(status);
+	            statusHistory.setChangesDateTime(changesDateTime);
+	            employeeMap.get(id).getStatusHistories().add(statusHistory);
+	        }
+
+	        return new ArrayList<>(employeeMap.values());
+	    }
+	  	
 	
 	private void assignManagerForInterview(InterviewProcesses interviewProcesses) {
 		 Long managerId = null;
@@ -320,10 +458,28 @@ public class EmployeeServiceImpl implements EmployeeService {
 		 StatusHistory statusHistory = new StatusHistory();
 	        statusHistory.setEmployee(employee);
 	        statusHistory.setInterviewProcess(savedInterviewProcess);
-	        statusHistory.setStatus(newStatus);	     
-	        statusHistory.setChangesDateTime(LocalDateTime.now());     
+	        statusHistory.setStatus(newStatus);
+	        LocalDateTime currentDateTime = LocalDateTime.now();
+	        Date currentDate = Date.from(currentDateTime.atZone(ZoneId.systemDefault()).toInstant());
+	        statusHistory.setChangesDateTime(currentDate);     
 //         interviewProcessesRepository.save(savedInterviewProcess);
+
 	        statusHistoryRepository.save(statusHistory);
 	}
+
+
+
+
+
+
+
+	
+
+
+
+
+
+
+
 	
 }

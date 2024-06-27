@@ -43,9 +43,24 @@ public interface EmployeeService {
 	
 	
 	List<EmployeeDto> getAllHrResponseValue();
-
+    
+	List<EmployeeDto> getAllHdfcResponseValue();
+	 
+	List<EmployeeDto> getAllIciciResponseValue();
+	
+	List<EmployeeDto> getAllMisResponseValue();
+	
+	
 	EmployeeDto updateEmployeeMrResponseStatus(Long employeeId, String newStatus);
 
 	List<EmployeeDto> getEmployeeWithSelectedValuefiled();
+
+	List<EmployeeDto> getEmpDetailsInfoById(Long employeeId);
+
+	
+
+	
+
+
     
 }

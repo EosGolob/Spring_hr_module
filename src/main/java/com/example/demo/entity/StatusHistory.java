@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -42,6 +43,7 @@ public class StatusHistory {
 	private String status;
 	
 	@Column(nullable = false)
-	private LocalDateTime changesDateTime;
+	private Date changesDateTime;
+//	private LocalDateTime changesDateTime;
 		
 }

@@ -14,6 +14,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -108,4 +109,13 @@ public class Employee {
 	@Column(name = "aadhar_filename")
 	private String aadharFilename;
 	
+	@Column(name = "creation_date")
+	private Date creationDate;
+
+	
+	@PrePersist
+	protected void onCreate() {
+	    creationDate = new Date();
+	}
+
 }

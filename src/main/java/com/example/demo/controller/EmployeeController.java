@@ -172,6 +172,24 @@ public class EmployeeController {
 		return ResponseEntity.ok(employees);
 	}
 	
+	@GetMapping("/managerHdfcResponeField")
+	public ResponseEntity<List<EmployeeDto>> hdfcmanagerResponseField() {
+		List<EmployeeDto> employees = employeeService.getAllHdfcResponseValue();
+		return ResponseEntity.ok(employees);
+	}
+	
+	@GetMapping("/managerIciciResponeField")
+	public ResponseEntity<List<EmployeeDto>> icicmanagerResponseField() {
+		List<EmployeeDto> employees = employeeService.getAllIciciResponseValue();
+		return ResponseEntity.ok(employees);
+	}
+	
+	@GetMapping("/managerMisResponeField")
+	public ResponseEntity<List<EmployeeDto>> mismanagerResponseField() {
+		List<EmployeeDto> employees = employeeService.getAllMisResponseValue();
+		return ResponseEntity.ok(employees);
+	}
+	
 	@PutMapping("/{id}/mRResponse")
 	public ResponseEntity<EmployeeDto> updateEmployeeMrRespone(@PathVariable("id") Long employeeId,
 			@RequestBody Map<String, String> requestBody) {
@@ -180,5 +198,10 @@ public class EmployeeController {
 		System.out.println("new Status value" + newStatus);
 		return new ResponseEntity<>(updatedEmployee, HttpStatus.OK);
 	}
-
+   @GetMapping("/empDetailsInfo/{id}")
+   public ResponseEntity <List<EmployeeDto>> empDetailsInfo(@PathVariable("id") Long employeeId){
+	   List<EmployeeDto> employees = employeeService.getEmpDetailsInfoById(employeeId);
+	return ResponseEntity.ok(employees); 
+	   
+   }
 }

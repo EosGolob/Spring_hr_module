@@ -1,6 +1,8 @@
 package com.example.demo.serviceImpl;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +29,9 @@ public class StatusHistoryServiceImpl implements StatusHistoryService {
 		initialStatus.setId(generateUniqueId());
 		initialStatus.setEmployee(employee);
 		initialStatus.setStatus("Active");
-		initialStatus.setChangesDateTime(LocalDateTime.now());
+		LocalDateTime currentDateTime = LocalDateTime.now();
+	    Date currentDate = Date.from(currentDateTime.atZone(ZoneId.systemDefault()).toInstant());
+		initialStatus.setChangesDateTime(currentDate);
 		statusHistoryRepository.save(initialStatus);
 
 //	        employee.setStatus(null);
@@ -47,7 +51,9 @@ public class StatusHistoryServiceImpl implements StatusHistoryService {
 			StatusHistory statusHistory = new StatusHistory();
 			statusHistory.setEmployee(employee);
 			statusHistory.setStatus(newStatus);
-			statusHistory.setChangesDateTime(LocalDateTime.now());
+			LocalDateTime currentDateTime = LocalDateTime.now();
+		    Date currentDate = Date.from(currentDateTime.atZone(ZoneId.systemDefault()).toInstant());
+			statusHistory.setChangesDateTime(currentDate);
 			statusHistoryRepository.save(statusHistory);
 			employeeRepository.save(employee);
 //			employee.setStatus(newStatus);
