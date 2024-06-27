@@ -121,10 +121,34 @@ class UsersService{
         const role =  localStorage.getItem('role') 
         return role === 'USER'
     }
-
+    static isHdfc(){
+        const role =  localStorage.getItem('role')
+        return role === 'HDFC'
+    }
+    static isIcici(){
+        const role =  localStorage.getItem('role')
+        return role === 'ICICI'
+    }
+    static isMis(){
+        const role = localStorage.getItem('role')
+        return role === 'MIS'
+    }
     static adminOnly(){
         
         return this.isAuthenticated() && this.isAdmin();
+    }
+    static userOnly(){
+        return this.isAuthenticated() && this.isUser();
+    }
+    static hdfcOnly(){
+        return this.isAuthenticated() && this.isHdfc();
+    
+    }
+    static iciciOnly(){
+        return this.isAuthenticated() && this.isIcici();
+    }
+    static misOnly(){
+        return this.isAuthenticated() && this.isMis();
     }
 }
 

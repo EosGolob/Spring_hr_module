@@ -29,9 +29,9 @@ function ProfilePage() {
             <p>Name: {profileInfo.name}</p>
             <p>Email: {profileInfo.email}</p>
             <p>City: {profileInfo.city}</p>
-            {profileInfo.role === "ADMIN" && (
+            {/* {profileInfo.role === "ADMIN" && (
                 <button><Link to={`/update-user/${profileInfo.id}`}>Update This Profile</Link></button>
-            )}
+            )} */}
         </div>
     );
 }

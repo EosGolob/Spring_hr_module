@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import {selectInterviewProcess } from './services/EmployeeService'
-import {listEmployees} from './services/EmployeeServiceJWT';
-// import EmployeeServiceJWT from '../services/EmployeeServiceJWT'
+import {listEmployees,selectInterviewProcess} from './services/EmployeeServiceJWT';
 
 const EmployeeProcessSelection = () => {
     const [employees, setEmployees] = useState([]);

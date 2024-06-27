@@ -1,7 +1,7 @@
 import React, { useState, useEffect} from 'react'
-import { getlistOfManagerResponeField,MrResponseSubmit } from './services/EmployeeServiceJWT';
+import { getlistOfManagerMisResponeField,MrResponseSubmit } from '../services/EmployeeServiceJWT';
 
-const MrInterviewResponse = () => {
+const MisMrResponsePage = () => {
 
   const [employees, setEmployees] = useState([]);
   const [selectedResponse, setSelectedResponse] = useState({}); 
@@ -12,7 +12,7 @@ const MrInterviewResponse = () => {
 
   
   function getAllEmployees() {
-    getlistOfManagerResponeField()
+    getlistOfManagerMisResponeField()
       .then((response) => {
         console.log('Response Data:', response.data);
         setEmployees(response.data);
@@ -97,4 +97,4 @@ const MrInterviewResponse = () => {
   
 };
 
-export default MrInterviewResponse
+export default MisMrResponsePage
