@@ -189,6 +189,19 @@ public class EmployeeController {
 		List<EmployeeDto> employees = employeeService.getAllMisResponseValue();
 		return ResponseEntity.ok(employees);
 	}
+	@GetMapping("/rejectedEmpdetails")
+	public ResponseEntity<List<EmployeeDto>> rejectedEmployees() {
+		List<EmployeeDto> employees = employeeService.getAllRejectedEmp();
+		return ResponseEntity.ok(employees);
+	}
+	
+	@GetMapping("/approvedEmpdetails")
+	public ResponseEntity<List<EmployeeDto>> approvedEmployees() {
+		List<EmployeeDto> employees = employeeService.getAllApprovedEmp();
+		return ResponseEntity.ok(employees);
+	}
+	
+	
 	
 	@PutMapping("/{id}/mRResponse")
 	public ResponseEntity<EmployeeDto> updateEmployeeMrRespone(@PathVariable("id") Long employeeId,

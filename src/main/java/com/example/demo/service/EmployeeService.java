@@ -57,6 +57,10 @@ public interface EmployeeService {
 
 	List<EmployeeDto> getEmpDetailsInfoById(Long employeeId);
 
+	List<EmployeeDto> getAllRejectedEmp();
+
+	List<EmployeeDto> getAllApprovedEmp();
+
 	
 
 	
