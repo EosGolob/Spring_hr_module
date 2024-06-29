@@ -32,23 +32,29 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 	@Query("SELECT e.id,e.fullName,e.email, e.jobProfile, e.mobileNo, e.permanentAddress ,e.gender From Employee e where e.initialStatus = 'Active'")
 	List<Object[]> getEmployeeWithSelectedValue();
 	
+//	@Query("SELECT e.id,e.fullName,e.email, e.jobProfile, e.mobileNo, e.permanentAddress ,e.gender " +
+//	           "FROM Employee e " +
+//	           "JOIN e.interviewProcesses ip " +
+//	           "WHERE ip.processName = 'HDFC'")
 	@Query("SELECT e.id,e.fullName,e.email, e.jobProfile, e.mobileNo, e.permanentAddress ,e.gender " +
-	           "FROM Employee e " +
-	           "JOIN e.interviewProcesses ip " +
-	           "WHERE ip.processName = 'HDFC'")
+	           "FROM Employee e WHERE e.processesStatus = 'HDFC' ")
 	List<Object[]> findEmployeeOnHdfcProcesses();
 
 	
+//	@Query("SELECT e.id,e.fullName,e.email, e.jobProfile, e.mobileNo, e.permanentAddress ,e.gender " +
+//	           "FROM Employee e " +
+//	           "JOIN e.interviewProcesses ip " +
+//	           "WHERE ip.processName = 'MIS'")
 	@Query("SELECT e.id,e.fullName,e.email, e.jobProfile, e.mobileNo, e.permanentAddress ,e.gender " +
-	           "FROM Employee e " +
-	           "JOIN e.interviewProcesses ip " +
-	           "WHERE ip.processName = 'MIS'")
+	           "FROM Employee e WHERE e.processesStatus = 'MIS' ")
 	List<Object[]> findEmployeeOnMisProcesses();
     
+//	@Query("SELECT e.id,e.fullName,e.email, e.jobProfile, e.mobileNo, e.permanentAddress ,e.gender " +
+//	           "FROM Employee e " +
+//	           "JOIN e.interviewProcesses ip " +
+//	           "WHERE ip.processName = 'ICICI'")
 	@Query("SELECT e.id,e.fullName,e.email, e.jobProfile, e.mobileNo, e.permanentAddress ,e.gender " +
-	           "FROM Employee e " +
-	           "JOIN e.interviewProcesses ip " +
-	           "WHERE ip.processName = 'ICICI'")
+	           "FROM Employee e WHERE e.processesStatus = 'ICICI' ")
 	List<Object[]> findEmployeeOnIciciProcesses();
     
 	 @Query("SELECT e.id, e.fullName, e.aadhaarNumber, e.email, e.creationDate, sh.status, sh.changesDateTime " +
@@ -56,6 +62,13 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 	           "JOIN StatusHistory sh ON e.id = sh.employee.id " +
 	           "WHERE e.id = :id")
 	List<Object[]> getEmpDetailsInfoById(@Param("id") Long employeeId);
+
+	@Query("SELECT e.id,e.fullName,e.email, e.jobProfile, e.mobileNo, e.permanentAddress ,e.gender " +
+	           "FROM Employee e WHERE e.managerStatus = 'Rejected' ")
+	List<Object[]> getRejectedEmployeeInfo();
+	@Query("SELECT e.id,e.fullName,e.email, e.jobProfile, e.mobileNo, e.permanentAddress ,e.gender " +
+	           "FROM Employee e WHERE e.managerStatus = 'Approved' ")
+	List<Object[]> getApprovedEmployeeInfo();
 	
 	
 }

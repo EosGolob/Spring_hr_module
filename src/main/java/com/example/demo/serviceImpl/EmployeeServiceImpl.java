@@ -234,13 +234,15 @@ public class EmployeeServiceImpl implements EmployeeService {
 		Employee employee = employeeRepository.findById(employeeId)
 				.orElseThrow(()->  new RuntimeException("Employee not found"));
 		interviewProcesses.setEmployee(employee);
+		
 		assignManagerForInterview(interviewProcesses);
-		
-		
+		String processNameUpdateInEmp =interviewProcesses.getProcessName();
+		employee.setProcessesStatus(processNameUpdateInEmp);	
 		InterviewProcesses savedInterviewProcess = interviewProcessesRepository.save(interviewProcesses);
 //		interviewProcesses.setManagerDetails(managerId);
 		setStatusHistoryRecored(employeeId,savedInterviewProcess, newStatus,employee)  ; 
-		employee.setProcessesStatus(newStatus);
+		
+//		employee.setProcessesStatus(newStatus);
 		    
 		   
 	}
@@ -279,6 +281,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	public EmployeeDto updateEmployeeMrResponseStatus(Long employeeId, String newStatus) {
 		Employee employee = employeeRepository.findById(employeeId).orElseThrow(()-> new ResourceNotFoundException("Employee not found"));
 		employee.setManagerStatus(newStatus);
+		employee.setProcessesStatus(newStatus);
 		statusHistoryService.trackStatusChange(employee, newStatus);
 		return EmployeeMapper.mapToEmployeeDto(employee);
 	}
@@ -368,6 +371,45 @@ public class EmployeeServiceImpl implements EmployeeService {
 			  return employees;
 	}
 	
+	
+	@Override
+	public List<EmployeeDto> getAllRejectedEmp() {
+		 List<Object[]> employeeObjects = employeeRepository.getRejectedEmployeeInfo();
+		 List<EmployeeDto> employees = new ArrayList<>();
+			for (Object[] result : employeeObjects) {
+	            EmployeeDto employee = new EmployeeDto();
+	            employee.setId((Long) result[0]);
+	            employee.setFullName((String) result[1]);
+	            employee.setEmail((String) result[2]);
+	            employee.setJobProfile((String) result[3]);
+	            employee.setMobileNo((Long) result[4]);
+	            employee.setPermanentAddress((String) result[5]);
+	            employee.setGender((String) result[6]);
+
+	            employees.add(employee);
+	        }
+			  return employees;
+	}
+	@Override
+	public List<EmployeeDto> getAllApprovedEmp() {
+		 List<Object[]> employeeObjects = employeeRepository.getApprovedEmployeeInfo();
+		 List<EmployeeDto> employees = new ArrayList<>();
+			for (Object[] result : employeeObjects) {
+	            EmployeeDto employee = new EmployeeDto();
+	            employee.setId((Long) result[0]);
+	            employee.setFullName((String) result[1]);
+	            employee.setEmail((String) result[2]);
+	            employee.setJobProfile((String) result[3]);
+	            employee.setMobileNo((Long) result[4]);
+	            employee.setPermanentAddress((String) result[5]);
+	            employee.setGender((String) result[6]);
+
+	            employees.add(employee);
+	        }
+			  return employees;
+	}
+
+
 	@Override
 	public List<EmployeeDto> getEmpDetailsInfoById(Long employeeId) {
 		// TODO Auto-generated method stub
@@ -468,6 +510,19 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 
+
+
+
+
+
+	
+
+
+
+
+
+
+	
 
 
 
