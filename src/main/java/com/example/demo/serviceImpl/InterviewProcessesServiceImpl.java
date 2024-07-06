@@ -44,6 +44,13 @@ public class InterviewProcessesServiceImpl implements InterviewProcessesService 
 				.collect(Collectors.toList());
 	}
 
+	@Override
+	public List<InterviewsRequestDto> getAttendedProcesses(Long employeeId) {
+		List<InterviewProcesses> interviewProcessesList = interviewProcessesRepository.interviewProcessAttenndedByEmp(employeeId);
+		return interviewProcessesList.stream().map(InterviewProcessesMapper::mapToInterviewProcessesDto)
+				.collect(Collectors.toList());
+	}
+
 	
 	
 }

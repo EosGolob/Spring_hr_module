@@ -21,6 +21,7 @@ public class StatusHistoryDto {
     private Long id;
     private String status;
 //    private LocalDateTime changesDateTime;
+    private String hrName;
     private Date changesDateTime;
     
     private InterviewProcesses interviewProcesses;

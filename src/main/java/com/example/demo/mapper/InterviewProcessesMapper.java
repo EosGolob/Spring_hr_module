@@ -13,7 +13,8 @@ public class InterviewProcessesMapper {
 	                interviewProcesses.getProcessName(),
 	                interviewProcesses.getInterviewDate(),
 	                interviewProcesses.getInterviewTime(),
-	                interviewProcesses.getStatus()
+	                interviewProcesses.getStatus(),
+	                interviewProcesses.getScheduledBy()
 	        );
 	    }
 

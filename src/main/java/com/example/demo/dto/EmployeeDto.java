@@ -47,6 +47,6 @@ public class EmployeeDto {
 	private String source;
 	private String subSource;
 	private Date creationDate;
-   
+	private String lastInterviewAssin;
     
 }

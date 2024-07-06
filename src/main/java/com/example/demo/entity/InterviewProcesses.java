@@ -49,6 +49,9 @@ public class InterviewProcesses {
 	@Column(name = "status")
 	private String status;
 	
+	@Column(name = "scheduled_By")
+	private String scheduledBy;
+	
 	@ManyToOne(fetch = FetchType.LAZY , optional = true)
 	@JoinColumn(name = "managerDetails_id")
 	private ManagerDetails managerDetails;

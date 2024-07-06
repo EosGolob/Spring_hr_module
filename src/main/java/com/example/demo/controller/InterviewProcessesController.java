@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 @CrossOrigin("*")
 @RestController
 @RequestMapping("/api/interviews")
@@ -37,5 +40,10 @@ public class InterviewProcessesController {
         return new ResponseEntity<>(interviewProcessesList, HttpStatus.OK);
     }
     
-
+    @GetMapping("/getAttendenedInterview/{employeeId}")
+    public ResponseEntity<List<InterviewsRequestDto>> getAttentendedInterviewByEmployee(@PathVariable("employeeId") Long employeeid) {
+    	List<InterviewsRequestDto> interviewProcessesList = interviewProcessesService.getAttendedProcesses(employeeid);
+        return new ResponseEntity<>(interviewProcessesList,HttpStatus.OK);
+    }
+    
 }

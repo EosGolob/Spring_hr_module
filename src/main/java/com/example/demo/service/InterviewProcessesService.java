@@ -12,7 +12,7 @@ public interface InterviewProcessesService {
 	
 	
 	
-
+   List<InterviewsRequestDto> getAttendedProcesses(Long employeeId);
 //	 public List<InterviewProcesses> getInterviewProcessesByStatus(String status);
 //	  
 	    

@@ -141,6 +141,7 @@ public class EmployeeController {
 	public ResponseEntity<Void> assignInterviewProcess(@PathVariable Long employeeId,
 			@RequestBody InterviewProcesses interviewProcesses) {
 		String newStatus = interviewProcesses.getStatus();
+//		String userNameOf = interviewProcesses.getScheduledBy();
 		employeeService.assignInterviewProcessAndUpdateStatus(employeeId, interviewProcesses, newStatus);
 		return ResponseEntity.ok().build();
 	}
@@ -151,19 +152,14 @@ public class EmployeeController {
 //			return ResponseEntity.ok(employees);
 //	    }
 
+	
+
+
+	
 	@GetMapping("/employees-schedule-interview")
 	public ResponseEntity<List<EmployeeDto>> employeeScheduleInterview() {
 		List<EmployeeDto> employees = employeeService.getAllScheduleInterview();
 		return ResponseEntity.ok(employees);
-	}
-
-	@PutMapping("/{id}/hrResponse")
-	public ResponseEntity<EmployeeDto> updateEmployeehrRespone(@PathVariable("id") Long employeeId,
-			@RequestBody Map<String, String> requestBody) {
-		String newStatus = requestBody.get("newStatus");
-		EmployeeDto updatedEmployee = employeeService.updateEmployeeHrResponseStatus(employeeId, newStatus);
-		System.out.println("new Status value" + newStatus);
-		return new ResponseEntity<>(updatedEmployee, HttpStatus.OK);
 	}
 
 	@GetMapping("/managerResponeField")
@@ -207,7 +203,18 @@ public class EmployeeController {
 	public ResponseEntity<EmployeeDto> updateEmployeeMrRespone(@PathVariable("id") Long employeeId,
 			@RequestBody Map<String, String> requestBody) {
 		String newStatus = requestBody.get("newStatus");
-		EmployeeDto updatedEmployee = employeeService.updateEmployeeMrResponseStatus(employeeId, newStatus);
+		String responseSubmitbyName = requestBody.get("mrUserName");
+		EmployeeDto updatedEmployee = employeeService.updateEmployeeMrResponseStatus(employeeId, newStatus,responseSubmitbyName);
+		System.out.println("new Status value" + newStatus);
+		return new ResponseEntity<>(updatedEmployee, HttpStatus.OK);
+	}
+	
+	@PutMapping("/{id}/hrResponse")
+	public ResponseEntity<EmployeeDto> updateEmployeehrRespone(@PathVariable("id") Long employeeId,
+			@RequestBody Map<String, String> requestBody) {
+		String newStatus = requestBody.get("newStatus");
+		String responseSubmitbyName = requestBody.get("hrUserName");
+		EmployeeDto updatedEmployee = employeeService.updateEmployeeHrResponseStatus(employeeId, newStatus,responseSubmitbyName);
 		System.out.println("new Status value" + newStatus);
 		return new ResponseEntity<>(updatedEmployee, HttpStatus.OK);
 	}

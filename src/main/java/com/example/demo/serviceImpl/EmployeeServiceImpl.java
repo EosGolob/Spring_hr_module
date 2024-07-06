@@ -129,11 +129,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 	
 	@Override
 	public List<EmployeeDto> getEmployeeWithSelectedValuefiled() {
-		// TODO Auto-generated method stub
+
 		List<Object[]> results = employeeRepository.getEmployeeWithSelectedValue();
 		List<EmployeeDto> employees = new ArrayList<>();
-//		return employees.stream().map((employee) -> EmployeeMapper.mapToEmployeeDto(employee))
-//				.collect(Collectors.toList());
 		
 		for (Object[] result : results) {
             EmployeeDto employee = new EmployeeDto();
@@ -143,7 +141,10 @@ public class EmployeeServiceImpl implements EmployeeService {
             employee.setJobProfile((String) result[3]);
             employee.setMobileNo((Long) result[4]);
             employee.setPermanentAddress((String) result[5]);
-            employee.setGender((String) result[6]);
+            employee.setCurrentAddress((String) result[6]);
+            employee.setGender((String) result[7]);
+            employee.setCreationDate((Date) result[8]);
+        
 
             employees.add(employee);
         }
@@ -224,7 +225,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	@Override
 	public EmployeeDto updateEmployeeStatus(Long employeeId, String newStatus) {
 		Employee employee = employeeRepository.findById(employeeId).orElseThrow(()-> new ResourceNotFoundException("Employee not found"));
-		statusHistoryService.trackStatusChange(employee, newStatus);
+		statusHistoryService.trackStatusChange(employee, newStatus ,null);
 		return EmployeeMapper.mapToEmployeeDto(employee);
 	}
 
@@ -237,7 +238,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 		
 		assignManagerForInterview(interviewProcesses);
 		String processNameUpdateInEmp =interviewProcesses.getProcessName();
-		employee.setProcessesStatus(processNameUpdateInEmp);	
+		employee.setProcessesStatus(processNameUpdateInEmp);
+		employee.setLastInterviewAssin(processNameUpdateInEmp);
 		InterviewProcesses savedInterviewProcess = interviewProcessesRepository.save(interviewProcesses);
 //		interviewProcesses.setManagerDetails(managerId);
 		setStatusHistoryRecored(employeeId,savedInterviewProcess, newStatus,employee)  ; 
@@ -255,12 +257,12 @@ public class EmployeeServiceImpl implements EmployeeService {
 		return emailExists || addharnoExists;
 	}
 
-	@Override
-	public List<EmployeeDto> getAllScheduleInterview() {
-		List<Employee> employees = employeeRepository.findEmployeesWithScheduledInterviews();
-		return employees.stream().map((employee) -> EmployeeMapper.mapToEmployeeDto(employee))
-				.collect(Collectors.toList());
-	}
+//	@Override
+//	public List<EmployeeDto> getAllScheduleInterview() {
+//		List<Employee> employees = employeeRepository.findEmployeesWithScheduledInterviews();
+//		return employees.stream().map((employee) -> EmployeeMapper.mapToEmployeeDto(employee))
+//				.collect(Collectors.toList());
+//	}
 //	@Override
 //	public List<EmployeeDto> getEmployeesByInterviewProcessStatus(String status) {
 //		List<EmployeeDto> employees = employeeRepository.findByInterviewProcessStatus(status);
@@ -270,20 +272,40 @@ public class EmployeeServiceImpl implements EmployeeService {
 //	}
 
 	@Override
-	public EmployeeDto updateEmployeeHrResponseStatus(Long employeeId, String newStatus) {
+	public EmployeeDto updateEmployeeHrResponseStatus(Long employeeId, String newStatus , String responseSubmitbyName) {
 		Employee employee = employeeRepository.findById(employeeId).orElseThrow(()-> new ResourceNotFoundException("Employee not found"));
 		employee.setHrStatus(newStatus);
-		statusHistoryService.trackStatusChange(employee, newStatus);
+		statusHistoryService.trackStatusChange(employee, newStatus,responseSubmitbyName);
 		return EmployeeMapper.mapToEmployeeDto(employee);
 	}
 	
 	@Override
-	public EmployeeDto updateEmployeeMrResponseStatus(Long employeeId, String newStatus) {
+	public EmployeeDto updateEmployeeMrResponseStatus(Long employeeId, String newStatus , String responseSubmitbyname) {
 		Employee employee = employeeRepository.findById(employeeId).orElseThrow(()-> new ResourceNotFoundException("Employee not found"));
 		employee.setManagerStatus(newStatus);
 		employee.setProcessesStatus(newStatus);
-		statusHistoryService.trackStatusChange(employee, newStatus);
+		statusHistoryService.trackStatusChange(employee, newStatus ,responseSubmitbyname);
 		return EmployeeMapper.mapToEmployeeDto(employee);
+	}
+	
+	@Override
+	public List<EmployeeDto> getAllScheduleInterview() {
+		 List<Object[]> employeeObjects = employeeRepository.findEmployeesWithScheduledInterviews();
+		 List<EmployeeDto> employees = new ArrayList<>();
+
+			for (Object[] result : employeeObjects) {
+	            EmployeeDto employee = new EmployeeDto();
+	            employee.setId((Long) result[0]);
+	            employee.setFullName((String) result[1]);
+	            employee.setEmail((String) result[2]);
+	            employee.setJobProfile((String) result[3]);
+	            employee.setMobileNo((Long) result[4]);
+	            employee.setPermanentAddress((String) result[5]);
+	            employee.setGender((String) result[6]);
+                employee.setCreationDate((Date) result[7]);
+	            employees.add(employee);
+	        }
+			  return employees;
 	}
 
 	@Override
@@ -324,6 +346,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 	            employee.setMobileNo((Long) result[4]);
 	            employee.setPermanentAddress((String) result[5]);
 	            employee.setGender((String) result[6]);
+	            employee.setPreviousOrganisation((String) result[7]);
+	            employee.setProcessesStatus((String) result[8]);
+	            employee.setCreationDate((Date) result[9]);
 
 	            employees.add(employee);
 	        }
@@ -344,6 +369,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 	            employee.setMobileNo((Long) result[4]);
 	            employee.setPermanentAddress((String) result[5]);
 	            employee.setGender((String) result[6]);
+	            employee.setPreviousOrganisation((String) result[7]);
+	            employee.setProcessesStatus((String) result[8]);
+	            employee.setCreationDate((Date) result[9]);
 
 	            employees.add(employee);
 	        }
@@ -357,15 +385,17 @@ public class EmployeeServiceImpl implements EmployeeService {
 		 List<Object[]> employeeObjects = employeeRepository.findEmployeeOnMisProcesses();
 		 List<EmployeeDto> employees = new ArrayList<>();
 			for (Object[] result : employeeObjects) {
-	            EmployeeDto employee = new EmployeeDto();
-	            employee.setId((Long) result[0]);
-	            employee.setFullName((String) result[1]);
-	            employee.setEmail((String) result[2]);
-	            employee.setJobProfile((String) result[3]);
-	            employee.setMobileNo((Long) result[4]);
-	            employee.setPermanentAddress((String) result[5]);
-	            employee.setGender((String) result[6]);
-
+				 EmployeeDto employee = new EmployeeDto();
+		            employee.setId((Long) result[0]);
+		            employee.setFullName((String) result[1]);
+		            employee.setEmail((String) result[2]);
+		            employee.setJobProfile((String) result[3]);
+		            employee.setMobileNo((Long) result[4]);
+		            employee.setPermanentAddress((String) result[5]);
+		            employee.setGender((String) result[6]);
+		            employee.setPreviousOrganisation((String) result[7]);
+		            employee.setProcessesStatus((String) result[8]);
+		            employee.setCreationDate((Date) result[9]);
 	            employees.add(employee);
 	        }
 			  return employees;
@@ -385,6 +415,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 	            employee.setMobileNo((Long) result[4]);
 	            employee.setPermanentAddress((String) result[5]);
 	            employee.setGender((String) result[6]);
+	            employee.setPreviousOrganisation((String) result[7]);
+	            employee.setProcessesStatus((String) result[8]);
+	            employee.setCreationDate((Date) result[9]);
 
 	            employees.add(employee);
 	        }
@@ -403,6 +436,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	            employee.setMobileNo((Long) result[4]);
 	            employee.setPermanentAddress((String) result[5]);
 	            employee.setGender((String) result[6]);
+	            employee.setCreationDate((Date) result[7]);
 
 	            employees.add(employee);
 	        }
@@ -443,7 +477,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	            String status = (String) result[5];
 	            // Assuming changesDateTime is of type java.util.Date or java.sql.Timestamp
 	            Date changesDateTime = (Date) result[6];
-
+                String hrName = (String) result[7];
 	            if (!employeeMap.containsKey(id)) {
 	                EmployeeDto employeeDetailsDto = new EmployeeDto();
 	                employeeDetailsDto.setId(id);
@@ -460,6 +494,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	            StatusHistory statusHistory = new StatusHistory();
 	            statusHistory.setStatus(status);
 	            statusHistory.setChangesDateTime(changesDateTime);
+	            statusHistory.setHrName(hrName);
 	            employeeMap.get(id).getStatusHistories().add(statusHistory);
 	        }
 
@@ -501,6 +536,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	        statusHistory.setEmployee(employee);
 	        statusHistory.setInterviewProcess(savedInterviewProcess);
 	        statusHistory.setStatus(newStatus);
+	        statusHistory.setHrName(savedInterviewProcess.getScheduledBy());
 	        LocalDateTime currentDateTime = LocalDateTime.now();
 	        Date currentDate = Date.from(currentDateTime.atZone(ZoneId.systemDefault()).toInstant());
 	        statusHistory.setChangesDateTime(currentDate);     

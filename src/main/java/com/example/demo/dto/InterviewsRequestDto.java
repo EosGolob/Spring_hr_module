@@ -19,5 +19,5 @@ public class InterviewsRequestDto {
 	private Date interviewDate;
 	private String interviewTime;
 	private String status;	
-
+	private String scheduledBy;
 }

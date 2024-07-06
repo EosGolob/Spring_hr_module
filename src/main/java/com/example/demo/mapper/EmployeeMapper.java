@@ -38,7 +38,8 @@ public class EmployeeMapper {
 				employee.getExperience(),
 				employee.getSource(),
 				employee.getSubSource(),
-				employee.getCreationDate()
+				employee.getCreationDate(),
+				employee.getLastInterviewAssin()
 				);
 //		return employees;
 	}
@@ -72,7 +73,8 @@ public class EmployeeMapper {
 			  employeeDto.getStatusHistories(),
 			  employeeDto.getInterviewProcesses(),
 			  employeeDto.getAadharFilename(),
-			  employeeDto.getCreationDate()
+			  employeeDto.getCreationDate(),
+			  employeeDto.getLastInterviewAssin()
 			  );
 //	return emp;
   }

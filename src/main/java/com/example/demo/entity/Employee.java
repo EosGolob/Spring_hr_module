@@ -112,6 +112,8 @@ public class Employee {
 	@Column(name = "creation_date")
 	private Date creationDate;
 
+	@Column(name = "last_Interview_Assin")
+	private String lastInterviewAssin;
 	
 	@PrePersist
 	protected void onCreate() {

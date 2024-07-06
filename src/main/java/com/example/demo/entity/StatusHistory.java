@@ -42,6 +42,9 @@ public class StatusHistory {
 	@Column(nullable = false)
 	private String status;
 	
+	@Column(name = "hr_name")
+	private String hrName;
+	
 	@Column(nullable = false)
 	private Date changesDateTime;
 //	private LocalDateTime changesDateTime;

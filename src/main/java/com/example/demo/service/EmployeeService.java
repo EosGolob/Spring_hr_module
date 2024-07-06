@@ -39,8 +39,9 @@ public interface EmployeeService {
 
 	List<EmployeeDto> getAllScheduleInterview();
 
-	EmployeeDto updateEmployeeHrResponseStatus(Long employeeId, String newStatus);
+	EmployeeDto updateEmployeeHrResponseStatus(Long employeeId, String newStatus,String responseSubmitbyName);
 	
+	EmployeeDto updateEmployeeMrResponseStatus(Long employeeId, String newStatus,String responseSubmitbyName);
 	
 	List<EmployeeDto> getAllHrResponseValue();
     
@@ -51,7 +52,7 @@ public interface EmployeeService {
 	List<EmployeeDto> getAllMisResponseValue();
 	
 	
-	EmployeeDto updateEmployeeMrResponseStatus(Long employeeId, String newStatus);
+	
 
 	List<EmployeeDto> getEmployeeWithSelectedValuefiled();
 

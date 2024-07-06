@@ -15,7 +15,10 @@ public interface InterviewProcessesRepository extends JpaRepository<InterviewPro
 	    List<InterviewProcesses> findAllByEmployeeId(@Param("employeeId") Long employeeId);
 	    
 	    List<InterviewProcesses> findByEmployeeId(Long employeeId);
-	
+	    
+	    @Query("SELECT ip FROM InterviewProcesses ip WHERE ip.employee.id = :employeeId")
+	    List<InterviewProcesses> interviewProcessAttenndedByEmp(@Param("employeeId") Long employeeId);
+
 	    	   
 
 }

@@ -43,7 +43,7 @@ public class StatusHistoryServiceImpl implements StatusHistoryService {
 	}
 
 	@Override
-	public void trackStatusChange(Employee employee, String newStatus) {
+	public void trackStatusChange(Employee employee, String newStatus,String responseSubmitbyName) {
 
 		StatusHistory latestStatusHistory = statusHistoryRepository
 				.findTopByEmployeeOrderByChangesDateTimeDesc(employee);
@@ -51,6 +51,7 @@ public class StatusHistoryServiceImpl implements StatusHistoryService {
 			StatusHistory statusHistory = new StatusHistory();
 			statusHistory.setEmployee(employee);
 			statusHistory.setStatus(newStatus);
+			statusHistory.setHrName(responseSubmitbyName);
 			LocalDateTime currentDateTime = LocalDateTime.now();
 		    Date currentDate = Date.from(currentDateTime.atZone(ZoneId.systemDefault()).toInstant());
 			statusHistory.setChangesDateTime(currentDate);
