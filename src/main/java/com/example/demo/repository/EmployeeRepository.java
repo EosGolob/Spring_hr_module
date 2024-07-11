@@ -25,14 +25,19 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     List<Object[]> findEmployeesWithScheduledInterviews();
 	
 //	@Query("SELECT e.id,e.fullName,e.email, e.jobProfile, e.mobileNo, e.permanentAddress ,e.gender"+ " FROM Employee e "+" WHERE e.hrStatus = 'Approved' or e.hrStatus = 'Rejected'"+"ORDER BY e.creationDate ASC")
+//	@Query("SELECT e.id,e.fullName,e.email, e.jobProfile, e.mobileNo, e.permanentAddress ,e.gender " +
+//			 "FROM Employee e  WHERE e.hrStatus = 'Approved' or e.hrStatus = 'Rejected'")
 	@Query("SELECT e.id,e.fullName,e.email, e.jobProfile, e.mobileNo, e.permanentAddress ,e.gender " +
-			 "FROM Employee e  WHERE e.hrStatus = 'Approved' or e.hrStatus = 'Rejected'")
+			 "FROM Employee e  WHERE e.hrStatus = 'Select' or e.hrStatus = 'Reject'")
 	List<Object[]> findEmployeeWithHrResponseStatus();
 	
 	
+//	@Query("SELECT e.id, e.fullName, e.email, e.jobProfile, e.mobileNo, e.permanentAddress, e.currentAddress, e.gender,e.creationDate " +
+//		       "FROM Employee e " +
+//		       "WHERE e.hrStatus = 'Approve' AND e.processesStatus Is NUll")
 	@Query("SELECT e.id, e.fullName, e.email, e.jobProfile, e.mobileNo, e.permanentAddress, e.currentAddress, e.gender,e.creationDate " +
 		       "FROM Employee e " +
-		       "WHERE e.hrStatus = 'Approve' AND e.processesStatus Is NUll")
+		       "WHERE e.hrStatus = 'Select' AND e.processesStatus Is NUll")
 	List<Object[]> getEmployeeWithSelectedValue();
 
 	@Query("SELECT e.id,e.fullName,e.email, e.jobProfile, e.mobileNo, e.permanentAddress ,e.gender, e.previousOrganisation, e.processesStatus ,e.creationDate " +
@@ -49,19 +54,34 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 	           "FROM Employee e WHERE e.processesStatus = 'ICICI' ")
 	List<Object[]> findEmployeeOnIciciProcesses();
     
+	@Query("SELECT e.id,e.fullName,e.email, e.jobProfile, e.mobileNo, e.permanentAddress ,e.gender ,e.previousOrganisation,e.processesStatus , e.creationDate   " +
+	           "FROM Employee e WHERE e.processesStatus = :role")
+	List<Object[]> findEmployeesByRoleType(String role);
+	
 	 @Query("SELECT e.id, e.fullName, e.aadhaarNumber, e.email, e.creationDate,sh.status, sh.changesDateTime ,sh.hrName " +
 	           "FROM Employee e " +
 	           "JOIN StatusHistory sh ON e.id = sh.employee.id " +
 	           "WHERE e.id = :id")
 	List<Object[]> getEmpDetailsInfoById(@Param("id") Long employeeId);
+	
+	@Query("SELECT e.id,e.fullName,e.email, e.jobProfile, e.mobileNo, e.permanentAddress ,e.gender, e.creationDate  " +
+			 "FROM Employee e  WHERE e.hrStatus = 'Reject'")
+	List<Object[]> getHrRejectedEmployeeInfo();
 
+//	@Query("SELECT e.id,e.fullName,e.email, e.jobProfile, e.mobileNo, e.permanentAddress ,e.gender , e.previousOrganisation,e.processesStatus,e.creationDate " +
+//	           "FROM Employee e WHERE e.processesStatus = 'Rejected' ")
 	@Query("SELECT e.id,e.fullName,e.email, e.jobProfile, e.mobileNo, e.permanentAddress ,e.gender , e.previousOrganisation,e.processesStatus,e.creationDate " +
-	           "FROM Employee e WHERE e.processesStatus = 'Rejected' ")
+	           "FROM Employee e WHERE e.processesStatus = 'Reject' ")
 	List<Object[]> getRejectedEmployeeInfo();
 	
+//	@Query("SELECT e.id,e.fullName,e.email, e.jobProfile, e.mobileNo, e.permanentAddress ,e.gender , e.creationDate " +
+//	           "FROM Employee e WHERE e.managerStatus = 'Approved' ")
 	@Query("SELECT e.id,e.fullName,e.email, e.jobProfile, e.mobileNo, e.permanentAddress ,e.gender , e.creationDate " +
-	           "FROM Employee e WHERE e.managerStatus = 'Approved' ")
+	           "FROM Employee e WHERE e.managerStatus = 'Select' ")
 	List<Object[]> getApprovedEmployeeInfo();
+
+	
+
 	
 	
 }

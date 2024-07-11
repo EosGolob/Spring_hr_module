@@ -4,15 +4,12 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,25 +22,16 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.dto.EmployeeDto;
-import com.example.demo.dto.InterviewsRequestDto;
-import com.example.demo.entity.Employee;
 import com.example.demo.entity.InterviewProcesses;
-import com.example.demo.repository.StatusHistoryRepository;
 import com.example.demo.service.EmployeeService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 @CrossOrigin("*")
 @RestController
 @RequestMapping("/api/employees")
 public class EmployeeController {
 
-//	@Autowired
 	private EmployeeService employeeService;
 	
-	
-
-//	@Autowired
-//	private StatusHistoryRepository statusHistoryRepository;
 
 	@Value("${file.upload-dir}")
 	private String path;
@@ -52,21 +40,7 @@ public class EmployeeController {
 		this.employeeService = employeeService;
 	}
     
-	
-//	
-//	public EmployeeController(StatusHistoryRepository statusHistoryRepository) {
-//		this.statusHistoryRepository = statusHistoryRepository;
-//	}
 
-
-
-	// Build add Employee REST API
-//	@PostMapping
-//	public ResponseEntity<EmployeeDto> createEmployee(@RequestBody EmployeeDto employeeDto){
-//		EmployeeDto savedEmployee = employeeService.createEmployee(employeeDto);
-//		return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
-//		
-//	}
 	@PostMapping
 	public ResponseEntity<EmployeeDto> createEmployee(@RequestPart("employee") EmployeeDto employeeDto,
 			@RequestParam("image") MultipartFile image) {
@@ -74,11 +48,6 @@ public class EmployeeController {
 			if (employeeDto == null || image == null || image.isEmpty()) {
 				return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
 			}
-
-			// Debugging statements
-			System.out.println("EmployeeDto: " + employeeDto);
-			System.out.println("Image Original Filename: " + image.getOriginalFilename());
-
 			EmployeeDto savedEmployee = employeeService.createEmployee(employeeDto, image, path);
 			return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
 		} catch (IOException e) {
@@ -185,6 +154,15 @@ public class EmployeeController {
 		List<EmployeeDto> employees = employeeService.getAllMisResponseValue();
 		return ResponseEntity.ok(employees);
 	}
+	
+	@GetMapping("/getAllEmployeeOnManagersPage/{role}")
+	public ResponseEntity<List<EmployeeDto>> managerPageEmployeedetailsOnRole(@PathVariable String role) {
+		List<EmployeeDto> employees = employeeService.getAllResponseValueOnProcessType(role);	
+		return ResponseEntity.ok(employees);
+	}
+	
+	
+	
 	@GetMapping("/rejectedEmpdetails")
 	public ResponseEntity<List<EmployeeDto>> rejectedEmployees() {
 		List<EmployeeDto> employees = employeeService.getAllRejectedEmp();
@@ -197,6 +175,11 @@ public class EmployeeController {
 		return ResponseEntity.ok(employees);
 	}
 	
+	@GetMapping("/hrRejectedEmpDetails")
+	public ResponseEntity<List<EmployeeDto>> hrRejectedEmployeesDetails(){
+		List<EmployeeDto> employees = employeeService.getHrRejectedEmp();
+		return ResponseEntity.ok(employees);
+	}
 	
 	
 	@PutMapping("/{id}/mRResponse")
@@ -217,6 +200,17 @@ public class EmployeeController {
 		EmployeeDto updatedEmployee = employeeService.updateEmployeeHrResponseStatus(employeeId, newStatus,responseSubmitbyName);
 		System.out.println("new Status value" + newStatus);
 		return new ResponseEntity<>(updatedEmployee, HttpStatus.OK);
+	}
+	
+	@PutMapping("/{id}/rejectByhrReInterviewSchedule")
+	public ResponseEntity<EmployeeDto> reInterviewForRejectedByHr(@PathVariable("id") Long employeeId,
+			@RequestBody Map<String , String> requestBody){
+		String reSetHrField = requestBody.get("resetHrResponse");
+		String responseSubmitByName = requestBody.get("userName");
+		String newStatus = "Re Screening By Hr";
+		EmployeeDto updateEmployee = employeeService.updateEmployeeHrRejectedScreeningResponse(employeeId ,reSetHrField, newStatus, responseSubmitByName );
+		return new ResponseEntity<>(updateEmployee , HttpStatus.OK);
+		
 	}
    @GetMapping("/empDetailsInfo/{id}")
    public ResponseEntity <List<EmployeeDto>> empDetailsInfo(@PathVariable("id") Long employeeId){

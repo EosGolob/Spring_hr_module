@@ -18,30 +18,20 @@ public interface EmployeeService {
 //	EmployeeDto createEmployee(EmployeeDto employeeDto);
 		
 	EmployeeDto getEmployeeById(Long employeeId);
-
+	
 	List<EmployeeDto> getAllEmployees();
-
-	EmployeeDto updateEmployee(Long employeeId, EmployeeDto updatedEmployee);
 
 //	EmployeeDto updateEmployee(Long employeeId, EmployeeDto updatedEmployee, MultipartFile file) throws IOException;
 	
 	void deleteEmployee(Long employeeId);
 
-	EmployeeDto updateStatus(Long employeeId, String newStatus);
-
 	EmployeeDto createEmployee(EmployeeDto employeeDto, MultipartFile file, String path) throws IOException;
-
-	EmployeeDto updateEmployeeStatus(Long employeeId, String newStatus);
 	
 	void assignInterviewProcessAndUpdateStatus(Long employeeId, InterviewProcesses interviewProcesses, String newStatus);
 	
     boolean checkDuplicateEmailAndAddharNo(String email ,String aadhaarNumber);
 
 	List<EmployeeDto> getAllScheduleInterview();
-
-	EmployeeDto updateEmployeeHrResponseStatus(Long employeeId, String newStatus,String responseSubmitbyName);
-	
-	EmployeeDto updateEmployeeMrResponseStatus(Long employeeId, String newStatus,String responseSubmitbyName);
 	
 	List<EmployeeDto> getAllHrResponseValue();
     
@@ -51,9 +41,8 @@ public interface EmployeeService {
 	
 	List<EmployeeDto> getAllMisResponseValue();
 	
+	List<EmployeeDto> getAllResponseValueOnProcessType(String role);
 	
-	
-
 	List<EmployeeDto> getEmployeeWithSelectedValuefiled();
 
 	List<EmployeeDto> getEmpDetailsInfoById(Long employeeId);
@@ -62,8 +51,24 @@ public interface EmployeeService {
 
 	List<EmployeeDto> getAllApprovedEmp();
 
-	
+	List<EmployeeDto> getHrRejectedEmp();
 
+//	EmployeeDto updateEmployeeHrRejectedScreeningResponse(Long employeeId, String reSetHrField, String responseSubmitByName);
+	
+    EmployeeDto updateEmployeeHrResponseStatus(Long employeeId, String newStatus,String responseSubmitbyName);
+	
+	EmployeeDto updateEmployeeMrResponseStatus(Long employeeId, String newStatus,String responseSubmitbyName);
+	
+	EmployeeDto updateStatus(Long employeeId, String newStatus);
+	
+	EmployeeDto updateEmployeeStatus(Long employeeId, String newStatus);
+	
+	EmployeeDto updateEmployee(Long employeeId, EmployeeDto updatedEmployee);
+
+	EmployeeDto updateEmployeeHrRejectedScreeningResponse(Long employeeId, String reSetHrField, String newStatus,
+			String responseSubmitByName);
+
+	
 	
 
 

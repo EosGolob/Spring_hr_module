@@ -48,6 +48,7 @@ public class UsersManagementService {
 
 			resp.setStatusCode(500);
 			resp.setError(e.getMessage());
+			resp.setError("Incorrect password");
 		}
 		return resp;
 	}
@@ -69,7 +70,8 @@ public class UsersManagementService {
 		} catch (Exception e) {
 
 			response.setStatusCode(500);
-			response.setMessage(e.getMessage());
+//			response.setMessage(e.getMessage());
+			response.setMessage("Incorrect Password");
 		}
 		return response;
 	}

@@ -289,6 +289,14 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 	
 	@Override
+	public EmployeeDto updateEmployeeHrRejectedScreeningResponse(Long employeeId ,String reSetHrField , String newStatus, String responseSubmitbyname) {
+		Employee employee = employeeRepository.findById(employeeId).orElseThrow(()-> new ResourceNotFoundException("Employee not found"));
+		employee.setHrStatus(reSetHrField);
+		statusHistoryService.trackStatusChange(employee, newStatus, responseSubmitbyname);
+		return EmployeeMapper.mapToEmployeeDto(employee);
+	}
+	
+	@Override
 	public List<EmployeeDto> getAllScheduleInterview() {
 		 List<Object[]> employeeObjects = employeeRepository.findEmployeesWithScheduledInterviews();
 		 List<EmployeeDto> employees = new ArrayList<>();
@@ -401,6 +409,30 @@ public class EmployeeServiceImpl implements EmployeeService {
 			  return employees;
 	}
 	
+
+	@Override
+	public List<EmployeeDto> getAllResponseValueOnProcessType(String role) {
+		List<Object[]> employeeObjects = employeeRepository.findEmployeesByRoleType(role);
+	    List<EmployeeDto> employees = employeeObjects.stream()
+	            .map(result -> {
+	                EmployeeDto employee = new EmployeeDto();
+	                employee.setId((Long) result[0]);
+	                employee.setFullName((String) result[1]);
+	                employee.setEmail((String) result[2]);
+	                employee.setJobProfile((String) result[3]);
+	                employee.setMobileNo((Long) result[4]);
+	                employee.setPermanentAddress((String) result[5]);
+	                employee.setGender((String) result[6]);
+	                employee.setPreviousOrganisation((String) result[7]);
+	                employee.setProcessesStatus((String) result[8]);
+	                employee.setCreationDate((Date) result[9]);
+	                return employee;
+	            })
+	            .collect(Collectors.toList());
+		  return employees;
+	}
+
+	
 	
 	@Override
 	public List<EmployeeDto> getAllRejectedEmp() {
@@ -444,27 +476,32 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 
+
+
+	@Override
+	public List<EmployeeDto> getHrRejectedEmp() {
+		List<Object[]> employeeObjects = employeeRepository.getHrRejectedEmployeeInfo();
+		 List<EmployeeDto> employees = new ArrayList<>();
+			for (Object[] result : employeeObjects) {
+	            EmployeeDto employee = new EmployeeDto();
+	            employee.setId((Long) result[0]);
+	            employee.setFullName((String) result[1]);
+	            employee.setEmail((String) result[2]);
+	            employee.setJobProfile((String) result[3]);
+	            employee.setMobileNo((Long) result[4]);
+	            employee.setPermanentAddress((String) result[5]);
+	            employee.setGender((String) result[6]);
+	            employee.setCreationDate((Date) result[7]);
+
+	            employees.add(employee);
+	        }
+			  return employees;
+	}
+
+	
 	@Override
 	public List<EmployeeDto> getEmpDetailsInfoById(Long employeeId) {
-		// TODO Auto-generated method stub
 		List <Object[]> empObj = employeeRepository.getEmpDetailsInfoById(employeeId);
-//		 List<EmployeeDto> employees = new ArrayList<>();
-//		 for (Object[] result : empObj) {
-//	            EmployeeDto employee = new EmployeeDto();
-//	            employee.setId((Long) result[0]);
-//	            employee.setFullName((String) result[1]);
-//	            employee.setAadhaarNumber((String) result[2]);
-//	            employee.setEmail((String) result[3]);
-//	            // Assuming creationDate is of type java.util.Date or java.sql.Timestamp
-//	            employee.setCreationDate((Date) result[4]);
-//	            employee.setStatus((String) result[5]);
-//	            // Assuming changesDateTime is of type java.util.Date or java.sql.Timestamp
-//	            employee.setChangesDateTime((Date) result[6]);
-//
-//	            employees.add(employee);
-//	        }
-//
-//	        return employees;
 		 Map<Long, EmployeeDto> employeeMap = new HashMap<>();
 
 	        for (Object[] result : empObj) {
@@ -540,10 +577,27 @@ public class EmployeeServiceImpl implements EmployeeService {
 	        LocalDateTime currentDateTime = LocalDateTime.now();
 	        Date currentDate = Date.from(currentDateTime.atZone(ZoneId.systemDefault()).toInstant());
 	        statusHistory.setChangesDateTime(currentDate);     
-//         interviewProcessesRepository.save(savedInterviewProcess);
-
 	        statusHistoryRepository.save(statusHistory);
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+
 
 
 
