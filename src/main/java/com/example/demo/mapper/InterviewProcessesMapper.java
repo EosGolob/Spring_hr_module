@@ -14,7 +14,8 @@ public class InterviewProcessesMapper {
 	                interviewProcesses.getInterviewDate(),
 	                interviewProcesses.getInterviewTime(),
 	                interviewProcesses.getStatus(),
-	                interviewProcesses.getScheduledBy()
+	                interviewProcesses.getScheduledBy(),
+	                interviewProcesses.getRemarks()
 	        );
 	    }
 

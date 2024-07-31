@@ -1,17 +1,11 @@
 package com.example.demo.mapper;
 
-import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.example.demo.dto.EmployeeDto;
 import com.example.demo.entity.Employee;
 
 public class EmployeeMapper {
-//	@Autowired
-//	private ModelMapper modelMapper;
 	
 	public static  EmployeeDto mapToEmployeeDto(Employee employee) {
-//		EmployeeDto employees = this.modelMapper.map(employee,EmployeeDto.class);
 		return new EmployeeDto(
 				employee.getId(),
 				employee.getFullName(),
@@ -39,14 +33,15 @@ public class EmployeeMapper {
 				employee.getSource(),
 				employee.getSubSource(),
 				employee.getCreationDate(),
-				employee.getLastInterviewAssin()
+				employee.getLastInterviewAssin(),
+				employee.getReMarksByHr(),
+				employee.getReMarksByManager(),
+				employee.getProfileScreenRemarks()
 				);
-//		return employees;
 	}
 
 	
   public static Employee mapToEmployee(EmployeeDto employeeDto) {
-//	  Employee emp = this.modelMapper.map(employeeDto, Employee.class);
 	  return new Employee(
 			  employeeDto.getId(),
 			  employeeDto.getFullName(),
@@ -74,8 +69,11 @@ public class EmployeeMapper {
 			  employeeDto.getInterviewProcesses(),
 			  employeeDto.getAadharFilename(),
 			  employeeDto.getCreationDate(),
-			  employeeDto.getLastInterviewAssin()
+			  employeeDto.getLastInterviewAssin(),
+			  employeeDto.getReMarksByHr(),
+			  employeeDto.getReMarksByManager(),
+			  employeeDto.getProfileScreenRemarks()
+			  
 			  );
-//	return emp;
   }
 }

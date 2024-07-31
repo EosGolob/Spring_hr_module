@@ -20,4 +20,5 @@ public class InterviewsRequestDto {
 	private String interviewTime;
 	private String status;	
 	private String scheduledBy;
+	private String remarks;
 }

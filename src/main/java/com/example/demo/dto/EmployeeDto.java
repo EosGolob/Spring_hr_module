@@ -39,7 +39,6 @@ public class EmployeeDto {
     private String hrStatus;
     private String managerStatus;
     private List<StatusHistory> statusHistories;
-//    private List<StatusHistoryDto> statusHistories;
     private List<InterviewProcesses> interviewProcesses;
 	private String aadhaarNumber;
 	private String  languages;
@@ -48,5 +47,7 @@ public class EmployeeDto {
 	private String subSource;
 	private Date creationDate;
 	private String lastInterviewAssin;
-    
+	private String reMarksByHr;
+	private String reMarksByManager;
+	private String profileScreenRemarks;
 }

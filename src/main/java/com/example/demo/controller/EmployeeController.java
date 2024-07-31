@@ -31,7 +31,6 @@ import com.example.demo.service.EmployeeService;
 public class EmployeeController {
 
 	private EmployeeService employeeService;
-	
 
 	@Value("${file.upload-dir}")
 	private String path;
@@ -39,7 +38,6 @@ public class EmployeeController {
 	public EmployeeController(EmployeeService employeeService) {
 		this.employeeService = employeeService;
 	}
-    
 
 	@PostMapping
 	public ResponseEntity<EmployeeDto> createEmployee(@RequestPart("employee") EmployeeDto employeeDto,
@@ -71,12 +69,12 @@ public class EmployeeController {
 		return ResponseEntity.ok(employees);
 
 	}
-	
+
 	@GetMapping("/getAllEmp")
-	public ResponseEntity<List<EmployeeDto>> getAllEmp(){
+	public ResponseEntity<List<EmployeeDto>> getAllEmp() {
 		List<EmployeeDto> employees = employeeService.getEmployeeWithSelectedValuefiled();
-		return ResponseEntity.ok(employees);	
-		
+		return ResponseEntity.ok(employees);
+
 	}
 
 	// Build update Employee REST API
@@ -110,8 +108,10 @@ public class EmployeeController {
 	public ResponseEntity<Void> assignInterviewProcess(@PathVariable Long employeeId,
 			@RequestBody InterviewProcesses interviewProcesses) {
 		String newStatus = interviewProcesses.getStatus();
-//		String userNameOf = interviewProcesses.getScheduledBy();
+		String remarks = interviewProcesses.getRemarks();
+		employeeService.updateEmployeeRemarksHrAndManager(employeeId, remarks, null,null);
 		employeeService.assignInterviewProcessAndUpdateStatus(employeeId, interviewProcesses, newStatus);
+
 		return ResponseEntity.ok().build();
 	}
 
@@ -121,10 +121,6 @@ public class EmployeeController {
 //			return ResponseEntity.ok(employees);
 //	    }
 
-	
-
-
-	
 	@GetMapping("/employees-schedule-interview")
 	public ResponseEntity<List<EmployeeDto>> employeeScheduleInterview() {
 		List<EmployeeDto> employees = employeeService.getAllScheduleInterview();
@@ -136,86 +132,91 @@ public class EmployeeController {
 		List<EmployeeDto> employees = employeeService.getAllHrResponseValue();
 		return ResponseEntity.ok(employees);
 	}
-	
+
 	@GetMapping("/managerHdfcResponeField")
 	public ResponseEntity<List<EmployeeDto>> hdfcmanagerResponseField() {
 		List<EmployeeDto> employees = employeeService.getAllHdfcResponseValue();
 		return ResponseEntity.ok(employees);
 	}
-	
+
 	@GetMapping("/managerIciciResponeField")
 	public ResponseEntity<List<EmployeeDto>> icicmanagerResponseField() {
 		List<EmployeeDto> employees = employeeService.getAllIciciResponseValue();
 		return ResponseEntity.ok(employees);
 	}
-	
+
 	@GetMapping("/managerMisResponeField")
 	public ResponseEntity<List<EmployeeDto>> mismanagerResponseField() {
 		List<EmployeeDto> employees = employeeService.getAllMisResponseValue();
 		return ResponseEntity.ok(employees);
 	}
-	
+
 	@GetMapping("/getAllEmployeeOnManagersPage/{role}")
 	public ResponseEntity<List<EmployeeDto>> managerPageEmployeedetailsOnRole(@PathVariable String role) {
-		List<EmployeeDto> employees = employeeService.getAllResponseValueOnProcessType(role);	
+		List<EmployeeDto> employees = employeeService.getAllResponseValueOnProcessType(role);
 		return ResponseEntity.ok(employees);
 	}
-	
-	
-	
+
 	@GetMapping("/rejectedEmpdetails")
 	public ResponseEntity<List<EmployeeDto>> rejectedEmployees() {
 		List<EmployeeDto> employees = employeeService.getAllRejectedEmp();
 		return ResponseEntity.ok(employees);
 	}
-	
+
 	@GetMapping("/approvedEmpdetails")
 	public ResponseEntity<List<EmployeeDto>> approvedEmployees() {
 		List<EmployeeDto> employees = employeeService.getAllApprovedEmp();
 		return ResponseEntity.ok(employees);
 	}
-	
+
 	@GetMapping("/hrRejectedEmpDetails")
-	public ResponseEntity<List<EmployeeDto>> hrRejectedEmployeesDetails(){
+	public ResponseEntity<List<EmployeeDto>> hrRejectedEmployeesDetails() {
 		List<EmployeeDto> employees = employeeService.getHrRejectedEmp();
 		return ResponseEntity.ok(employees);
 	}
-	
-	
+
 	@PutMapping("/{id}/mRResponse")
 	public ResponseEntity<EmployeeDto> updateEmployeeMrRespone(@PathVariable("id") Long employeeId,
 			@RequestBody Map<String, String> requestBody) {
 		String newStatus = requestBody.get("newStatus");
 		String responseSubmitbyName = requestBody.get("mrUserName");
-		EmployeeDto updatedEmployee = employeeService.updateEmployeeMrResponseStatus(employeeId, newStatus,responseSubmitbyName);
+		String managerRemarks = requestBody.get("managerRemarks");
+		EmployeeDto updatedEmployee = employeeService.updateEmployeeMrResponseStatus(employeeId, newStatus,
+				responseSubmitbyName);
+		employeeService.updateEmployeeRemarksHrAndManager(employeeId, null, managerRemarks,null);
 		System.out.println("new Status value" + newStatus);
 		return new ResponseEntity<>(updatedEmployee, HttpStatus.OK);
 	}
-	
+
 	@PutMapping("/{id}/hrResponse")
 	public ResponseEntity<EmployeeDto> updateEmployeehrRespone(@PathVariable("id") Long employeeId,
 			@RequestBody Map<String, String> requestBody) {
 		String newStatus = requestBody.get("newStatus");
 		String responseSubmitbyName = requestBody.get("hrUserName");
-		EmployeeDto updatedEmployee = employeeService.updateEmployeeHrResponseStatus(employeeId, newStatus,responseSubmitbyName);
+		String profileScreenRemark = requestBody.get("profileScreenRemark");
+		employeeService.updateEmployeeRemarksHrAndManager(employeeId, null, null,profileScreenRemark);
+		EmployeeDto updatedEmployee = employeeService.updateEmployeeHrResponseStatus(employeeId, newStatus,
+				responseSubmitbyName);
 		System.out.println("new Status value" + newStatus);
 		return new ResponseEntity<>(updatedEmployee, HttpStatus.OK);
 	}
-	
+
 	@PutMapping("/{id}/rejectByhrReInterviewSchedule")
 	public ResponseEntity<EmployeeDto> reInterviewForRejectedByHr(@PathVariable("id") Long employeeId,
-			@RequestBody Map<String , String> requestBody){
+			@RequestBody Map<String, String> requestBody) {
 		String reSetHrField = requestBody.get("resetHrResponse");
 		String responseSubmitByName = requestBody.get("userName");
 		String newStatus = "Re Screening By Hr";
-		EmployeeDto updateEmployee = employeeService.updateEmployeeHrRejectedScreeningResponse(employeeId ,reSetHrField, newStatus, responseSubmitByName );
-		return new ResponseEntity<>(updateEmployee , HttpStatus.OK);
-		
+		EmployeeDto updateEmployee = employeeService.updateEmployeeHrRejectedScreeningResponse(employeeId, reSetHrField,
+				newStatus, responseSubmitByName);
+		return new ResponseEntity<>(updateEmployee, HttpStatus.OK);
+
 	}
-   @GetMapping("/empDetailsInfo/{id}")
-   public ResponseEntity <List<EmployeeDto>> empDetailsInfo(@PathVariable("id") Long employeeId){
-	   List<EmployeeDto> employees = employeeService.getEmpDetailsInfoById(employeeId);
-	return ResponseEntity.ok(employees); 
-	   
-   }
+
+	@GetMapping("/empDetailsInfo/{id}")
+	public ResponseEntity<List<EmployeeDto>> empDetailsInfo(@PathVariable("id") Long employeeId) {
+		List<EmployeeDto> employees = employeeService.getEmpDetailsInfoById(employeeId);
+		return ResponseEntity.ok(employees);
+
+	}
 }

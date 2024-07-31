@@ -2,6 +2,7 @@ package com.example.demo.serviceImpl;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.StackWalker.Option;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
@@ -11,6 +12,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -50,16 +52,16 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	@Autowired
 	private StatusHistoryService statusHistoryService;
-	
+
 	@Autowired
 	private StatusHistoryRepository statusHistoryRepository;
 
 	@Autowired
 	private InterviewProcessesRepository interviewProcessesRepository;
-	
-    @Autowired
+
+	@Autowired
 	private ManagerDetailsRepository managerDetailsRepository;
-	
+
 	@Value("${file.upload-dir}")
 	private String path;
 
@@ -72,14 +74,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 		this.statusHistoryService = statusHistoryService;
 	}
 
-
-
-
-
-
-
 //	@Override
-	
+
 //	public EmployeeDto createEmployee(EmployeeDto employeeDto) {		
 //		Employee employee = EmployeeMapper.mapToEmployee(employeeDto);
 //		Employee savedEmployee = employeeRepository.save(employee);
@@ -88,16 +84,16 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	@Override
 	public EmployeeDto createEmployee(EmployeeDto employeeDto, MultipartFile file, String path) throws IOException {
-		 if (checkDuplicateEmailAndAddharNo(employeeDto.getEmail(), employeeDto.getAadhaarNumber())) {
-		        throw new RuntimeException("Email or Aadhaar number already exists");
-		    }
+		if (checkDuplicateEmailAndAddharNo(employeeDto.getEmail(), employeeDto.getAadhaarNumber())) {
+			throw new RuntimeException("Email or Aadhaar number already exists");
+		}
 		// TODO Auto-generated method stub
 		String fileName = fileService.uploadImage(path, file);
-	
+
 		// Set the filename in the employeeDto
 
 		employeeDto.setAadharFilename(fileName);
-		
+
 		// Convert DTO to entity
 		Employee employee = EmployeeMapper.mapToEmployee(employeeDto);
 
@@ -105,11 +101,11 @@ public class EmployeeServiceImpl implements EmployeeService {
 		Employee savedEmployee = employeeRepository.save(employee);
 
 		// Convert entity to DTO and return
-		
+
 		statusHistoryService.createInitialStatus(savedEmployee);
 
 		updateEmployeeStatus(savedEmployee);
-		
+
 		return EmployeeMapper.mapToEmployeeDto(savedEmployee);
 	}
 
@@ -126,32 +122,30 @@ public class EmployeeServiceImpl implements EmployeeService {
 		return employees.stream().map((employee) -> EmployeeMapper.mapToEmployeeDto(employee))
 				.collect(Collectors.toList());
 	}
-	
+
 	@Override
 	public List<EmployeeDto> getEmployeeWithSelectedValuefiled() {
 
 		List<Object[]> results = employeeRepository.getEmployeeWithSelectedValue();
 		List<EmployeeDto> employees = new ArrayList<>();
-		
-		for (Object[] result : results) {
-            EmployeeDto employee = new EmployeeDto();
-            employee.setId((Long) result[0]);
-            employee.setFullName((String) result[1]);
-            employee.setEmail((String) result[2]);
-            employee.setJobProfile((String) result[3]);
-            employee.setMobileNo((Long) result[4]);
-            employee.setPermanentAddress((String) result[5]);
-            employee.setCurrentAddress((String) result[6]);
-            employee.setGender((String) result[7]);
-            employee.setCreationDate((Date) result[8]);
-        
 
-            employees.add(employee);
-        }
-		  return employees;
+		for (Object[] result : results) {
+			EmployeeDto employee = new EmployeeDto();
+			employee.setId((Long) result[0]);
+			employee.setFullName((String) result[1]);
+			employee.setEmail((String) result[2]);
+			employee.setJobProfile((String) result[3]);
+			employee.setMobileNo((Long) result[4]);
+			employee.setPermanentAddress((String) result[5]);
+			employee.setCurrentAddress((String) result[6]);
+			employee.setGender((String) result[7]);
+			employee.setCreationDate((Date) result[8]);
+
+			employees.add(employee);
+		}
+		return employees;
 	}
-	
-	
+
 	@Override
 	public EmployeeDto updateEmployee(Long employeeId, EmployeeDto updatedEmployee) {
 		Employee employee = employeeRepository.findById(employeeId).orElseThrow(
@@ -215,17 +209,19 @@ public class EmployeeServiceImpl implements EmployeeService {
 	 *           }
 	 */
 	private void updateEmployeeStatus(Employee employee) {
-	    StatusHistory latestStatus = statusHistoryRepository.findTopByEmployeeOrderByChangesDateTimeDesc(employee);
-	    if (latestStatus != null) {
+		StatusHistory latestStatus = statusHistoryRepository.findTopByEmployeeOrderByChangesDateTimeDesc(employee);
+		if (latestStatus != null) {
 //	        employee.setStatus(latestStatus.getStatus());
-	    	employee.setInitialStatus(latestStatus.getStatus());
-	        employeeRepository.save(employee);
-	    }
-}
+			employee.setInitialStatus(latestStatus.getStatus());
+			employeeRepository.save(employee);
+		}
+	}
+
 	@Override
 	public EmployeeDto updateEmployeeStatus(Long employeeId, String newStatus) {
-		Employee employee = employeeRepository.findById(employeeId).orElseThrow(()-> new ResourceNotFoundException("Employee not found"));
-		statusHistoryService.trackStatusChange(employee, newStatus ,null);
+		Employee employee = employeeRepository.findById(employeeId)
+				.orElseThrow(() -> new ResourceNotFoundException("Employee not found"));
+		statusHistoryService.trackStatusChange(employee, newStatus, null);
 		return EmployeeMapper.mapToEmployeeDto(employee);
 	}
 
@@ -233,20 +229,19 @@ public class EmployeeServiceImpl implements EmployeeService {
 	public void assignInterviewProcessAndUpdateStatus(Long employeeId, InterviewProcesses interviewProcesses,
 			String newStatus) {
 		Employee employee = employeeRepository.findById(employeeId)
-				.orElseThrow(()->  new RuntimeException("Employee not found"));
+				.orElseThrow(() -> new RuntimeException("Employee not found"));
 		interviewProcesses.setEmployee(employee);
-		
+
 		assignManagerForInterview(interviewProcesses);
-		String processNameUpdateInEmp =interviewProcesses.getProcessName();
+		String processNameUpdateInEmp = interviewProcesses.getProcessName();
 		employee.setProcessesStatus(processNameUpdateInEmp);
 		employee.setLastInterviewAssin(processNameUpdateInEmp);
 		InterviewProcesses savedInterviewProcess = interviewProcessesRepository.save(interviewProcesses);
 //		interviewProcesses.setManagerDetails(managerId);
-		setStatusHistoryRecored(employeeId,savedInterviewProcess, newStatus,employee)  ; 
-		
+		setStatusHistoryRecored(employeeId, savedInterviewProcess, newStatus, employee);
+
 //		employee.setProcessesStatus(newStatus);
-		    
-		   
+
 	}
 
 	@Override
@@ -272,48 +267,52 @@ public class EmployeeServiceImpl implements EmployeeService {
 //	}
 
 	@Override
-	public EmployeeDto updateEmployeeHrResponseStatus(Long employeeId, String newStatus , String responseSubmitbyName) {
-		Employee employee = employeeRepository.findById(employeeId).orElseThrow(()-> new ResourceNotFoundException("Employee not found"));
+	public EmployeeDto updateEmployeeHrResponseStatus(Long employeeId, String newStatus, String responseSubmitbyName) {
+		Employee employee = employeeRepository.findById(employeeId)
+				.orElseThrow(() -> new ResourceNotFoundException("Employee not found"));
 		employee.setHrStatus(newStatus);
-		statusHistoryService.trackStatusChange(employee, newStatus,responseSubmitbyName);
+		statusHistoryService.trackStatusChange(employee, newStatus, responseSubmitbyName);
 		return EmployeeMapper.mapToEmployeeDto(employee);
 	}
-	
+
 	@Override
-	public EmployeeDto updateEmployeeMrResponseStatus(Long employeeId, String newStatus , String responseSubmitbyname) {
-		Employee employee = employeeRepository.findById(employeeId).orElseThrow(()-> new ResourceNotFoundException("Employee not found"));
+	public EmployeeDto updateEmployeeMrResponseStatus(Long employeeId, String newStatus, String responseSubmitbyname) {
+		Employee employee = employeeRepository.findById(employeeId)
+				.orElseThrow(() -> new ResourceNotFoundException("Employee not found"));
 		employee.setManagerStatus(newStatus);
 		employee.setProcessesStatus(newStatus);
-		statusHistoryService.trackStatusChange(employee, newStatus ,responseSubmitbyname);
+		statusHistoryService.trackStatusChange(employee, newStatus, responseSubmitbyname);
 		return EmployeeMapper.mapToEmployeeDto(employee);
 	}
-	
+
 	@Override
-	public EmployeeDto updateEmployeeHrRejectedScreeningResponse(Long employeeId ,String reSetHrField , String newStatus, String responseSubmitbyname) {
-		Employee employee = employeeRepository.findById(employeeId).orElseThrow(()-> new ResourceNotFoundException("Employee not found"));
+	public EmployeeDto updateEmployeeHrRejectedScreeningResponse(Long employeeId, String reSetHrField, String newStatus,
+			String responseSubmitbyname) {
+		Employee employee = employeeRepository.findById(employeeId)
+				.orElseThrow(() -> new ResourceNotFoundException("Employee not found"));
 		employee.setHrStatus(reSetHrField);
 		statusHistoryService.trackStatusChange(employee, newStatus, responseSubmitbyname);
 		return EmployeeMapper.mapToEmployeeDto(employee);
 	}
-	
+
 	@Override
 	public List<EmployeeDto> getAllScheduleInterview() {
-		 List<Object[]> employeeObjects = employeeRepository.findEmployeesWithScheduledInterviews();
-		 List<EmployeeDto> employees = new ArrayList<>();
+		List<Object[]> employeeObjects = employeeRepository.findEmployeesWithScheduledInterviews();
+		List<EmployeeDto> employees = new ArrayList<>();
 
-			for (Object[] result : employeeObjects) {
-	            EmployeeDto employee = new EmployeeDto();
-	            employee.setId((Long) result[0]);
-	            employee.setFullName((String) result[1]);
-	            employee.setEmail((String) result[2]);
-	            employee.setJobProfile((String) result[3]);
-	            employee.setMobileNo((Long) result[4]);
-	            employee.setPermanentAddress((String) result[5]);
-	            employee.setGender((String) result[6]);
-                employee.setCreationDate((Date) result[7]);
-	            employees.add(employee);
-	        }
-			  return employees;
+		for (Object[] result : employeeObjects) {
+			EmployeeDto employee = new EmployeeDto();
+			employee.setId((Long) result[0]);
+			employee.setFullName((String) result[1]);
+			employee.setEmail((String) result[2]);
+			employee.setJobProfile((String) result[3]);
+			employee.setMobileNo((Long) result[4]);
+			employee.setPermanentAddress((String) result[5]);
+			employee.setGender((String) result[6]);
+			employee.setCreationDate((Date) result[7]);
+			employees.add(employee);
+		}
+		return employees;
 	}
 
 	@Override
@@ -322,309 +321,275 @@ public class EmployeeServiceImpl implements EmployeeService {
 //		List<Employee> employees = employeeRepository.findEmployeeWithHrResponseStatus();
 //		return employees.stream().map((employee) -> EmployeeMapper.mapToEmployeeDto(employee))
 //				.collect(Collectors.toList());
-		 List<Object[]> employeeObjects = employeeRepository.findEmployeeWithHrResponseStatus();
-		 List<EmployeeDto> employees = new ArrayList<>();
+		List<Object[]> employeeObjects = employeeRepository.findEmployeeWithHrResponseStatus();
+		List<EmployeeDto> employees = new ArrayList<>();
 
-			for (Object[] result : employeeObjects) {
-	            EmployeeDto employee = new EmployeeDto();
-	            employee.setId((Long) result[0]);
-	            employee.setFullName((String) result[1]);
-	            employee.setEmail((String) result[2]);
-	            employee.setJobProfile((String) result[3]);
-	            employee.setMobileNo((Long) result[4]);
-	            employee.setPermanentAddress((String) result[5]);
-	            employee.setGender((String) result[6]);
+		for (Object[] result : employeeObjects) {
+			EmployeeDto employee = new EmployeeDto();
+			employee.setId((Long) result[0]);
+			employee.setFullName((String) result[1]);
+			employee.setEmail((String) result[2]);
+			employee.setJobProfile((String) result[3]);
+			employee.setMobileNo((Long) result[4]);
+			employee.setPermanentAddress((String) result[5]);
+			employee.setGender((String) result[6]);
 
-	            employees.add(employee);
-	        }
-			  return employees;
+			employees.add(employee);
+		}
+		return employees;
 	}
-	
+
 	@Override
 	public List<EmployeeDto> getAllHdfcResponseValue() {
-		
-		 List<Object[]> employeeObjects = employeeRepository.findEmployeeOnHdfcProcesses();
-		 List<EmployeeDto> employees = new ArrayList<>();
-			for (Object[] result : employeeObjects) {
-	            EmployeeDto employee = new EmployeeDto();
-	            employee.setId((Long) result[0]);
-	            employee.setFullName((String) result[1]);
-	            employee.setEmail((String) result[2]);
-	            employee.setJobProfile((String) result[3]);
-	            employee.setMobileNo((Long) result[4]);
-	            employee.setPermanentAddress((String) result[5]);
-	            employee.setGender((String) result[6]);
-	            employee.setPreviousOrganisation((String) result[7]);
-	            employee.setProcessesStatus((String) result[8]);
-	            employee.setCreationDate((Date) result[9]);
 
-	            employees.add(employee);
-	        }
-			  return employees;
+		List<Object[]> employeeObjects = employeeRepository.findEmployeeOnHdfcProcesses();
+		List<EmployeeDto> employees = new ArrayList<>();
+		for (Object[] result : employeeObjects) {
+			EmployeeDto employee = new EmployeeDto();
+			employee.setId((Long) result[0]);
+			employee.setFullName((String) result[1]);
+			employee.setEmail((String) result[2]);
+			employee.setJobProfile((String) result[3]);
+			employee.setMobileNo((Long) result[4]);
+			employee.setPermanentAddress((String) result[5]);
+			employee.setGender((String) result[6]);
+			employee.setPreviousOrganisation((String) result[7]);
+			employee.setProcessesStatus((String) result[8]);
+			employee.setCreationDate((Date) result[9]);
+
+			employees.add(employee);
+		}
+		return employees;
 	}
-	
 
 	@Override
 	public List<EmployeeDto> getAllIciciResponseValue() {
-		 List<Object[]> employeeObjects = employeeRepository.findEmployeeOnIciciProcesses();
-		 List<EmployeeDto> employees = new ArrayList<>();
-			for (Object[] result : employeeObjects) {
-	            EmployeeDto employee = new EmployeeDto();
-	            employee.setId((Long) result[0]);
-	            employee.setFullName((String) result[1]);
-	            employee.setEmail((String) result[2]);
-	            employee.setJobProfile((String) result[3]);
-	            employee.setMobileNo((Long) result[4]);
-	            employee.setPermanentAddress((String) result[5]);
-	            employee.setGender((String) result[6]);
-	            employee.setPreviousOrganisation((String) result[7]);
-	            employee.setProcessesStatus((String) result[8]);
-	            employee.setCreationDate((Date) result[9]);
+		List<Object[]> employeeObjects = employeeRepository.findEmployeeOnIciciProcesses();
+		List<EmployeeDto> employees = new ArrayList<>();
+		for (Object[] result : employeeObjects) {
+			EmployeeDto employee = new EmployeeDto();
+			employee.setId((Long) result[0]);
+			employee.setFullName((String) result[1]);
+			employee.setEmail((String) result[2]);
+			employee.setJobProfile((String) result[3]);
+			employee.setMobileNo((Long) result[4]);
+			employee.setPermanentAddress((String) result[5]);
+			employee.setGender((String) result[6]);
+			employee.setPreviousOrganisation((String) result[7]);
+			employee.setProcessesStatus((String) result[8]);
+			employee.setCreationDate((Date) result[9]);
 
-	            employees.add(employee);
-	        }
-			  return employees;
+			employees.add(employee);
+		}
+		return employees;
 	}
-
-
 
 	@Override
 	public List<EmployeeDto> getAllMisResponseValue() {
-		 List<Object[]> employeeObjects = employeeRepository.findEmployeeOnMisProcesses();
-		 List<EmployeeDto> employees = new ArrayList<>();
-			for (Object[] result : employeeObjects) {
-				 EmployeeDto employee = new EmployeeDto();
-		            employee.setId((Long) result[0]);
-		            employee.setFullName((String) result[1]);
-		            employee.setEmail((String) result[2]);
-		            employee.setJobProfile((String) result[3]);
-		            employee.setMobileNo((Long) result[4]);
-		            employee.setPermanentAddress((String) result[5]);
-		            employee.setGender((String) result[6]);
-		            employee.setPreviousOrganisation((String) result[7]);
-		            employee.setProcessesStatus((String) result[8]);
-		            employee.setCreationDate((Date) result[9]);
-	            employees.add(employee);
-	        }
-			  return employees;
+		List<Object[]> employeeObjects = employeeRepository.findEmployeeOnMisProcesses();
+		List<EmployeeDto> employees = new ArrayList<>();
+		for (Object[] result : employeeObjects) {
+			EmployeeDto employee = new EmployeeDto();
+			employee.setId((Long) result[0]);
+			employee.setFullName((String) result[1]);
+			employee.setEmail((String) result[2]);
+			employee.setJobProfile((String) result[3]);
+			employee.setMobileNo((Long) result[4]);
+			employee.setPermanentAddress((String) result[5]);
+			employee.setGender((String) result[6]);
+			employee.setPreviousOrganisation((String) result[7]);
+			employee.setProcessesStatus((String) result[8]);
+			employee.setCreationDate((Date) result[9]);
+			employees.add(employee);
+		}
+		return employees;
 	}
-	
 
 	@Override
 	public List<EmployeeDto> getAllResponseValueOnProcessType(String role) {
 		List<Object[]> employeeObjects = employeeRepository.findEmployeesByRoleType(role);
-	    List<EmployeeDto> employees = employeeObjects.stream()
-	            .map(result -> {
-	                EmployeeDto employee = new EmployeeDto();
-	                employee.setId((Long) result[0]);
-	                employee.setFullName((String) result[1]);
-	                employee.setEmail((String) result[2]);
-	                employee.setJobProfile((String) result[3]);
-	                employee.setMobileNo((Long) result[4]);
-	                employee.setPermanentAddress((String) result[5]);
-	                employee.setGender((String) result[6]);
-	                employee.setPreviousOrganisation((String) result[7]);
-	                employee.setProcessesStatus((String) result[8]);
-	                employee.setCreationDate((Date) result[9]);
-	                return employee;
-	            })
-	            .collect(Collectors.toList());
-		  return employees;
+		List<EmployeeDto> employees = employeeObjects.stream().map(result -> {
+			EmployeeDto employee = new EmployeeDto();
+			employee.setId((Long) result[0]);
+			employee.setFullName((String) result[1]);
+			employee.setEmail((String) result[2]);
+			employee.setJobProfile((String) result[3]);
+			employee.setMobileNo((Long) result[4]);
+			employee.setPermanentAddress((String) result[5]);
+			employee.setGender((String) result[6]);
+			employee.setPreviousOrganisation((String) result[7]);
+			employee.setProcessesStatus((String) result[8]);
+			employee.setCreationDate((Date) result[9]);
+			return employee;
+		}).collect(Collectors.toList());
+		return employees;
 	}
 
-	
-	
 	@Override
 	public List<EmployeeDto> getAllRejectedEmp() {
-		 List<Object[]> employeeObjects = employeeRepository.getRejectedEmployeeInfo();
-		 List<EmployeeDto> employees = new ArrayList<>();
-			for (Object[] result : employeeObjects) {
-	            EmployeeDto employee = new EmployeeDto();
-	            employee.setId((Long) result[0]);
-	            employee.setFullName((String) result[1]);
-	            employee.setEmail((String) result[2]);
-	            employee.setJobProfile((String) result[3]);
-	            employee.setMobileNo((Long) result[4]);
-	            employee.setPermanentAddress((String) result[5]);
-	            employee.setGender((String) result[6]);
-	            employee.setPreviousOrganisation((String) result[7]);
-	            employee.setProcessesStatus((String) result[8]);
-	            employee.setCreationDate((Date) result[9]);
-
-	            employees.add(employee);
-	        }
-			  return employees;
+		List<Object[]> employeeObjects = employeeRepository.getRejectedEmployeeInfo();
+		List<EmployeeDto> employees = new ArrayList<>();
+		for (Object[] result : employeeObjects) {
+			EmployeeDto employee = new EmployeeDto();
+			employee.setId((Long) result[0]);
+			employee.setFullName((String) result[1]);
+			employee.setEmail((String) result[2]);
+			employee.setJobProfile((String) result[3]);
+			employee.setMobileNo((Long) result[4]);
+			employee.setPermanentAddress((String) result[5]);
+			employee.setGender((String) result[6]);
+			employee.setPreviousOrganisation((String) result[7]);
+			employee.setProcessesStatus((String) result[8]);
+			employee.setCreationDate((Date) result[9]);
+			employee.setReMarksByHr((String) result[10]);
+            employee.setReMarksByManager((String) result[11]);
+            employee.setProfileScreenRemarks((String) result[12]);
+            
+			employees.add(employee);
+		}
+		return employees;
 	}
+
 	@Override
 	public List<EmployeeDto> getAllApprovedEmp() {
-		 List<Object[]> employeeObjects = employeeRepository.getApprovedEmployeeInfo();
-		 List<EmployeeDto> employees = new ArrayList<>();
-			for (Object[] result : employeeObjects) {
-	            EmployeeDto employee = new EmployeeDto();
-	            employee.setId((Long) result[0]);
-	            employee.setFullName((String) result[1]);
-	            employee.setEmail((String) result[2]);
-	            employee.setJobProfile((String) result[3]);
-	            employee.setMobileNo((Long) result[4]);
-	            employee.setPermanentAddress((String) result[5]);
-	            employee.setGender((String) result[6]);
-	            employee.setCreationDate((Date) result[7]);
-
-	            employees.add(employee);
-	        }
-			  return employees;
+		List<Object[]> employeeObjects = employeeRepository.getApprovedEmployeeInfo();
+		List<EmployeeDto> employees = new ArrayList<>();
+		for (Object[] result : employeeObjects) {
+			EmployeeDto employee = new EmployeeDto();
+			employee.setId((Long) result[0]);
+			employee.setFullName((String) result[1]);
+			employee.setEmail((String) result[2]);
+			employee.setJobProfile((String) result[3]);
+			employee.setMobileNo((Long) result[4]);
+			employee.setPermanentAddress((String) result[5]);
+			employee.setGender((String) result[6]);
+			employee.setCreationDate((Date) result[7]);
+			employee.setReMarksByHr((String) result[8]);
+            employee.setReMarksByManager((String) result[9]);
+            employee.setProfileScreenRemarks((String) result[10]);
+			employees.add(employee);
+		}
+		return employees;
 	}
-
-
-
 
 	@Override
 	public List<EmployeeDto> getHrRejectedEmp() {
 		List<Object[]> employeeObjects = employeeRepository.getHrRejectedEmployeeInfo();
-		 List<EmployeeDto> employees = new ArrayList<>();
-			for (Object[] result : employeeObjects) {
-	            EmployeeDto employee = new EmployeeDto();
-	            employee.setId((Long) result[0]);
-	            employee.setFullName((String) result[1]);
-	            employee.setEmail((String) result[2]);
-	            employee.setJobProfile((String) result[3]);
-	            employee.setMobileNo((Long) result[4]);
-	            employee.setPermanentAddress((String) result[5]);
-	            employee.setGender((String) result[6]);
-	            employee.setCreationDate((Date) result[7]);
+		List<EmployeeDto> employees = new ArrayList<>();
+		for (Object[] result : employeeObjects) {
+			EmployeeDto employee = new EmployeeDto();
+			employee.setId((Long) result[0]);
+			employee.setFullName((String) result[1]);
+			employee.setEmail((String) result[2]);
+			employee.setJobProfile((String) result[3]);
+			employee.setMobileNo((Long) result[4]);
+			employee.setPermanentAddress((String) result[5]);
+			employee.setGender((String) result[6]);
+			employee.setCreationDate((Date) result[7]);
+			employee.setProfileScreenRemarks((String) result[8]);
 
-	            employees.add(employee);
-	        }
-			  return employees;
+			employees.add(employee);
+		}
+		return employees;
 	}
 
-	
 	@Override
 	public List<EmployeeDto> getEmpDetailsInfoById(Long employeeId) {
-		List <Object[]> empObj = employeeRepository.getEmpDetailsInfoById(employeeId);
-		 Map<Long, EmployeeDto> employeeMap = new HashMap<>();
+		List<Object[]> empObj = employeeRepository.getEmpDetailsInfoById(employeeId);
+		Map<Long, EmployeeDto> employeeMap = new HashMap<>();
 
-	        for (Object[] result : empObj) {
-	            Long id = (Long) result[0];
-	            String fullName = (String) result[1];
-	            String aadhaarNumber = (String) result[2];
-	            String email = (String) result[3];
-	            // Assuming creationDate is of type java.util.Date or java.sql.Timestamp
-	            Date creationDate = (Date) result[4];
-	            String status = (String) result[5];
-	            // Assuming changesDateTime is of type java.util.Date or java.sql.Timestamp
-	            Date changesDateTime = (Date) result[6];
-                String hrName = (String) result[7];
-	            if (!employeeMap.containsKey(id)) {
-	                EmployeeDto employeeDetailsDto = new EmployeeDto();
-	                employeeDetailsDto.setId(id);
-	                employeeDetailsDto.setFullName(fullName);
-	                employeeDetailsDto.setAadhaarNumber(aadhaarNumber);
-	                employeeDetailsDto.setEmail(email);
-	                employeeDetailsDto.setCreationDate(creationDate);
-	                
-	                List<StatusHistory> statusHistoryList = new ArrayList<>();
-	                employeeDetailsDto.setStatusHistories(statusHistoryList);
-	                employeeMap.put(id, employeeDetailsDto);
-	            }
+		for (Object[] result : empObj) {
+			Long id = (Long) result[0];
+			String fullName = (String) result[1];
+			String aadhaarNumber = (String) result[2];
+			String email = (String) result[3];
+			// Assuming creationDate is of type java.util.Date or java.sql.Timestamp
+			Date creationDate = (Date) result[4];
+			String status = (String) result[5];
+			// Assuming changesDateTime is of type java.util.Date or java.sql.Timestamp
+			Date changesDateTime = (Date) result[6];
+			String hrName = (String) result[7];
+			if (!employeeMap.containsKey(id)) {
+				EmployeeDto employeeDetailsDto = new EmployeeDto();
+				employeeDetailsDto.setId(id);
+				employeeDetailsDto.setFullName(fullName);
+				employeeDetailsDto.setAadhaarNumber(aadhaarNumber);
+				employeeDetailsDto.setEmail(email);
+				employeeDetailsDto.setCreationDate(creationDate);
 
-	            StatusHistory statusHistory = new StatusHistory();
-	            statusHistory.setStatus(status);
-	            statusHistory.setChangesDateTime(changesDateTime);
-	            statusHistory.setHrName(hrName);
-	            employeeMap.get(id).getStatusHistories().add(statusHistory);
-	        }
+				List<StatusHistory> statusHistoryList = new ArrayList<>();
+				employeeDetailsDto.setStatusHistories(statusHistoryList);
+				employeeMap.put(id, employeeDetailsDto);
+			}
 
-	        return new ArrayList<>(employeeMap.values());
-	    }
-	  	
-	
+			StatusHistory statusHistory = new StatusHistory();
+			statusHistory.setStatus(status);
+			statusHistory.setChangesDateTime(changesDateTime);
+			statusHistory.setHrName(hrName);
+			employeeMap.get(id).getStatusHistories().add(statusHistory);
+		}
+
+		return new ArrayList<>(employeeMap.values());
+	}
+
 	private void assignManagerForInterview(InterviewProcesses interviewProcesses) {
-		 Long managerId = null;
-         String processType = interviewProcesses.getProcessName();
-         if(processType != null) {
-         	switch (processType) {
-				case "HDFC": {
-					managerId = 1L;
-					break;
-				}
-				case "ICICI": {
-					managerId = 2L;
-					break;
-				}
-				case "MIS": {
-					managerId = 3L;
-					break;
-				}
-				default:
-					throw new IllegalArgumentException("Unexpected value: " + processType);
-				}
-         }
-         
-         if (managerId != null) {
-           ManagerDetails ma = managerDetailsRepository.findById(managerId) 
-           		.orElseThrow(() -> new RuntimeException("Manager details not found for id: "));;
-            interviewProcesses.setManagerDetails(ma);
-         }
-	}
-	
-	private void setStatusHistoryRecored(Long employeeId , InterviewProcesses savedInterviewProcess ,String newStatus ,Employee employee ) {
-		 StatusHistory statusHistory = new StatusHistory();
-	        statusHistory.setEmployee(employee);
-	        statusHistory.setInterviewProcess(savedInterviewProcess);
-	        statusHistory.setStatus(newStatus);
-	        statusHistory.setHrName(savedInterviewProcess.getScheduledBy());
-	        LocalDateTime currentDateTime = LocalDateTime.now();
-	        Date currentDate = Date.from(currentDateTime.atZone(ZoneId.systemDefault()).toInstant());
-	        statusHistory.setChangesDateTime(currentDate);     
-	        statusHistoryRepository.save(statusHistory);
+		Long managerId = null;
+		String processType = interviewProcesses.getProcessName();
+		if (processType != null) {
+			switch (processType) {
+			case "HDFC": {
+				managerId = 1L;
+				break;
+			}
+			case "ICICI": {
+				managerId = 2L;
+				break;
+			}
+			case "MIS": {
+				managerId = 3L;
+				break;
+			}
+			default:
+				throw new IllegalArgumentException("Unexpected value: " + processType);
+			}
+		}
+
+		if (managerId != null) {
+			ManagerDetails ma = managerDetailsRepository.findById(managerId)
+					.orElseThrow(() -> new RuntimeException("Manager details not found for id: "));
+			;
+			interviewProcesses.setManagerDetails(ma);
+		}
 	}
 
+	@Override
+	public void updateEmployeeRemarksHrAndManager(Long employeeId, String hrRemarks, String managerRemaks,String profileScreenRemark) {
+		Employee employee = employeeRepository.findById(employeeId)
+				.orElseThrow(() -> new ResourceNotFoundException("Employee not found"));
+		if (hrRemarks != null) {
+			employee.setReMarksByHr(hrRemarks);
+		}
+		if (managerRemaks != null) {
+			employee.setReMarksByManager(managerRemaks);
+		}
+		if(profileScreenRemark != null) {
+			employee.setProfileScreenRemarks(profileScreenRemark);
+		}
+		employeeRepository.save(employee);
 
+	}
 
+	private void setStatusHistoryRecored(Long employeeId, InterviewProcesses savedInterviewProcess, String newStatus,
+			Employee employee) {
+		StatusHistory statusHistory = new StatusHistory();
+		statusHistory.setEmployee(employee);
+		statusHistory.setInterviewProcess(savedInterviewProcess);
+		statusHistory.setStatus(newStatus);
+		statusHistory.setHrName(savedInterviewProcess.getScheduledBy());
+		LocalDateTime currentDateTime = LocalDateTime.now();
+		Date currentDate = Date.from(currentDateTime.atZone(ZoneId.systemDefault()).toInstant());
+		statusHistory.setChangesDateTime(currentDate);
+		statusHistoryRepository.save(statusHistory);
+	}
 
-
-
-
-
-
-
-
-
-
-	
-
-
-
-
-
-
-
-
-
-
-
-
-	
-
-
-
-
-
-
-	
-
-
-
-
-
-	
-
-
-
-
-
-
-
-	
 }

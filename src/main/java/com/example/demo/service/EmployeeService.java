@@ -68,8 +68,7 @@ public interface EmployeeService {
 	EmployeeDto updateEmployeeHrRejectedScreeningResponse(Long employeeId, String reSetHrField, String newStatus,
 			String responseSubmitByName);
 
-	
-	
+	void updateEmployeeRemarksHrAndManager(Long employeeId, String hrRemarks,String managerRemaks,String profileScreenRemark );
 
 
     

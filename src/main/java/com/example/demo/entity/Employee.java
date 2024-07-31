@@ -115,6 +115,15 @@ public class Employee {
 	@Column(name = "last_Interview_Assin")
 	private String lastInterviewAssin;
 	
+	@Column(name = "reMarksByHr")
+	private String reMarksByHr;
+	
+	@Column(name = "reMarksByManager")
+	private String reMarksByManager;
+	
+	@Column(name = "profileScreenRemarks")
+	private String profileScreenRemarks;
+	
 	@PrePersist
 	protected void onCreate() {
 	    creationDate = new Date();

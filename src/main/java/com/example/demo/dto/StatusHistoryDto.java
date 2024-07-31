@@ -1,6 +1,5 @@
 package com.example.demo.dto;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
 import com.example.demo.entity.Employee;
@@ -20,10 +19,8 @@ import lombok.Setter;
 public class StatusHistoryDto {
     private Long id;
     private String status;
-//    private LocalDateTime changesDateTime;
     private String hrName;
-    private Date changesDateTime;
-    
+    private Date changesDateTime;  
     private InterviewProcesses interviewProcesses;
     private Employee employee;
 }

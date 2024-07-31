@@ -52,6 +52,11 @@ public class InterviewProcesses {
 	@Column(name = "scheduled_By")
 	private String scheduledBy;
 	
+	@Column(name = "remarks")
+	private String remarks;
+	  
+	@Column(name = "remarksManager")
+	private String remarksManager;
 	@ManyToOne(fetch = FetchType.LAZY , optional = true)
 	@JoinColumn(name = "managerDetails_id")
 	private ManagerDetails managerDetails;
