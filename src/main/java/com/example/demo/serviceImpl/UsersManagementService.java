@@ -67,6 +67,7 @@ public class UsersManagementService {
 			response.setRefreshToken(refreshToken);
 			response.setExpirationTime("24Hrs");
 			response.setMessage("SuccessFull login ");
+			response.setName(user.getName());
 		} catch (Exception e) {
 
 			response.setStatusCode(500);
