@@ -28,6 +28,8 @@ public interface EmployeeService {
 	EmployeeDto createEmployee(EmployeeDto employeeDto, MultipartFile file, String path) throws IOException;
 	
 	void assignInterviewProcessAndUpdateStatus(Long employeeId, InterviewProcesses interviewProcesses, String newStatus);
+	void assignInterviewProcessAndUpdateStatusTestCheck(Long employeeId, InterviewProcesses interviewProcesses,
+			String newStatus ,String remarks);
 	
     boolean checkDuplicateEmailAndAddharNo(String email ,String aadhaarNumber);
 
@@ -56,8 +58,13 @@ public interface EmployeeService {
 //	EmployeeDto updateEmployeeHrRejectedScreeningResponse(Long employeeId, String reSetHrField, String responseSubmitByName);
 	
     EmployeeDto updateEmployeeHrResponseStatus(Long employeeId, String newStatus,String responseSubmitbyName);
+    EmployeeDto updateEmployeeHrResponseStatus2(Long employeeId, String newStatus,String responseSubmitbyName ,String updateRemrks);
+
 	
 	EmployeeDto updateEmployeeMrResponseStatus(Long employeeId, String newStatus,String responseSubmitbyName);
+	EmployeeDto updateEmployeeMrResponseStatusTestCheck(Long employeeId, String newStatus, String responseSubmitbyname,
+			String remarks);
+
 	
 	EmployeeDto updateStatus(Long employeeId, String newStatus);
 	
@@ -69,6 +76,12 @@ public interface EmployeeService {
 			String responseSubmitByName);
 
 	void updateEmployeeRemarksHrAndManager(Long employeeId, String hrRemarks,String managerRemaks,String profileScreenRemark );
+
+	void updateEmployeeRemarksHrAndManagerchecks(Long employeeId, String hrRemarks, String managerRemaks,
+			String profileScreenRemark, String updateName);
+
+	
+	
 
 
     

@@ -45,6 +45,9 @@ public class StatusHistory {
 	@Column(name = "hr_name")
 	private String hrName;
 	
+	@Column(name = "remarksOnEveryStages")
+	private String remarksOnEveryStages;
+	
 	@Column(nullable = false)
 	private Date changesDateTime;
 //	private LocalDateTime changesDateTime;

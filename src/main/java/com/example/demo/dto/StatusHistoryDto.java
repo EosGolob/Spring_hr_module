@@ -23,4 +23,5 @@ public class StatusHistoryDto {
     private Date changesDateTime;  
     private InterviewProcesses interviewProcesses;
     private Employee employee;
+    private String remarksOnEveryStages;
 }

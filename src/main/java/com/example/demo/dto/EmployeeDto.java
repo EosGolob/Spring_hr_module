@@ -1,5 +1,6 @@
 package com.example.demo.dto;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -50,4 +51,6 @@ public class EmployeeDto {
 	private String reMarksByHr;
 	private String reMarksByManager;
 	private String profileScreenRemarks;
+	
+
 }

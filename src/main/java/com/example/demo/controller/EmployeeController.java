@@ -31,6 +31,7 @@ import com.example.demo.service.EmployeeService;
 public class EmployeeController {
 
 	private EmployeeService employeeService;
+	
 
 	@Value("${file.upload-dir}")
 	private String path;
@@ -110,7 +111,8 @@ public class EmployeeController {
 		String newStatus = interviewProcesses.getStatus();
 		String remarks = interviewProcesses.getRemarks();
 		employeeService.updateEmployeeRemarksHrAndManager(employeeId, remarks, null,null);
-		employeeService.assignInterviewProcessAndUpdateStatus(employeeId, interviewProcesses, newStatus);
+//		employeeService.assignInterviewProcessAndUpdateStatus(employeeId, interviewProcesses, newStatus);
+		employeeService.assignInterviewProcessAndUpdateStatusTestCheck(employeeId, interviewProcesses, newStatus,remarks);
 
 		return ResponseEntity.ok().build();
 	}
@@ -181,9 +183,12 @@ public class EmployeeController {
 		String newStatus = requestBody.get("newStatus");
 		String responseSubmitbyName = requestBody.get("mrUserName");
 		String managerRemarks = requestBody.get("managerRemarks");
-		EmployeeDto updatedEmployee = employeeService.updateEmployeeMrResponseStatus(employeeId, newStatus,
-				responseSubmitbyName);
+//		EmployeeDto updatedEmployee = employeeService.updateEmployeeMrResponseStatus(employeeId, newStatus,
+//				responseSubmitbyName);
+		
 		employeeService.updateEmployeeRemarksHrAndManager(employeeId, null, managerRemarks,null);
+		EmployeeDto updatedEmployee = employeeService.updateEmployeeMrResponseStatusTestCheck(employeeId, newStatus,
+				responseSubmitbyName,managerRemarks);
 		System.out.println("new Status value" + newStatus);
 		return new ResponseEntity<>(updatedEmployee, HttpStatus.OK);
 	}
@@ -195,8 +200,10 @@ public class EmployeeController {
 		String responseSubmitbyName = requestBody.get("hrUserName");
 		String profileScreenRemark = requestBody.get("profileScreenRemark");
 		employeeService.updateEmployeeRemarksHrAndManager(employeeId, null, null,profileScreenRemark);
-		EmployeeDto updatedEmployee = employeeService.updateEmployeeHrResponseStatus(employeeId, newStatus,
-				responseSubmitbyName);
+//		EmployeeDto updatedEmployee = employeeService.updateEmployeeHrResponseStatus(employeeId, newStatus,
+//				responseSubmitbyName);
+		EmployeeDto updatedEmployee = employeeService.updateEmployeeHrResponseStatus2(employeeId, newStatus,
+				responseSubmitbyName,profileScreenRemark);
 		System.out.println("new Status value" + newStatus);
 		return new ResponseEntity<>(updatedEmployee, HttpStatus.OK);
 	}

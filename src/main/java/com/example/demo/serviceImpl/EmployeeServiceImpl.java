@@ -243,6 +243,24 @@ public class EmployeeServiceImpl implements EmployeeService {
 //		employee.setProcessesStatus(newStatus);
 
 	}
+	@Override
+	public void assignInterviewProcessAndUpdateStatusTestCheck(Long employeeId, InterviewProcesses interviewProcesses,
+			String newStatus ,String remarks) {
+		Employee employee = employeeRepository.findById(employeeId)
+				.orElseThrow(() -> new RuntimeException("Employee not found"));
+		interviewProcesses.setEmployee(employee);
+
+		assignManagerForInterview(interviewProcesses);
+		String processNameUpdateInEmp = interviewProcesses.getProcessName();
+		employee.setProcessesStatus(processNameUpdateInEmp);
+		employee.setLastInterviewAssin(processNameUpdateInEmp);
+		InterviewProcesses savedInterviewProcess = interviewProcessesRepository.save(interviewProcesses);
+//		interviewProcesses.setManagerDetails(managerId);
+		setStatusHistoryRecoredRemarksChecks(employeeId, savedInterviewProcess, newStatus, employee, remarks);
+
+//		employee.setProcessesStatus(newStatus);
+
+	}
 
 	@Override
 	public boolean checkDuplicateEmailAndAddharNo(String email, String aadhaarNumber) {
@@ -274,6 +292,15 @@ public class EmployeeServiceImpl implements EmployeeService {
 		statusHistoryService.trackStatusChange(employee, newStatus, responseSubmitbyName);
 		return EmployeeMapper.mapToEmployeeDto(employee);
 	}
+	@Override
+	public EmployeeDto updateEmployeeHrResponseStatus2(Long employeeId, String newStatus, String responseSubmitbyName,
+			String updateRemrks) {
+		Employee employee = employeeRepository.findById(employeeId)
+				.orElseThrow(() -> new ResourceNotFoundException("Employee not found"));
+		employee.setHrStatus(newStatus);
+		statusHistoryService.trackStatusChange2(employee, newStatus, responseSubmitbyName ,updateRemrks);
+		return EmployeeMapper.mapToEmployeeDto(employee);
+	}
 
 	@Override
 	public EmployeeDto updateEmployeeMrResponseStatus(Long employeeId, String newStatus, String responseSubmitbyname) {
@@ -284,6 +311,16 @@ public class EmployeeServiceImpl implements EmployeeService {
 		statusHistoryService.trackStatusChange(employee, newStatus, responseSubmitbyname);
 		return EmployeeMapper.mapToEmployeeDto(employee);
 	}
+	@Override
+	public EmployeeDto updateEmployeeMrResponseStatusTestCheck(Long employeeId, String newStatus, String responseSubmitbyname,String remarks) {
+		Employee employee = employeeRepository.findById(employeeId)
+				.orElseThrow(() -> new ResourceNotFoundException("Employee not found"));
+		employee.setManagerStatus(newStatus);
+		employee.setProcessesStatus(newStatus);
+		statusHistoryService.trackStatusChange2(employee, newStatus, responseSubmitbyname, remarks);
+		return EmployeeMapper.mapToEmployeeDto(employee);
+	}
+
 
 	@Override
 	public EmployeeDto updateEmployeeHrRejectedScreeningResponse(Long employeeId, String reSetHrField, String newStatus,
@@ -442,9 +479,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 			employee.setProcessesStatus((String) result[8]);
 			employee.setCreationDate((Date) result[9]);
 			employee.setReMarksByHr((String) result[10]);
-            employee.setReMarksByManager((String) result[11]);
-            employee.setProfileScreenRemarks((String) result[12]);
-            
+			employee.setReMarksByManager((String) result[11]);
+			employee.setProfileScreenRemarks((String) result[12]);
+
 			employees.add(employee);
 		}
 		return employees;
@@ -465,8 +502,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 			employee.setGender((String) result[6]);
 			employee.setCreationDate((Date) result[7]);
 			employee.setReMarksByHr((String) result[8]);
-            employee.setReMarksByManager((String) result[9]);
-            employee.setProfileScreenRemarks((String) result[10]);
+			employee.setReMarksByManager((String) result[9]);
+			employee.setProfileScreenRemarks((String) result[10]);
 			employees.add(employee);
 		}
 		return employees;
@@ -503,12 +540,16 @@ public class EmployeeServiceImpl implements EmployeeService {
 			String fullName = (String) result[1];
 			String aadhaarNumber = (String) result[2];
 			String email = (String) result[3];
-			// Assuming creationDate is of type java.util.Date or java.sql.Timestamp
 			Date creationDate = (Date) result[4];
 			String status = (String) result[5];
-			// Assuming changesDateTime is of type java.util.Date or java.sql.Timestamp
 			Date changesDateTime = (Date) result[6];
 			String hrName = (String) result[7];
+			String remarksOnEveryStages =(String) result[8];
+//			String reMarksByHr = (String) result[8];
+//			String reMarksByManager = (String) result[9];
+//			String profileScreenRemarks = (String) result[10];
+
+
 			if (!employeeMap.containsKey(id)) {
 				EmployeeDto employeeDetailsDto = new EmployeeDto();
 				employeeDetailsDto.setId(id);
@@ -516,6 +557,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 				employeeDetailsDto.setAadhaarNumber(aadhaarNumber);
 				employeeDetailsDto.setEmail(email);
 				employeeDetailsDto.setCreationDate(creationDate);
+//				employeeDetailsDto.setReMarksByHr(reMarksByHr);
+//				employeeDetailsDto.setReMarksByManager(reMarksByManager);
+//				employeeDetailsDto.setProfileScreenRemarks(profileScreenRemarks);
 
 				List<StatusHistory> statusHistoryList = new ArrayList<>();
 				employeeDetailsDto.setStatusHistories(statusHistoryList);
@@ -526,10 +570,12 @@ public class EmployeeServiceImpl implements EmployeeService {
 			statusHistory.setStatus(status);
 			statusHistory.setChangesDateTime(changesDateTime);
 			statusHistory.setHrName(hrName);
+			statusHistory.setRemarksOnEveryStages(remarksOnEveryStages);
 			employeeMap.get(id).getStatusHistories().add(statusHistory);
 		}
 
 		return new ArrayList<>(employeeMap.values());
+
 	}
 
 	private void assignManagerForInterview(InterviewProcesses interviewProcesses) {
@@ -563,22 +609,43 @@ public class EmployeeServiceImpl implements EmployeeService {
 	}
 
 	@Override
-	public void updateEmployeeRemarksHrAndManager(Long employeeId, String hrRemarks, String managerRemaks,String profileScreenRemark) {
+	public void updateEmployeeRemarksHrAndManager(Long employeeId, String hrRemarks, String managerRemaks,
+			String profileScreenRemark) {
 		Employee employee = employeeRepository.findById(employeeId)
 				.orElseThrow(() -> new ResourceNotFoundException("Employee not found"));
 		if (hrRemarks != null) {
-			employee.setReMarksByHr(hrRemarks);
+			employee.setReMarksByHr(hrRemarks);		
 		}
 		if (managerRemaks != null) {
 			employee.setReMarksByManager(managerRemaks);
 		}
-		if(profileScreenRemark != null) {
+		if (profileScreenRemark != null) {
 			employee.setProfileScreenRemarks(profileScreenRemark);
 		}
 		employeeRepository.save(employee);
 
 	}
+	@Override
+	public void updateEmployeeRemarksHrAndManagerchecks(Long employeeId, String hrRemarks, String managerRemaks,
+			String profileScreenRemark ,String updateName) {
+		Employee employee = employeeRepository.findById(employeeId)
+				.orElseThrow(() -> new ResourceNotFoundException("Employee not found"));
+		if (hrRemarks != null) {
+			employee.setReMarksByHr(hrRemarks);
+			setStatusHistoryRecoredRemarksChecks(employeeId, null,updateName, employee, hrRemarks);
+			
+		}
+		if (managerRemaks != null) {
+			employee.setReMarksByManager(managerRemaks);
+			setStatusHistoryRecoredRemarksChecks(employeeId, null, updateName, employee, managerRemaks);
+		}
+		if (profileScreenRemark != null) {
+			employee.setProfileScreenRemarks(profileScreenRemark);
+			setStatusHistoryRecoredRemarksChecks(employeeId, null, updateName, employee, profileScreenRemark);
+		}
+		employeeRepository.save(employee);
 
+	}
 	private void setStatusHistoryRecored(Long employeeId, InterviewProcesses savedInterviewProcess, String newStatus,
 			Employee employee) {
 		StatusHistory statusHistory = new StatusHistory();
@@ -591,5 +658,21 @@ public class EmployeeServiceImpl implements EmployeeService {
 		statusHistory.setChangesDateTime(currentDate);
 		statusHistoryRepository.save(statusHistory);
 	}
+	
+	private void setStatusHistoryRecoredRemarksChecks(Long employeeId, InterviewProcesses savedInterviewProcess, String newStatus,
+			Employee employee, String remarksOnEveryStages) {
+		StatusHistory statusHistory = new StatusHistory();
+		statusHistory.setEmployee(employee);
+		statusHistory.setInterviewProcess(savedInterviewProcess);
+		statusHistory.setStatus(newStatus);
+		statusHistory.setHrName(savedInterviewProcess.getScheduledBy());
+		statusHistory.setRemarksOnEveryStages(remarksOnEveryStages);
+		LocalDateTime currentDateTime = LocalDateTime.now();
+		Date currentDate = Date.from(currentDateTime.atZone(ZoneId.systemDefault()).toInstant());
+		statusHistory.setChangesDateTime(currentDate);
+		statusHistoryRepository.save(statusHistory);
+	}
+
+	
 
 }

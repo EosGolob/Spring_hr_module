@@ -47,7 +47,9 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 			+ "FROM Employee e WHERE e.processesStatus = :role")
 	List<Object[]> findEmployeesByRoleType(String role);
 
-	@Query("SELECT e.id, e.fullName, e.aadhaarNumber, e.email, e.creationDate,sh.status, sh.changesDateTime ,sh.hrName "
+//	@Query("SELECT e.id, e.fullName, e.aadhaarNumber, e.email, e.creationDate,sh.status, sh.changesDateTime ,sh.hrName ,e.reMarksByHr, e.reMarksByManager,e.profileScreenRemarks,sh.remarksOnEveryStages "
+//			+ "FROM Employee e " + "JOIN StatusHistory sh ON e.id = sh.employee.id " + "WHERE e.id = :id")
+	@Query("SELECT e.id, e.fullName, e.aadhaarNumber, e.email, e.creationDate,sh.status, sh.changesDateTime ,sh.hrName,sh.remarksOnEveryStages "
 			+ "FROM Employee e " + "JOIN StatusHistory sh ON e.id = sh.employee.id " + "WHERE e.id = :id")
 	List<Object[]> getEmpDetailsInfoById(@Param("id") Long employeeId);
 

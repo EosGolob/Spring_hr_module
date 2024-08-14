@@ -57,11 +57,29 @@ public class StatusHistoryServiceImpl implements StatusHistoryService {
 			statusHistory.setChangesDateTime(currentDate);
 			statusHistoryRepository.save(statusHistory);
 			employeeRepository.save(employee);
-//			employee.setStatus(newStatus);
-//			employee.setInitialStatus(newStatus);
-//			employeeRepository.save(employee);
 		}
 
+	}
+
+	@Override
+	public void trackStatusChange2(Employee employee, String newStatus, String responseSubmitbyName,
+			String updateRemrks) {
+		// TODO Auto-generated method stub
+		StatusHistory latestStatusHistory = statusHistoryRepository
+				.findTopByEmployeeOrderByChangesDateTimeDesc(employee);
+		if (latestStatusHistory != null && !latestStatusHistory.getStatus().equals(newStatus)) {
+			StatusHistory statusHistory = new StatusHistory();
+			statusHistory.setEmployee(employee);
+			statusHistory.setStatus(newStatus);
+			statusHistory.setHrName(responseSubmitbyName);
+			statusHistory.setRemarksOnEveryStages(updateRemrks);
+			LocalDateTime currentDateTime = LocalDateTime.now();
+		    Date currentDate = Date.from(currentDateTime.atZone(ZoneId.systemDefault()).toInstant());
+			statusHistory.setChangesDateTime(currentDate);
+			statusHistoryRepository.save(statusHistory);
+			employeeRepository.save(employee);
+		
+	}
 	}
 
 }
