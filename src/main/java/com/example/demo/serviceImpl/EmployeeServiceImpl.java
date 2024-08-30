@@ -1,10 +1,6 @@
 package com.example.demo.serviceImpl;
 
-import java.io.File;
 import java.io.IOException;
-import java.lang.StackWalker.Option;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -12,21 +8,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.dto.EmployeeDto;
-import com.example.demo.dto.InterviewsRequestDto;
-import com.example.demo.dto.StatusHistoryDto;
 import com.example.demo.entity.Employee;
 import com.example.demo.entity.InterviewProcesses;
 import com.example.demo.entity.ManagerDetails;
@@ -250,7 +239,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 				.orElseThrow(() -> new RuntimeException("Employee not found"));
 		interviewProcesses.setEmployee(employee);
 
-		assignManagerForInterview(interviewProcesses);
+//		assignManagerForInterview(interviewProcesses);
 		String processNameUpdateInEmp = interviewProcesses.getProcessName();
 		employee.setProcessesStatus(processNameUpdateInEmp);
 		employee.setLastInterviewAssin(processNameUpdateInEmp);

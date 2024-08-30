@@ -1,5 +1,7 @@
 package com.example.demo.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -48,6 +50,11 @@ public class UserManagementController {
 	public ResponseEntity<ReqRes> getAllUsers() {
 		return ResponseEntity.ok(usersManagementService.getAllUsers());
 	}
+	@GetMapping("/admin/get-process-name")
+	public ResponseEntity<List<String>> getAllProcess(){
+		return ResponseEntity.ok(usersManagementService.getMyProcessName());
+	}
+	
 	@GetMapping("/admin/get-users/{userId}")
 	public ResponseEntity<ReqRes> getUserById(@PathVariable Integer userId) {
 		return ResponseEntity.ok(usersManagementService.getUserById(userId));

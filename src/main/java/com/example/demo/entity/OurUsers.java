@@ -33,6 +33,8 @@ public class OurUsers implements UserDetails {
 	private String city;
 	
 	private String role;
+	
+	private String process;
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {

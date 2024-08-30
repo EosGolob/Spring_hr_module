@@ -35,7 +35,13 @@ public class UsersManagementService {
 			ourUser.setEmail(registrationRequest.getEmail());
 			ourUser.setCity(registrationRequest.getCity());
 			ourUser.setRole(registrationRequest.getRole());
-			ourUser.setName(registrationRequest.getName());
+//			ourUser.setName(registrationRequest.getName().substring(0,1).toUpperCase()+registrationRequest.getName().substring(1));
+			String name = registrationRequest.getName();
+			if (name != null && !name.isEmpty()) {
+			    name = name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
+			    ourUser.setName(name);
+			}
+			ourUser.setProcess(registrationRequest.getProcess().trim().toUpperCase());
 			ourUser.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
 			OurUsers ourUsersResult = usersRepository.save(ourUser);
 			if (ourUsersResult.getId() > 0) {
@@ -64,14 +70,16 @@ public class UsersManagementService {
 			response.setStatusCode(200);
 			response.setToken(jwt);
 			response.setRole(user.getRole());
+			response.setProcess(user.getProcess());
+			response.setName(user.getName());
 			response.setRefreshToken(refreshToken);
+			response.setCity(user.getCity());
 			response.setExpirationTime("24Hrs");
 			response.setMessage("SuccessFull login ");
-			response.setName(user.getName());
+			
 		} catch (Exception e) {
 
 			response.setStatusCode(500);
-//			response.setMessage(e.getMessage());
 			response.setMessage("Incorrect Password");
 		}
 		return response;
@@ -168,7 +176,7 @@ public class UsersManagementService {
 			if (userOptional.isPresent()) {
 				OurUsers existingUser = userOptional.get();
 				existingUser.setEmail(updatedUser.getEmail());
-				existingUser.setName(updatedUser.getName());
+				existingUser.setName( updatedUser.getName());
 				existingUser.setCity(updatedUser.getCity());
 				existingUser.setRole(updatedUser.getRole());
 
@@ -214,5 +222,15 @@ public class UsersManagementService {
 		}
 		return reqRes;
 	}
-
+	
+	public List<String> getMyProcessName() {
+            List<String> processes = usersRepository.findDistinctProcesses();
+        return processes ;
+    }
+	
+	public static final String capitalize(String str)   
+	{  
+	if (str == null || str.length() == 0) return str;  
+	return str.substring(0, 1).toUpperCase() + str.substring(1);  
+	}  
 }

@@ -17,8 +17,8 @@ public class QRController {
 
 	@GetMapping("/qrcode")
 	public String getQRCode(Model model) {
-		String medium = "https://rahul26021999.medium.com/";
-		String github = "http:/localhost:8080//api/employees";
+		String medium = "http://localhost:3001/";
+		String github = "http:/localhost:3001/";
 
 		byte[] image = new byte[0];
 		try {
