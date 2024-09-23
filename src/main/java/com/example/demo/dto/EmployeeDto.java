@@ -1,14 +1,11 @@
 package com.example.demo.dto;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import com.example.demo.entity.InterviewProcesses;
 import com.example.demo.entity.StatusHistory;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Lob;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -43,7 +40,7 @@ public class EmployeeDto {
     private List<InterviewProcesses> interviewProcesses;
 	private String aadhaarNumber;
 	private String  languages;
-	private int experience;
+	private Float experience;
 	private String source;
 	private String subSource;
 	private Date creationDate;

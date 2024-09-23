@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.dto.EmployeeDto;
+import com.example.demo.dto.EmployeeSearchDto;
 import com.example.demo.entity.InterviewProcesses;
 import com.example.demo.service.EmployeeService;
 
@@ -31,7 +32,6 @@ import com.example.demo.service.EmployeeService;
 public class EmployeeController {
 
 	private EmployeeService employeeService;
-	
 
 	@Value("${file.upload-dir}")
 	private String path;
@@ -40,30 +40,36 @@ public class EmployeeController {
 		this.employeeService = employeeService;
 	}
 
-	@PostMapping
-	public ResponseEntity<EmployeeDto> createEmployee(@RequestPart("employee") EmployeeDto employeeDto,
-			@RequestParam("image") MultipartFile image) {
-		try {
-			if (employeeDto == null || image == null || image.isEmpty()) {
-				return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
-			}
-			EmployeeDto savedEmployee = employeeService.createEmployee(employeeDto, image, path);
-			return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
-		} catch (IOException e) {
-			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-
-	}
-
-	// Build get Employee REST API
+	/**
+	 * @PostMapping public ResponseEntity<EmployeeDto>
+	 *              createEmployee(@RequestPart("employee") EmployeeDto
+	 *              employeeDto, @RequestParam("image") MultipartFile image) { try {
+	 *              if (employeeDto == null || image == null || image.isEmpty()) {
+	 *              return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST); }
+	 *              EmployeeDto savedEmployee =
+	 *              employeeService.createEmployee(employeeDto, image, path); return
+	 *              new ResponseEntity<>(savedEmployee, HttpStatus.CREATED); } catch
+	 *              (IOException e) { return new ResponseEntity<>(null,
+	 *              HttpStatus.INTERNAL_SERVER_ERROR); }
+	 * 
+	 *              }
+	 **/
+	
 	@GetMapping("{id}")
 	public ResponseEntity<EmployeeDto> getEmployeeById(@PathVariable("id") Long employeeId) {
 		EmployeeDto employeeDto = employeeService.getEmployeeById(employeeId);
+
 		return ResponseEntity.ok(employeeDto);
 
 	}
 
-	// Build get allEmployee Rest API
+	@GetMapping("/searchByNameAPI")
+	public ResponseEntity<List<EmployeeSearchDto>> getEmployeeByFullName() {
+		List<EmployeeSearchDto> employeeDto = employeeService.getEmployeeByFullName();
+		return ResponseEntity.ok(employeeDto);
+
+	}
+
 	@GetMapping
 	public ResponseEntity<List<EmployeeDto>> getAllEmployees() {
 		List<EmployeeDto> employees = employeeService.getAllEmployees();
@@ -110,9 +116,10 @@ public class EmployeeController {
 			@RequestBody InterviewProcesses interviewProcesses) {
 		String newStatus = interviewProcesses.getStatus();
 		String remarks = interviewProcesses.getRemarks();
-		employeeService.updateEmployeeRemarksHrAndManager(employeeId, remarks, null,null);
+		employeeService.updateEmployeeRemarksHrAndManager(employeeId, remarks, null, null);
 //		employeeService.assignInterviewProcessAndUpdateStatus(employeeId, interviewProcesses, newStatus);
-		employeeService.assignInterviewProcessAndUpdateStatusTestCheck(employeeId, interviewProcesses, newStatus,remarks);
+		employeeService.assignInterviewProcessAndUpdateStatusTestCheck(employeeId, interviewProcesses, newStatus,
+				remarks);
 
 		return ResponseEntity.ok().build();
 	}
@@ -185,10 +192,10 @@ public class EmployeeController {
 		String managerRemarks = requestBody.get("managerRemarks");
 //		EmployeeDto updatedEmployee = employeeService.updateEmployeeMrResponseStatus(employeeId, newStatus,
 //				responseSubmitbyName);
-		
-		employeeService.updateEmployeeRemarksHrAndManager(employeeId, null, managerRemarks,null);
+
+		employeeService.updateEmployeeRemarksHrAndManager(employeeId, null, managerRemarks, null);
 		EmployeeDto updatedEmployee = employeeService.updateEmployeeMrResponseStatusTestCheck(employeeId, newStatus,
-				responseSubmitbyName,managerRemarks);
+				responseSubmitbyName, managerRemarks);
 		System.out.println("new Status value" + newStatus);
 		return new ResponseEntity<>(updatedEmployee, HttpStatus.OK);
 	}
@@ -199,11 +206,11 @@ public class EmployeeController {
 		String newStatus = requestBody.get("newStatus");
 		String responseSubmitbyName = requestBody.get("hrUserName");
 		String profileScreenRemark = requestBody.get("profileScreenRemark");
-		employeeService.updateEmployeeRemarksHrAndManager(employeeId, null, null,profileScreenRemark);
+		employeeService.updateEmployeeRemarksHrAndManager(employeeId, null, null, profileScreenRemark);
 //		EmployeeDto updatedEmployee = employeeService.updateEmployeeHrResponseStatus(employeeId, newStatus,
 //				responseSubmitbyName);
 		EmployeeDto updatedEmployee = employeeService.updateEmployeeHrResponseStatus2(employeeId, newStatus,
-				responseSubmitbyName,profileScreenRemark);
+				responseSubmitbyName, profileScreenRemark);
 		System.out.println("new Status value" + newStatus);
 		return new ResponseEntity<>(updatedEmployee, HttpStatus.OK);
 	}

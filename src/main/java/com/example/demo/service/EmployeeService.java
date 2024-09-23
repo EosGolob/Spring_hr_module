@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.dto.EmployeeDto;
+import com.example.demo.dto.EmployeeSearchDto;
 import com.example.demo.dto.InterviewsRequestDto;
 import com.example.demo.entity.Employee;
 import com.example.demo.entity.InterviewProcesses;
@@ -19,6 +20,7 @@ public interface EmployeeService {
 		
 	EmployeeDto getEmployeeById(Long employeeId);
 	
+
 	List<EmployeeDto> getAllEmployees();
 
 //	EmployeeDto updateEmployee(Long employeeId, EmployeeDto updatedEmployee, MultipartFile file) throws IOException;
@@ -27,7 +29,7 @@ public interface EmployeeService {
 
 	EmployeeDto createEmployee(EmployeeDto employeeDto, MultipartFile file, String path) throws IOException;
 	
-	void assignInterviewProcessAndUpdateStatus(Long employeeId, InterviewProcesses interviewProcesses, String newStatus);
+//	void assignInterviewProcessAndUpdateStatus(Long employeeId, InterviewProcesses interviewProcesses, String newStatus);
 	void assignInterviewProcessAndUpdateStatusTestCheck(Long employeeId, InterviewProcesses interviewProcesses,
 			String newStatus ,String remarks);
 	
@@ -79,6 +81,8 @@ public interface EmployeeService {
 
 	void updateEmployeeRemarksHrAndManagerchecks(Long employeeId, String hrRemarks, String managerRemaks,
 			String profileScreenRemark, String updateName);
+
+	List<EmployeeSearchDto> getEmployeeByFullName();
 
 	
 	

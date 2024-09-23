@@ -1,9 +1,9 @@
 package com.example.demo.entity;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -31,9 +31,9 @@ public class StatusHistory {
 	
 	@ManyToOne
 	@JoinColumn(name = "employee_id" , nullable = false)
+	@JsonBackReference
 	private Employee employee; 
 	
-	//new field 
 	@ManyToOne
 	@JoinColumn(name = "interview_process_id")
 	private InterviewProcesses interviewProcess;
@@ -50,6 +50,5 @@ public class StatusHistory {
 	
 	@Column(nullable = false)
 	private Date changesDateTime;
-//	private LocalDateTime changesDateTime;
 		
 }

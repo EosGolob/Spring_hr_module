@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.dto.ReqRes;
+import com.example.demo.entity.Notification;
 import com.example.demo.entity.OurUsers;
 import com.example.demo.repository.UsersRepository;
 
@@ -28,6 +29,7 @@ public class UsersManagementService {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
+/**
 	public ReqRes register(ReqRes registrationRequest) {
 		ReqRes resp = new ReqRes();
 		try {
@@ -43,6 +45,13 @@ public class UsersManagementService {
 			}
 			ourUser.setProcess(registrationRequest.getProcess().trim().toUpperCase());
 			ourUser.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
+			if(registrationRequest.getEmail() != null && !registrationRequest.getEmail().isEmpty()) {
+				if(usersRepository.findByEmail(registrationRequest.getEmail())!= null) {
+					resp.setStatusCode(400);
+					resp.setError("Email is already in use");
+					return resp;
+				}
+			}
 			OurUsers ourUsersResult = usersRepository.save(ourUser);
 			if (ourUsersResult.getId() > 0) {
 				resp.setOurUsers((ourUsersResult));
@@ -57,6 +66,53 @@ public class UsersManagementService {
 			resp.setError("Incorrect password");
 		}
 		return resp;
+	}
+*/
+	
+	public ReqRes register(ReqRes registrationRequest) {
+	    ReqRes resp = new ReqRes();
+	    try {
+	        String email = registrationRequest.getEmail();
+	        if (email != null && !email.isEmpty()) {
+	            Optional<OurUsers> existingUser = usersRepository.findByEmail(email);
+	            if (existingUser.isPresent()) {
+	                resp.setStatusCode(400);
+	                resp.setError("Emp id is already in use");
+	                return resp;
+	            }
+	        } else {
+	            resp.setStatusCode(400);
+	            resp.setError("Emp id cannot be empty");
+	            return resp;
+	        }
+
+	        // Create and populate the new user object
+	        OurUsers ourUser = new OurUsers();
+	        ourUser.setEmail(email);
+	        ourUser.setCity(registrationRequest.getCity());
+	        ourUser.setRole(registrationRequest.getRole());
+
+	        String name = registrationRequest.getName();
+	        if (name != null && !name.isEmpty()) {
+	            name = name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase();
+	            ourUser.setName(name);
+	        }
+
+	        ourUser.setProcess(registrationRequest.getProcess().trim().toUpperCase());
+	        ourUser.setPassword(passwordEncoder.encode(registrationRequest.getPassword()));
+
+	        // Save the new user
+	        OurUsers ourUsersResult = usersRepository.save(ourUser);
+	        if (ourUsersResult.getId() > 0) {
+	            resp.setOurUsers(ourUsersResult);
+	            resp.setMessage("User saved successfully");
+	            resp.setStatusCode(200);
+	        }
+	    } catch (Exception e) {
+	        resp.setStatusCode(500);
+	        resp.setError("An error occurred: " + e.getMessage());
+	    }
+	    return resp;
 	}
 
 	public ReqRes login(ReqRes loginRequest) {
@@ -76,6 +132,7 @@ public class UsersManagementService {
 			response.setCity(user.getCity());
 			response.setExpirationTime("24Hrs");
 			response.setMessage("SuccessFull login ");
+			
 			
 		} catch (Exception e) {
 

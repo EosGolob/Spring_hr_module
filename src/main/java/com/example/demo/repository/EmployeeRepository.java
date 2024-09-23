@@ -1,6 +1,7 @@
 package com.example.demo.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -8,8 +9,9 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.example.demo.dto.EmployeeDto;
+import com.example.demo.dto.EmployeeSearchDto;
 import com.example.demo.entity.Employee;
-
+@Repository
 public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 
 	boolean existsByEmail(String email);
@@ -68,4 +70,13 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
 			+ "FROM Employee e WHERE e.managerStatus = 'Select' ")
 	List<Object[]> getApprovedEmployeeInfo();
 
+//	Optional<Employee> findByFullName(String empName);
+	
+	 @Query("SELECT e.id, e.fullName, e.email, e.initialStatus "
+	           +"FROM Employee e WHERE e.fullName = :fullName")
+	List<EmployeeSearchDto> searchByName(@Param("fullName") String fullName);
+
+	 List<Employee> findByFullName(String employeeName);
+
+//	List<EmployeeSearchDto> findSearchName(String employeeName);
 }

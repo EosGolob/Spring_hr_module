@@ -30,7 +30,4 @@ public class ReqRes {
 	private List<OurUsers> ourUserList;
 	
 	
-	
-	
-	
 }

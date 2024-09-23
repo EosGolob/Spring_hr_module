@@ -3,8 +3,10 @@ package com.example.demo.entity;
 import java.util.Date;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -32,6 +34,7 @@ public class InterviewProcesses {
 	
 	@ManyToOne(fetch = FetchType.LAZY,optional = false )
 	@JoinColumn(name = "employee_id" , nullable = false)
+	@JsonBackReference
 	private Employee employee;
 	
 	@OneToMany(mappedBy = "interviewProcess", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -57,9 +60,10 @@ public class InterviewProcesses {
 	  
 	@Column(name = "remarksManager")
 	private String remarksManager;
-	@ManyToOne(fetch = FetchType.LAZY , optional = true)
-	@JoinColumn(name = "managerDetails_id")
-	private ManagerDetails managerDetails;
+	
+//	@ManyToOne(fetch = FetchType.LAZY , optional = true)
+//	@JoinColumn(name = "managerDetails_id")
+//	private ManagerDetails managerDetails;
 	
 
 

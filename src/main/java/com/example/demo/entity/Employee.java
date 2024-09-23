@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -77,7 +78,7 @@ public class Employee {
 	private String  languages;
 	
 	@Column(name ="experience")
-	private int experience;
+	private Float experience;
 	
 	@Column(name = "source")
 	private String source;
@@ -97,12 +98,11 @@ public class Employee {
 	@Column(name = "manager_status")
 	private String managerStatus;
 
-
 	@OneToMany(mappedBy = "employee", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JsonIgnore
+	@JsonManagedReference
 	private List<StatusHistory> statusHistories;
 	
-	@JsonIgnore
+	@JsonManagedReference
 	@OneToMany(mappedBy = "employee", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<InterviewProcesses> interviewProcesses;
 
