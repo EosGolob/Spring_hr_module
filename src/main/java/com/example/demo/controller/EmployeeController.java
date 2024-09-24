@@ -1,6 +1,5 @@
 package com.example.demo.controller;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -17,13 +16,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.dto.EmployeeDto;
 import com.example.demo.dto.EmployeeSearchDto;
 import com.example.demo.entity.InterviewProcesses;
+import com.example.demo.exception.InvalidInputException;
 import com.example.demo.service.EmployeeService;
 
 @CrossOrigin("*")
@@ -54,7 +52,7 @@ public class EmployeeController {
 	 * 
 	 *              }
 	 **/
-	
+
 	@GetMapping("{id}")
 	public ResponseEntity<EmployeeDto> getEmployeeById(@PathVariable("id") Long employeeId) {
 		EmployeeDto employeeDto = employeeService.getEmployeeById(employeeId);
@@ -91,13 +89,16 @@ public class EmployeeController {
 		EmployeeDto employeeDto = employeeService.updateEmployee(employeeId, updatedEmployee);
 		return ResponseEntity.ok(employeeDto);
 	}
-//	@PutMapping("{id}")
-//	public ResponseEntity<EmployeeDto> updateEmployee(@PathVariable("id") Long employeeId, @ModelAttribute EmployeeDto updatedEmployee,  @RequestParam MultipartFile file) throws IOException {
-//		EmployeeDto updatedEmployeeDto = employeeService.updateEmployee(employeeId, updatedEmployee, file);
-//		return ResponseEntity.ok(updatedEmployeeDto);
-//	}
 
-	// Build Delete EmployeeREST APi
+	/**
+	 * @PutMapping("{id}") public ResponseEntity<EmployeeDto>
+	 * updateEmployee(@PathVariable("id") Long employeeId, @ModelAttribute
+	 * EmployeeDto updatedEmployee, @RequestParam MultipartFile file) throws
+	 * IOException { EmployeeDto updatedEmployeeDto =
+	 * employeeService.updateEmployee(employeeId, updatedEmployee, file); return
+	 * ResponseEntity.ok(updatedEmployeeDto); }
+	 */
+
 	@DeleteMapping("{id}")
 	public ResponseEntity<String> deleteEmployee(@PathVariable("id") Long employeeId) {
 		employeeService.deleteEmployee(employeeId);
@@ -111,18 +112,7 @@ public class EmployeeController {
 		return new ResponseEntity<>(updatedEmployee, HttpStatus.OK);
 	}
 
-	@PostMapping("/{employeeId}/interview-process")
-	public ResponseEntity<Void> assignInterviewProcess(@PathVariable Long employeeId,
-			@RequestBody InterviewProcesses interviewProcesses) {
-		String newStatus = interviewProcesses.getStatus();
-		String remarks = interviewProcesses.getRemarks();
-		employeeService.updateEmployeeRemarksHrAndManager(employeeId, remarks, null, null);
-//		employeeService.assignInterviewProcessAndUpdateStatus(employeeId, interviewProcesses, newStatus);
-		employeeService.assignInterviewProcessAndUpdateStatusTestCheck(employeeId, interviewProcesses, newStatus,
-				remarks);
-
-		return ResponseEntity.ok().build();
-	}
+	
 
 //	 @GetMapping("/employeesProcessesInterview")
 //	    public ResponseEntity<List<EmployeeDto>> getEmployeesByInterviewProcessStatus(@RequestParam String status) {
@@ -141,7 +131,7 @@ public class EmployeeController {
 		List<EmployeeDto> employees = employeeService.getAllHrResponseValue();
 		return ResponseEntity.ok(employees);
 	}
-
+/**
 	@GetMapping("/managerHdfcResponeField")
 	public ResponseEntity<List<EmployeeDto>> hdfcmanagerResponseField() {
 		List<EmployeeDto> employees = employeeService.getAllHdfcResponseValue();
@@ -159,7 +149,7 @@ public class EmployeeController {
 		List<EmployeeDto> employees = employeeService.getAllMisResponseValue();
 		return ResponseEntity.ok(employees);
 	}
-
+*/
 	@GetMapping("/getAllEmployeeOnManagersPage/{role}")
 	public ResponseEntity<List<EmployeeDto>> managerPageEmployeedetailsOnRole(@PathVariable String role) {
 		List<EmployeeDto> employees = employeeService.getAllResponseValueOnProcessType(role);
@@ -206,13 +196,43 @@ public class EmployeeController {
 		String newStatus = requestBody.get("newStatus");
 		String responseSubmitbyName = requestBody.get("hrUserName");
 		String profileScreenRemark = requestBody.get("profileScreenRemark");
-		employeeService.updateEmployeeRemarksHrAndManager(employeeId, null, null, profileScreenRemark);
+		
+		if(profileScreenRemark == null  || profileScreenRemark.trim().isEmpty()) {
+			throw new InvalidInputException("Remarks should not be blank");
+		}
+		if(newStatus == null || newStatus.trim().isEmpty()) {
+			throw new InvalidInputException("Action should not be blank");
+		}
+//		employeeService.updateEmployeeRemarksHrAndManager(employeeId, null, null, profileScreenRemark);
+		employeeService.updateEmployeeRemarksOnProfileScreenPage(employeeId,profileScreenRemark);
 //		EmployeeDto updatedEmployee = employeeService.updateEmployeeHrResponseStatus(employeeId, newStatus,
 //				responseSubmitbyName);
 		EmployeeDto updatedEmployee = employeeService.updateEmployeeHrResponseStatus2(employeeId, newStatus,
 				responseSubmitbyName, profileScreenRemark);
-		System.out.println("new Status value" + newStatus);
 		return new ResponseEntity<>(updatedEmployee, HttpStatus.OK);
+	}
+	
+	@PostMapping("/{employeeId}/interview-process")
+	public ResponseEntity<Void> assignInterviewProcess(@PathVariable Long employeeId,
+			@RequestBody InterviewProcesses interviewProcesses) {
+		String newStatus = interviewProcesses.getStatus();
+		String remarks = interviewProcesses.getRemarks();
+		String processName = interviewProcesses.getProcessName();
+
+		if (remarks == null || remarks.trim().isEmpty()) {
+			throw new InvalidInputException("Remarks is required.");
+		}
+
+		if (processName == null || processName.trim().isEmpty()) {
+			throw new InvalidInputException("Process name is required.");
+		}
+//		employeeService.updateEmployeeRemarksHrAndManager(employeeId, remarks, null, null);
+		employeeService.updateEmployeeRemarksOnProcessSelectionPage(employeeId, remarks);
+//		employeeService.assignInterviewProcessAndUpdateStatus(employeeId, interviewProcesses, newStatus);
+		employeeService.assignInterviewProcessAndUpdateStatusTestCheck(employeeId, interviewProcesses, newStatus,
+				remarks);
+
+		return ResponseEntity.ok().build();
 	}
 
 	@PutMapping("/{id}/rejectByhrReInterviewSchedule")

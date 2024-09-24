@@ -39,11 +39,11 @@ public interface EmployeeService {
 	
 	List<EmployeeDto> getAllHrResponseValue();
     
-	List<EmployeeDto> getAllHdfcResponseValue();
-	 
-	List<EmployeeDto> getAllIciciResponseValue();
-	
-	List<EmployeeDto> getAllMisResponseValue();
+//	List<EmployeeDto> getAllHdfcResponseValue();
+//	 
+//	List<EmployeeDto> getAllIciciResponseValue();
+//	
+//	List<EmployeeDto> getAllMisResponseValue();
 	
 	List<EmployeeDto> getAllResponseValueOnProcessType(String role);
 	
@@ -68,7 +68,7 @@ public interface EmployeeService {
 			String remarks);
 
 	
-	EmployeeDto updateStatus(Long employeeId, String newStatus);
+//	EmployeeDto updateStatus(Long employeeId, String newStatus);
 	
 	EmployeeDto updateEmployeeStatus(Long employeeId, String newStatus);
 	
@@ -78,11 +78,21 @@ public interface EmployeeService {
 			String responseSubmitByName);
 
 	void updateEmployeeRemarksHrAndManager(Long employeeId, String hrRemarks,String managerRemaks,String profileScreenRemark );
-
+	
+	void updateEmployeeRemarksOnProcessSelectionPage(Long employeeId, String remarks);
+	
+	void updateEmployeeRemarksOnProfileScreenPage(Long employeeId, String profileScreenRemark);
+	
 	void updateEmployeeRemarksHrAndManagerchecks(Long employeeId, String hrRemarks, String managerRemaks,
 			String profileScreenRemark, String updateName);
 
 	List<EmployeeSearchDto> getEmployeeByFullName();
+
+
+	
+
+
+	
 
 	
 	
